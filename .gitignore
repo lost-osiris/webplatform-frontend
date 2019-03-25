@@ -1,0 +1,12 @@
+node_modules/
+dist/
+dist/*
+build/
+build/*
+cdn/*
+cdn/
+*.pyc
+!/.gitignore
+*.pid
+*.sock
+*.log

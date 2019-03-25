@@ -1,0 +1,154 @@
+.profile {
+  @include media-breakpoint-up(md) {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+  }
+
+  @include media-breakpoint-down(sm) {
+    margin-top: 75px;
+    text-align: center;
+  }
+}
+
+.profile__img {
+  padding: 5px;
+  position: relative;
+
+  img {
+    max-width: 200px;
+    border-radius: $border-radius;
+  }
+
+  @include media-breakpoint-down(sm){
+    img {
+      margin: -55px 0 -10px;
+      width: 120px;
+      border: 5px solid $white;
+      border-radius: 50%;
+    }
+  }
+}
+
+.profile__img__edit {
+  position: absolute;
+  font-size: 1.2rem;
+  top: 15px;
+  left: 15px;
+  background-color: rgba($black,0.4);
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  border-radius: 50%;
+  text-align: center;
+  color: $white;
+
+  &:hover {
+    background-color: rgba($black,0.65);
+    color: $white;
+  }
+}
+
+.profile__info {
+   padding: 30px;
+}
+.pm-overview {
+
+    @include media-breakpoint-up(xl) {
+      margin-left: 301px;
+      position: absolute;
+      left: 0;
+      top: 0;
+      /* height: 100%; */
+      background: #f8f8f8;
+      border-right: 1px solid #eee;
+    }
+
+    @include media-breakpoint-between(sm, lg) {
+      padding-left: 250px;
+    }
+
+    @include media-breakpoint-down(xs) {
+        width: 100%;
+        background: #333;
+        text-align: center;
+    }
+
+}
+
+.pmb-block {
+    margin-bottom: 20px;
+
+    @media (min-width: 1200px) {
+        padding: 40px 42px 0;
+    }
+
+    @media (max-width: 1199px) {
+        padding: 30px 20px 0;
+    }
+
+    &:last-child {
+        margin-bottom: 50px;
+    }
+
+    .pmbb-header {
+        margin-bottom: 25px;
+        position: relative;
+
+        .actions {
+            position: absolute;
+            top: -2px;
+            right: 0;
+        }
+
+        h2 {
+            margin: 0;
+            font-weight: 100;
+            font-size: 20px;
+        }
+    }
+
+    .pmbb-edit {
+        position: relative;
+        z-index: 1;
+        display: none;
+    }
+
+    &.toggled {
+        .pmbb-edit {
+            display: block;
+        }
+
+        .pmbb-view {
+            display: none;
+        }
+    }
+}
+
+.pmo-block {
+    padding: 25px;
+
+    & > h2 {
+        font-size: 16px;
+        margin: 0 0 15px;
+    }
+
+    ul {
+        padding-left: 25px;
+    }
+}
+
+.pmo-items {
+    .pmob-body {
+        padding: 0 10px;
+    }
+
+    a {
+        display: block;
+        padding: 4px;
+
+        img {
+            width: 100%;
+        }
+    }
+}

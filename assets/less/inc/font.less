@@ -1,0 +1,60 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&lang=en.css');
+// @import url('https://fonts.googleapis.com/css?family=Roboto:400,300,500,700');
+@import url('../vendors/material-design-iconic-font/material-design-iconic-font.css');
+@import url('../vendors/font-awesome/font-awesome.less');
+
+/*-------------------------
+    Font Face
+--------------------------*/
+.font-face(@family, @name, @weight: 300, @style){
+  @font-face {
+    font-family: @family;
+    src:url('../../fonts/@{family}/@{name}.eot');
+    src:url('../../fonts/@{family}/@{name}.eot?#iefix') format('embedded-opentype'),
+        url('../../fonts/@{family}/@{name}.woff') format('woff'),
+        url('../../fonts/@{family}/@{name}.ttf') format('truetype'),
+        url('../../fonts/@{family}/@{name}.svg#icon') format('svg');
+    font-weight: @weight;
+    font-style: @style;
+  }
+}
+/*--------------------
+  Roboto Light
+---------------------*/
+.font-face(roboto, 'Roboto-Light-webfont', 300, normal);
+
+
+/*--------------------
+  Roboto Regular
+---------------------*/
+.font-face(roboto, 'Roboto-Regular-webfont', 400, normal);
+
+
+/*--------------------
+  Roboto Medium
+---------------------*/
+.font-face(roboto, 'Roboto-Medium-webfont', 500, normal);
+
+
+/*--------------------
+  Roboto Bold
+---------------------*/
+.font-face(roboto, 'Roboto-Bold-webfont', 700, normal);
+
+
+/*--------------------
+  Satisfy
+---------------------*/
+.font-face(satisfy, 'satisfy', 400, normal);
+
+/*--------------------
+  Material Design Iconic Font
+---------------------*/
+@font-face {
+  font-family: 'Material-Design-Iconic-Font';
+  src: url('../../fonts/Material-Design-Iconic-Font/Material-Design-Iconic-Font.woff2') format('woff2'),
+       url('../../fonts/Material-Design-Iconic-Font/Material-Design-Iconic-Font.woff') format('woff'),
+       url('../../fonts/Material-Design-Iconic-Font/Material-Design-Iconic-Font.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
