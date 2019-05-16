@@ -13,6 +13,7 @@ const routeOptions = {
 
 module.exports = {
     disableHostCheck: true,
+    clientLogLevel: "info",
     host: '0.0.0.0',
     port: 3000,
     contentBase: resolve(__dirname, 'dist'),
@@ -30,6 +31,7 @@ module.exports = {
       chunks: false,
       chunckModules: false,
       timings: true,
-      warnigns: false
+      warnigns: false,
+      colors: true,
     },
 }

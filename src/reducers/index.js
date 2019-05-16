@@ -1,22 +1,11 @@
 import { combineReducers } from 'redux'
 
-import findsbr from '~/modules/Findsbr/reducers'
-// import dashboards from '../modules/Dashboards/reducers'
-import se from '~/modules/SupportExceptions/reducers'
-// import bzcompliance from '~/modules/BzCompliance/reducers'
-// import apiinfo from '~/modules/Info/Api/reducers'
-// import jobrunner from '~/modules/JobRunner/reducers'
-// import permissions from '~/modules/Admin/modules/Permissions/reducers'
-// import logs from '~/modules/Admin/modules/Logs/reducers'
-// import products from '~/modules/Products/reducers'
-// import rp from '~/modules/ReleasePlanning/reducers'
-
 const initialState = {
   location: null,
   sideNavToggled: false,
 }
 
-const dashboard = function(state = initialState, action) {
+const DashboardReducer = function(state = initialState, action) {
   switch (action.type) {
     case 'DASHBOARD_LOADED': {
       let newState = {}
@@ -148,19 +137,8 @@ const dashboard = function(state = initialState, action) {
   }
 }
 
-const rootReducer = combineReducers({
-  dashboard,
-  findsbr,
-  // dashboards,
-  se,
-  // bzcompliance,
-  // apiinfo,
-  // jobrunner,
-  // permissions,
-  // logs,
-  // products,
-  // rp,
-  // router: routerReducer,
-})
+const staticReducers = {
+  dashboard: DashboardReducer,
+}
 
-export default rootReducer
+export default staticReducers

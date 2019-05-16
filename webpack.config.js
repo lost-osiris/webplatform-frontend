@@ -2,7 +2,7 @@ const { resolve } = require('path');
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const DevServerConf = require('./webpack.devServer.js')
+// const DevServerConf = require('./webpack.devServer.js')
 
 const npmPackages = [
   "sweetalert2",
@@ -32,7 +32,7 @@ module.exports = {
   context: resolve(__dirname, 'src'),
   entry: {
     core: corePackages,
-    main: './Root.js',
+    main: ['./Root.js'],
       // '../assets/less/app.less',
     // fonts:'../assets/scss/inc/_fonts.scss',
     // style: '../assets/less/app.less',
@@ -54,13 +54,13 @@ module.exports = {
   // devtool: 'eval',
   mode: 'development',
   devtool: 'eval-source-map',
-  devServer: DevServerConf,
+  // devServer: DevServerConf,
   resolve: {
     alias: {
       '~': resolve(__dirname, "./src/"),
       '!': resolve(__dirname, "./assets/"),
       'less': resolve(__dirname, "./src/less"),
-      'img': resolve(__dirname, "./assets/img")
+      'img': resolve(__dirname, "./assets/img"),
     }
   },
   module: {
@@ -70,7 +70,17 @@ module.exports = {
         exclude: /node_modules/,
         use: [
           {
-            loader: 'babel-loader'
+            loader: 'babel-loader',
+            options: {
+              presets: [
+                "@babel/preset-react"
+              ],
+              plugins: [
+                "@babel/plugin-transform-runtime",
+                "@babel/plugin-syntax-dynamic-import",
+                ["@babel/plugin-proposal-class-properties", {loose: true}]
+              ]
+            }
           },
           // {
           //   loader: 'eslint-loader',

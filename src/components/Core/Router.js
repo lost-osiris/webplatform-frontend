@@ -23,12 +23,16 @@ class Router extends Component {
   }
 
   componentDidMount() {
-    this.routes = this.setupRoutes(Routes)
-    this.props.history.listen((location) => this.updateLayout(location))
+    this.setupRoutes(Routes).then((routes) => {
+      let layout = this.getLayout(this.history.location, routes)
 
-    this.setState({
-      layout: this.getLayout(this.history.location),
-      location: this.props.history.location,
+      this.props.history.listen((location) => this.updateLayout(location))
+
+      this.setState({
+        routes: routes,
+        layout: layout,
+        location: this.props.history.location,
+      })
     })
   }
 
@@ -49,16 +53,17 @@ class Router extends Component {
     }
 
     this.setState({
-      layout: this.getLayout(location),
+      layout: this.getLayout(location, this.state.routes),
       location: location,
     })
   }
 
-  getLayout(location) {
+  getLayout(location, routes) {
     let found = []
-    for (let i in this.routes) {
-      let layout = this.routes[i]
+    for (let i in routes) {
+      let layout = routes[i]
       let url = location.pathname
+
       let match = this.utils.match(url, layout.match)
 
       layout.parsedMatch = match
@@ -74,7 +79,6 @@ class Router extends Component {
         return this.setupLayout(route)
       }
     }
-
 
     return this.setupLayout(found[0])
   }
@@ -147,24 +151,30 @@ class Router extends Component {
     }
   }
 
-  setupRoutes(routes, parent = undefined) {
+  async setupRoutes(routes, parent = undefined) {
     let layout = {}
 
     for (let index in routes) {
-      let route = routes[index].route
-      let ui = routes[index].ui
+      let routeModule = routes[index]
+      if (typeof routes[index] === "function") {
+        let module = await routes[index]()
+        routeModule = module.default
+      }
 
-      if (routes[index].api) {
-        let api = (utils, match) => routes[index].api(utils, match, routes[index].route)
+      let route = routeModule.route
+      let ui = routeModule.ui
+
+      if (routeModule.api) {
+        let api = (utils, match) => routeModule.api(utils, match, route)
 
         if (parent && parent.defaultApi) {
           route.api = [parent.defaultApi, api]
         } else {
           route.api = [api]
 
-          if (routes[index].defaultApi) {
-            let api = routes[index].defaultApi
-            route.defaultApi = (utils, match) => api(utils, match, routes[index].route)
+          if (routeModule.defaultApi) {
+            let api = routeModule.defaultApi
+            route.defaultApi = (utils, match) => api(utils, match, route)
             route.api.push(route.defaultApi)
           }
         }
@@ -179,16 +189,6 @@ class Router extends Component {
       let match = {
         path: route.path,
         exact: false,
-      }
-
-      if (route == undefined) {
-        if (routes[index].default != undefined) {
-          let url = routes[index].default.route.path
-          console.warn(`An imported route ('${url}') is using 'module.exports'. Please use ES6 proper import sytanx.`)
-        } else {
-          console.warn('An imported route is "undefined". Skipped route.')
-        }
-        continue
       }
 
       if (route.exact) {
@@ -207,8 +207,12 @@ class Router extends Component {
       layout[match.path] = {
         ui: ui,
         match: match,
-        mapStateToProps: routes[index].mapStateToProps,
-        api: route.api
+        mapStateToProps: routeModule.mapStateToProps,
+        api: route.api,
+      }
+
+      if (routeModule.reducer) {
+        this.utils.updateReducer(routeModule.reducer)
       }
 
       if (route.children != undefined) {
@@ -222,19 +226,16 @@ class Router extends Component {
 
   render() {
     return (
-      <ConnectedRouter history={ this.history }>
-        <AppContainer
-          location={ this.state.location }
-          layout={ this.state.layout }
-        />
-      </ConnectedRouter>
+      <AppContainer
+        location={ this.state.location }
+        layout={ this.state.layout }
+      />
     )
   }
 }
 
 const mapStateToProps = (state) => {
   return {
-    //     location: state.router.location,
     errors: state.dashboard.errors,
   }
 }

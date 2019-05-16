@@ -134,6 +134,10 @@ class Utils {
     }
   }
 
+  updateReducer(newReducer) {
+    this.store.injectReducer(newReducer.name, newReducer.data)
+  }
+
   getUser() {
     return this.api.getUser()
   }

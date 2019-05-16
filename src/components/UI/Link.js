@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import History from '~/components/Core/History'
 // import invariant from 'invariant'
 
 const isModifiedEvent = (event) =>
@@ -23,16 +24,6 @@ class Link extends React.Component {
     replace: false
   }
 
-  static contextTypes = {
-    router: PropTypes.shape({
-      history: PropTypes.shape({
-        push: PropTypes.func.isRequired,
-        replace: PropTypes.func.isRequired,
-        createHref: PropTypes.func.isRequired
-      }).isRequired
-    }).isRequired
-  }
-
   handleClick = (event) => {
     if (this.props.onClick)
       this.props.onClick(event)
@@ -45,13 +36,13 @@ class Link extends React.Component {
     ) {
       event.preventDefault()
 
-      const { history } = this.context.router
+      // const { history } = this.context.router
       const { replace, to } = this.props
 
       if (replace) {
-        history.replace(to)
+        History.replace(to)
       } else {
-        history.push(to)
+        History.push(to)
       }
     }
   }
@@ -59,7 +50,7 @@ class Link extends React.Component {
   render() {
     const { replace, to, innerRef, ...props } = this.props // eslint-disable-line no-unused-vars
 
-    const href = this.context.router.history.createHref(
+    const href = History.getHistory().createHref(
       typeof to === 'string' ? { pathname: to } : to
     )
 
