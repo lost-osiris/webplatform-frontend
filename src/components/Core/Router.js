@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import qs from 'query-string'
-import { ConnectedRouter } from 'connected-react-router'
 
 import Utils from '~/utils'
 import Routes from '~/routes'
@@ -22,18 +21,21 @@ class Router extends Component {
     }
   }
 
-  componentDidMount() {
-    this.setupRoutes(Routes).then((routes) => {
-      let layout = this.getLayout(this.history.location, routes)
+  async setup() {
+    let routes = await this.setupRoutes(Routes)
+    let layout = this.getLayout(this.history.location, routes)
 
-      this.props.history.listen((location) => this.updateLayout(location))
+    this.props.history.listen((location) => this.updateLayout(location))
 
-      this.setState({
-        routes: routes,
-        layout: layout,
-        location: this.props.history.location,
-      })
+    this.setState({
+      routes: routes,
+      layout: layout,
+      location: this.props.history.location,
     })
+  }
+
+  componentDidMount() {
+    this.setup()
   }
 
   componentDidUpdate() {
@@ -156,7 +158,7 @@ class Router extends Component {
 
     for (let index in routes) {
       let routeModule = routes[index]
-      if (typeof routes[index] === "function") {
+      if (typeof routes[index] === 'function') {
         let module = await routes[index]()
         routeModule = module.default
       }
@@ -217,6 +219,11 @@ class Router extends Component {
 
       if (route.children != undefined) {
         let children = this.setupRoutes(route.children, route)
+
+        if (children.then) {
+          children = await children
+        }
+
         layout = Object.assign({}, layout, children)
       }
     }
