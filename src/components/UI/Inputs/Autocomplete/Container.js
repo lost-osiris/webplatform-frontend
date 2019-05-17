@@ -1,10 +1,33 @@
-import React from 'react'
+import React, { Component } from 'react'
+// import { Inputs } from '~/components'
 
-import AutocompleteResults from './Results'
+import ResultsContainer from './ResultsContainer'
 
-export default class AutocompleteContainer extends React.Component {
+export default class Autocomplete extends Component {
   constructor(props) {
     super(props)
+
+    this.state = {
+      resultsWidth: null,
+      normalizedData: false,
+      rawData: props.data,
+      exact: false,
+      minSearch: props.minSearch || 2,
+      limit: props.limit || 15
+    }
+  }
+
+  componentDidMount() {
+    let state = {
+      normalizedData: this.normalize(this.props.searchKey, this.props.data),
+      rawData: this.props.data,
+      exact: false,
+      minSearch: this.props.minSearch || 2,
+      resultsWidth: this.input.offsetWidth,
+      limit: this.props.limit || 15
+    }
+
+    this.setState(state)
   }
 
   getValue(key, data) {
@@ -21,50 +44,28 @@ export default class AutocompleteContainer extends React.Component {
     return output
   }
 
-  findResults(searchText, data, rawData, searchKey) {
-    searchText = String(searchText).toLowerCase()
-
+  normalize(key, data) {
     let output = []
-    let indexes = []
 
-    for (let c in searchText) {
-      let char = searchText[c]
+    if (!data) {
+      return []
+    }
 
-      let result = {
-        indexes: [],
-        searchText: searchText
+    if (!(data instanceof Array)) {
+      for (let k in data) {
+        output.push(data[k])
       }
 
-      for (let i in data) {
-        let item = String(data[i]).toLowerCase()
+      return output
+    }
 
-        let index = item.indexOf(searchText)
+    for (let i in data) {
+      let item = data[i]
 
-        // console.log(char, index, indexes)
-        if (index > -1 && !indexes.includes(data[i])) {
-          for (let j in item) {
-            let charCompare = item[j]
-            if (charCompare === char) {
-              result.indexes.push(parseInt(j))
-            }
-          }
-
-          result.value = data[i]
-          result.rawData = this.getValue(searchKey, rawData[i])
-
-          output.push(result)
-          indexes.push(data[i])
-
-        } else if (index > -1) {
-          result = output[indexes.indexOf(data[i])]
-
-          for (let j in item) {
-            let charCompare = item[j]
-            if (charCompare === char) {
-              result.indexes.push(parseInt(j))
-            }
-          }
-        }
+      if (key) {
+        output.push(this.getValue(key, item))
+      } else {
+        output.push(item)
       }
     }
 
@@ -72,26 +73,23 @@ export default class AutocompleteContainer extends React.Component {
   }
 
   render() {
-    let results = []
-    let { data, searchText, toggled, width, rawData, searchKey } = this.props
 
-    if (toggled) {
-      results = this.findResults(searchText, data, rawData, searchKey)
+    this.input = React.createRef()
 
-      if (results.length === 1 && results[0].value === searchText) {
-        results = []
-      }
+    let containerProps = {
+      data: this.state.normalizedData,
+      rawData: this.state.rawData,
+      toggled: this.props.toggled,
+      searchText: this.props.value,
+      handleEvent: this.props.onChange,
+      width: this.state.resultsWidth,
+      searchKey: this.props.searchKey,
+      limit: this.state.limit,
+      resultsComponent: this.props.resultsComponent,
+      onChange: this.props.onChange,
+      onSuggestionSelect: this.props.onSuggestionSelect
     }
 
-    return (
-      <AutocompleteResults
-        width={width}
-        results={results}
-        className="tt-menu tt-open"
-        onSelect={this.props.handleEvent}
-        resultsComponent={this.props.resultsComponent}
-        searchKey={this.props.searchKey}
-      />
-    )
+    return <ResultsContainer {...containerProps} />
   }
 }

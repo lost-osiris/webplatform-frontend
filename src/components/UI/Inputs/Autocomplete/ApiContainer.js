@@ -28,7 +28,9 @@ export default class ApiContainer extends React.Component {
         this.props.limit,
         this.state.offset,
       ]
-      this.callApi(...args)
+      //Ensure API call only made when min search is met...
+      if (this.props.searchText.length >= this.props.minSearch)
+        this.callApi(...args)
     }
   }
 
@@ -43,9 +45,17 @@ export default class ApiContainer extends React.Component {
     }
 
     this.utils.request(request).then((data) => {
-      if (data) {
-        this.setState({results: data})
+      let output = {
+        searchText: searchText,
+        toggled: true,
+        exact: data.exact,
+        selected: false,
+        results: data.results
       }
+
+      this.setState({results: data.results}, () => {
+        this.props.onChange(output)
+      })
     })
   }
 
@@ -62,11 +72,10 @@ export default class ApiContainer extends React.Component {
         width={width}
         results={results}
         className="tt-menu tt-open"
-        onSelect={this.props.handleEvent}
+        onSelect={this.props.onChange}
         resultsComponent={this.props.resultsComponent}
         searchKey={this.props.searchKey}
       />
     )
-    // return <Json data={this.state.results} />
   }
 }
