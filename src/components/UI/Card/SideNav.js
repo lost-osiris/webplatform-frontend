@@ -8,24 +8,36 @@ export default class CardSideNav extends Component {
   }
 
   renderChildren({ children }) {
-    let elements = children.map((child, index) => {
-      console.log(child)
-      const { className } = child
+    let elements
+
+    if (children.map) {
+      elements = children.map((child, index) => {
+        console.log(child)
+        const { className } = child
+        const childClass = classnames({
+          'pmo-block': true,
+          [className]: className !== undefined
+        })
+        return (
+          <div className={childClass} key={index}>
+            { child }
+          </div>
+        )
+      })
+    } else {
+      const { className } = children
       const childClass = classnames({
         'pmo-block': true,
         [className]: className !== undefined
       })
-      return (
-        <div className={childClass} key={index}>
-          { child }
+
+      elements = (
+        <div className={childClass}>
+          { children }
         </div>
       )
-    })
-    // return (
-    //   <div>
-    //     { elements }
-    //   </div>
-    // )
+    }
+
     return (
       // <Scrollbars style={ {left: 0, position: 'absolute', width: '300px', background: '#f8f8f8'} } autoHide>
       <Scrollbars style={{background: '#f8f8f8'}} autoHide>

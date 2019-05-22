@@ -11,8 +11,8 @@ export default class Tabs extends Component {
       current: this.props.current
     }
 
-    this.CONTENTTYPE = <TabsContent />.type
-    this.NAVTYPE = <TabsNav />.type
+    this.CONTENTTYPE = (<TabsContent />).type
+    this.NAVTYPE = (<TabsNav />).type
   }
 
   componentDidMount() {
@@ -31,17 +31,19 @@ export default class Tabs extends Component {
     let nav = this.props.children.filter(e => e.type === this.NAVTYPE)[0]
     let content = this.props.children.filter(e => e.type === this.CONTENTTYPE)[0]
 
+    let { navChildren } = nav.props
     let navProps = {
       handleClick: (tab) => this.handleClick(tab),
-      fill: this.props.fill,
-      color: this.props.color,
       current: this.state.current,
       children: nav.props.children,
+      ...nav.props
     }
 
+    let { contentChildren } = content.props
     let contentProps = {
       current: this.state.current,
-      children: content.props.children,
+      children: contentChildren,
+      ...content.props
     }
 
     return (

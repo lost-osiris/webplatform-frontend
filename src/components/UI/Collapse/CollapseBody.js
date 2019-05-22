@@ -1,51 +1,38 @@
 import React, { Component } from 'react'
-import classnames from 'classnames'
 
+/**
+ * The collapseBody component is used for rendering the collapse content. This component
+ * is shown and hidden by interacting/clicking the associated CollapseHeader component.
+ * 
+ * The associated CollapseHeader component is the CollapseHeader component nested within the
+ * CollapseItem component one level up (a sibling of this collapseBody component).  
+ */
 export default class CollapseBody extends Component {
   constructor(props) {
     super(props)
-    this.state = {
-      maxHeight: null,
-    }
-  }
-
-  getHeight(element) {
-    if (this.props.height !== undefined && this.state.maxHeight == null) {
-      this.setState({maxHeight: this.props.height})
-    } else if (element != null && this.state.maxHeight == null) {
-      let height = element.offsetHeight
-      this.setState({maxHeight: height})
-    }
-  }
-
-  getStyle() {
-    let style = {}
-    if (this.state.maxHeight != null) {
-      if (!this.props.collapsed) {
-        style.maxHeight = this.state.maxHeight + 'px'
-        style.overflow = this.props.showOverflow ? 'visible' : ''
-      } else {
-        style.maxHeight = '0px'
-      }
-    }
-    return style
   }
 
   render() {
-    let className = classnames({
-      'collapse': true,
-      //Show is set to always true to render element. Appearance of element is
-      //done by setting height from 0 to x, bypassing the use of the "show" class
-      'show': true,
-      // 'closed' : this.props.collapsed,
-    })
+
+    // Set the default class name which is always present
+    let classes = 'collapse' 
+
+    // If the component is NOT collapsed, it should be showing
+    if (!this.props.collapsed) {
+      classes += ' show'
+    }
+
+    const bodyProps = {
+      className: classes
+    }
+
     return (
-      <div className={className}
-        style={this.getStyle()}
-        ref={ (element) => {this.getHeight(element)} }
-      >
-        { this.props.children }
+      <div {...bodyProps} >
+        <div className='accordion__content'>
+          {this.props.children}
+        </div>
       </div>
     )
   }
+
 }

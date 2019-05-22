@@ -10,7 +10,7 @@ export default class Input extends Component {
     })
 
     this.state = {
-      value: props.value,
+      value: props.value || '',
       className: className,
       error: props.error,
     }
@@ -24,7 +24,7 @@ export default class Input extends Component {
 
     this.setState({
       className: className,
-      value: this.props.value,
+      value: this.props.value || '',
       error: this.props.error,
     })
   }
@@ -73,6 +73,7 @@ export default class Input extends Component {
   }
 
   render() {
+
     const handleFocus = () => {
       if (this.props.onFocus) {
         this.props.onFocus()
@@ -93,13 +94,12 @@ export default class Input extends Component {
 
     let valueProp
 
-    if ('value' in this.props) {
+    if (this.props.value) {
       valueProp = this.props.value
     }
     else {
-      valueProp = this.state.value || ''
+      valueProp = this.state.value
     }
-
 
     let props = {
       value: valueProp,
