@@ -44,7 +44,8 @@ class Layout extends Component {
 
   buildLayout(props) {
     let layout = {
-      location: props.location
+      location: props.location,
+      navs: []
     }
 
     let defaultProps = {
@@ -59,7 +60,7 @@ class Layout extends Component {
       'stateTitle',
       'content',
       'appNav',
-      'search'
+      'search',
     ]
 
     for (let i in keys) {
@@ -76,6 +77,11 @@ class Layout extends Component {
       if (k == 'search') {
         layout.isSearch = true
       }
+    }
+
+    for (let i =0; i < props.navs.length; i++) {
+      defaultProps.ui = props.navs[i]
+      layout.navs.push(<ConnectedUI key={`${i}-app-nav`} {...defaultProps} />)
     }
 
     this.setState({layout: layout})
@@ -117,6 +123,7 @@ class Layout extends Component {
                   user={ user }
                   sideNavToggled={this.props.sideNavToggled}
                   appNav={ this.state.layout.appNav }
+                  navs={ this.state.layout.navs }
                   loading={ this.props.loading }
                 />
               </aside>

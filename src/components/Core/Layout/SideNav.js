@@ -34,6 +34,9 @@ class SideNav extends Component {
               Home
             </Link>
           </li>
+          { this.props.navs }
+          {/* <Navs navs={this.props.navs} /> */}
+          {/* { this.props.navs } */}
           {/* {this.props.user.permissions.dashboards.is_admin != null
                ?
                   <NavSubMenu icon="c-teal fa fa-bar-chart" title="Dashboards">
@@ -69,8 +72,9 @@ class SideNav extends Component {
                         Dashboards
                      </Link>
                   </li>
-               } */}
-          <li>
+               } */
+          }
+          {/* <li>
             <Link to="/bzcompliance">
               <i className="fa fa-bug" style={this.iStyle}></i>
               Bugzilla Compliance
@@ -88,15 +92,6 @@ class SideNav extends Component {
               Support Exceptions
             </Link>
           </li>
-          {permissions.releasePlanning != undefined && permissions.releasePlanning.is_developer == true
-            ? <li>
-              <Link to="/release-planning">
-                <i className="fa fa-calendar" style={this.iStyle}></i>
-                Release Planning
-              </Link>
-            </li>
-            : <div />
-          }
           {permissions.jobs != undefined && permissions.jobs.is_admin == true
             ? <li>
               <Link to="/jobs">
@@ -105,7 +100,7 @@ class SideNav extends Component {
               </Link>
             </li>
             : <div />
-          }
+          } */}
           {permissions.system != undefined && permissions.system.is_admin == true
             ? <NavSubMenu icon="fa fa-database" title="Admin">
               <li>

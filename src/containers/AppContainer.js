@@ -12,7 +12,8 @@ class AppContainer extends React.Component {
     this.utils = new Utils(this.reducer)
     this.state = {
       layout: {},
-      loadingComponents: true
+      loadingComponents: true,
+      location: {}
     }
   }
 
@@ -37,78 +38,75 @@ class AppContainer extends React.Component {
         data.user.then((user) => {
           data.systemInfo.then((info) => {
             this.utils.dispatch('LOADED', {user: user, systemInfo: info})
-            this.fetchLayout(this.props, true)
+            // this.fetchLayout(this.props, true)
           })
         })
       })
     }
   }
 
-  componentDidUpdate(prevProps) {
-    if ((!this.state.loadingComponents &&
-      prevProps.location.key != this.props.location.key) &&
-      this.utils.getUser()
+  componentDidUpdate() {
+    if ((this.state.loadingComponents ||
+      this.props.location.key !== this.state.location.key) &&
+      this.utils.getUser() && this.props.layout.navs !== undefined
     ){
       this.fetchLayout(this.props)
     }
   }
 
-  fetchLayout(props, force=null) {
-    if (!this.state.loadingComponents || force) {
-      this.setState({loadingComponents: true})
-      let keys = [
-        'stateTitle',
-        'content',
-        'appNav',
-        'search'
-      ]
+  fetchLayout(props) {
+    let keys = [
+      'stateTitle',
+      'content',
+      'appNav',
+      'search',
+    ]
 
-      let promises = []
+    let promises = []
 
-      for (let i in props.layout.api) {
-        let api = props.layout.api[i]
+    for (let i in props.layout.api) {
+      let api = props.layout.api[i]
 
-        if (api) {
-          promises.push(api())
-        }
+      if (api) {
+        promises.push(api())
       }
-
-      let map = {}
-      let count = promises.length
-
-      for (let i in keys) {
-        let k = keys[i]
-        let component = props.layout.ui[k]
-
-        if (component) {
-          promises.push(component())
-          map[count] = k
-          count++
-        }
-      }
-
-      Promise.all(promises).then((data) => {
-        let ui = {}
-        for (let i in map) {
-          let module = data[parseInt(i)]
-
-          ui[map[i]] = module
-
-          if (module.default) {
-            ui[map[i]] = module.default
-          }
-        }
-
-        let layout = {...props.layout}
-        layout.ui = ui
-
-        this.setState({loadingComponents: false, layout: layout})
-      })
     }
+
+    let map = {}
+    let count = promises.length
+
+    for (let i in keys) {
+      let k = keys[i]
+      let component = props.layout.ui[k]
+
+      if (component) {
+        promises.push(component())
+        map[count] = k
+        count++
+      }
+    }
+
+    Promise.all(promises).then((data) => {
+      let ui = {}
+      for (let i in map) {
+        let module = data[parseInt(i)]
+
+        ui[map[i]] = module
+
+        if (module.default) {
+          ui[map[i]] = module.default
+        }
+      }
+
+      let layout = {...props.layout}
+      layout.ui = ui
+
+      this.setState({loadingComponents: false, layout: layout, location: props.location})
+    })
   }
 
   render() {
-    if (this.utils.getUser() == undefined) {
+    if (this.utils.getUser() === undefined && this.state.layout.navs === undefined) {
       return <Loading message="Loading user data..." className="page-loader__main" toggle={true} />
     }
 

@@ -18,6 +18,7 @@ class Router extends Component {
       layout: undefined,
       loading: false,
       location: props.history.location,
+      navs: undefined
     }
   }
 
@@ -25,11 +26,20 @@ class Router extends Component {
     let routes = await this.setupRoutes(Routes)
     let layout = this.getLayout(this.history.location, routes)
 
+    let navs = []
+    for (let i in routes) {
+      if (routes[i].ui.mainAppNav) {
+        let nav = await routes[i].ui.mainAppNav()
+        navs.push(nav.default)
+      }
+    }
+
     this.props.history.listen((location) => this.updateLayout(location))
 
     this.setState({
       routes: routes,
       layout: layout,
+      navs: navs,
       location: this.props.history.location,
     })
   }
@@ -232,10 +242,18 @@ class Router extends Component {
   }
 
   render() {
+    let layout = {
+      ...this.state.layout
+    }
+
+    if (layout.ui) {
+      layout.navs = this.state.navs
+    }
+    
     return (
       <AppContainer
         location={ this.state.location }
-        layout={ this.state.layout }
+        layout={ layout }
       />
     )
   }
