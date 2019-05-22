@@ -28,7 +28,7 @@ class Router extends Component {
 
     let navs = []
     for (let i in routes) {
-      if (routes[i].ui.mainAppNav) {
+      if (routes[i].ui && routes[i].ui.mainAppNav) {
         let nav = await routes[i].ui.mainAppNav()
         navs.push(nav.default)
       }

@@ -1,5 +1,5 @@
 {
-  "name": "cee-tools-frontend",
+  "name": "webplatform-frontend",
   "version": "1.0.0",
   "description": "A CLI to bootstrap the web platform frontend",
   "main": "src/index.js",
@@ -113,7 +113,6 @@
     "type": "git",
     "url": "git@gitlab.cee.redhat.com:cee-tools/frontend.git"
   },
-  "author": "",
   "publishConfig": {
     "access": "public"
   },
@@ -121,7 +120,8 @@
     "cli",
     "webplatform-frontend"
   ],
-  "license": "ISC",
+  "author": "Matthew Owens",
+  "license": "MIT",
   "devDependencies": {
     "@storybook/react": "^4.1.6",
     "eslint-plugin-react": "^7.10.0",
