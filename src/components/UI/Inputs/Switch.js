@@ -9,6 +9,13 @@ export default class Switch extends Component {
     }
   }
 
+  shouldComponentUpdate(nextProps) {
+    if (this.props.on != nextProps.on || this.props.off != nextProps.off) {
+      this.setState({toggled: nextProps.on === true || nextProps.off === false || false})
+    }
+    return true
+  }
+  
   setup(props) {
     this.className = 'toggle-switch'
     this.onChange = props.onChange
@@ -42,7 +49,7 @@ export default class Switch extends Component {
 
     let inputProps = {
       checked: this.state.toggled,
-      disabled: this.disabled,
+      disabled: this.props.disabled,
     }
 
     inputProps.onChange = (e) => {

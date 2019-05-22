@@ -36,13 +36,23 @@ export default class Datetime extends Component {
     this.setState({date: date, instance: instance, strDate: strDate})
   }
 
+  //Default config options for date picker
   getConfig(props) {
     // eslint-disable-next-line no-unused-vars
     let { onChange, onClose, ...rest } = { ...props }
 
+    //Set default day format to m/d/y
+    let dateFormat = 'm/d/y'
+
+    //Append time if support for picking time is enabled
+    if (this.props.enableTime) {
+      dateFormat += ' h:i K'
+    }
+
     return {
       onChange: (date, strDate, instance) => this.handleChange(date, strDate, instance),
       onClose: (date, strDate, instance) => this.handleClose(date, strDate, instance),
+      dateFormat: dateFormat,
       ...rest
     }
   }

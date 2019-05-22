@@ -54,18 +54,20 @@ export class TabsNav extends Component {
   }
 
   render() {
-    // console.log('tabs nav', this.props)
-    let type = this.props.fill ? 'nav nav-tabs nav-fill' : 'nav nav-tabs'
-
-    if (this.props.color != undefined) {
-      type += ' nav-tabs--' + this.props.color
-    }
-
     let nav = this.buildNav(this.props.children)
 
+    const { className } = this.props
+    const childClass = classnames({
+      'nav': true,
+      'nav-tabs': true,
+      'nav-fill': this.props.fill !== false,
+      ['nav-tabs--' + this.props.color]: this.props.color !== undefined,
+      [className]: className !== undefined
+    })
+
     return (
-      <ul className={type} data-tab-color={this.props.color}>
-        {nav}
+      <ul className={childClass} data-tab-color={this.props.color}>
+        { nav }
       </ul>
     )
   }

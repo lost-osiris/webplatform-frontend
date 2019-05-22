@@ -1,36 +1,36 @@
 import React, {Component} from 'react'
 
-import CollapseBody from './CollapseBody'
+import Item from './CollapseItem'
+import Header from './CollapseHeader'
+import Body from './CollapseBody'
 
-export default class Collapse extends Component {
+/**
+ * The collapse component is responsible for rendering the accordian
+ * style collapse that is composed of 3 parts.
+ * 
+ * Collapse Item - A component "wrapper" of sorts, holding the CollapseItem and CollapseBody. This component
+ *                 also manages the state of it's particular collapsible section.
+ * Collapse Header - The clickable header component of the collapse.
+ * Collapse Body - The component used to render the body (ie what is shown when the collapse is expanded).
+ */
+class Collapse extends Component {
   constructor(props) {
     super(props)
-    this.state = {
-      collapsed: props.collapsed
-    }
-  }
 
-  toggle() {
-    console.log('toggling')
-    this.setState({
-      collapsed: !this.state.collapsed
-    })
   }
 
   render() {
-
-    let props = {
-      key: 'collapse-body',
-      collapsed: this.props.collapsed,
-      showOverflow: this.props.showOverflow,
-      height: this.props.height,
-    }
-
     return (
-      <CollapseBody {...props}>
+      <div className="accordion">
         {this.props.children}
-      </CollapseBody>
+      </div>
     )
-    
   }
+
 }
+
+Collapse.Item = Item
+Collapse.Header = Header
+Collapse.Body = Body
+
+export default Collapse

@@ -35,7 +35,7 @@ export class TabsContent extends Component {
     if (!(children instanceof Array)) {
       return children
     }
-    
+
     let output = []
     for (let i in children) {
       let child = children[i]
@@ -77,9 +77,14 @@ export class TabsContent extends Component {
 
   render() {
     let Content = this.renderChildren
+    const { className } = this.props
+    const childClass = classnames({
+      'tabs-content': true,
+      [className]: className !== undefined
+    })
 
     return (
-      <div className="tab-content" style={ this.props.contentStyle }>
+      <div className={ childClass } style={ this.props.contentStyle }>
         <Content {...this.state}>
           { this.props.children }
         </Content>

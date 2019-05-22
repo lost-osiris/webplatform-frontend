@@ -54,7 +54,12 @@ const WithScroll = ComposedComponent => class ScrollDecorator extends Component 
   render() {
     const { scrollPosition } = this.state
 
-    return <ComposedComponent { ...this.props } scrollPosition={ scrollPosition } />
+    return (
+      <ComposedComponent
+        { ...this.props }
+        scrollPosition={ scrollPosition }
+      />
+    )
   }
 }
 

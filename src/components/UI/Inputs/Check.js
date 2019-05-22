@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-// import classnames from 'classnames'
 
 /**
   Props:
@@ -7,7 +6,6 @@ import React, { Component } from 'react'
     - inline: Whether checkboxes should be displayed inline
     - label: string
     - onChange: function
-    - margin: number
 */
 class Check extends Component {
   constructor(props) {
@@ -17,30 +15,33 @@ class Check extends Component {
     }
   }
 
+  componentDidUpdate() {
+    if (this.props.checked != this.state.checked) {
+      this.setState({checked: this.props.checked})
+      return true
+    }
+
+    return false
+    
+  }
+
   componentDidMount() {
     this.setState({checked: this.props.checked || false})
   }
 
   toggle() {
-    this.state.checked ? this.setState({checked: false}) : this.setState({checked: true})
+    this.setState({checked: !this.state.checked})
   }
 
-  handleChange(e) {
+  handleChange() {
     if (typeof this.props.onChange === 'function') {
-      this.props.onChange(e.target.dataset.checked === 'true')
+      this.props.onChange(!this.state.checked)
     }
 
     this.toggle()
   }
 
   render() {
-    // console.log(this.props.checked)
-    // const checkboxClass = classnames({
-    //   checkbox: true,
-    //   'checkbox-inline': this.props.inline,
-    //   'm-b-15': !this.props.margin,
-    //   [`m-b-${this.props.margin}`]: !isNaN(this.props.margin),
-    // })
 
     let className = 'checkbox'
     if ( this.props.inline) {
@@ -51,7 +52,8 @@ class Check extends Component {
       <div className={className}>
         <input type="checkbox" />
         <label className="checkbox__label"
-          data-checked={this.state.checked}
+          // data-checked={this.state.checked}
+          data-checked={this.props.checked}
           onClick={(e) => this.handleChange(e)}
           style={this.props.style}>
           {this.props.label}
