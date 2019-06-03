@@ -12,6 +12,7 @@ class AppContainer extends React.Component {
     this.utils = new Utils(this.reducer)
     this.state = {
       layout: {},
+      finishedLayout: true,
       loadingComponents: true,
       location: {}
     }
@@ -46,11 +47,19 @@ class AppContainer extends React.Component {
   }
 
   componentDidUpdate() {
+    let update = false
     if ((this.state.loadingComponents ||
       this.props.location.key !== this.state.location.key) &&
-      this.utils.getUser() && this.props.layout.navs !== undefined
+      this.utils.getUser() !== undefined && this.props.layout.navs !== undefined &&
+      this.state.finishedLayout
     ){
-      this.fetchLayout(this.props)
+      update = true
+    }
+
+    if (update) {
+      this.setState({finishedLayout: false}, () => {
+        this.fetchLayout(this.props)
+      })
     }
   }
 
