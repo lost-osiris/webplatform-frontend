@@ -113,6 +113,7 @@ export default class Input extends Component {
       }),
       type: 'text',
       placeholder: this.props.placeholder,
+      disabled: this.props.disabled
     }
 
     if ( this.props.size && this.props.size != 'textarea' && (this.props.size == 'sm' || this.props.size == 'lg' ) ) {
