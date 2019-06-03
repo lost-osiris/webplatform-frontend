@@ -82,23 +82,26 @@ export default class AutocompleteContainer extends React.Component {
         let result = {
           searchText: searchText,
           value: item,
-          rawData: this.getValue(searchKey, rawData[i])
+          rawData: this.getValue(searchKey, rawData[i]),
+          index: i
         }
 
+        // TODO Needs to be optimized. For now commenting out until then
         // Loop through the characters of the search text and
+        
         // compare them to the item's characters
-        for (let c in searchText) {
-          let char = searchText[c]
-          for (let j in item) {
-            let charCompare = item[j]
-            let charIndex = parseInt(j)
+        // for (let c in searchText) {
+        //   let char = searchText[c]
+        //   for (let j in item) {
+        //     let charCompare = item[j]
+        //     let charIndex = parseInt(j)
 
 
-            if (charCompare === char && indexes.indexOf(charIndex) === -1) {
-              indexes.push(charIndex)
-            }
-          }
-        }
+        //     if (charCompare === char && indexes.indexOf(charIndex) === -1) {
+        //       indexes.push(charIndex)
+        //     }
+        //   }
+        // }
 
         if (result.value.toLowerCase() === searchText.toLowerCase()) {
           exact = true
