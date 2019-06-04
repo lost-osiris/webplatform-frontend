@@ -122,7 +122,6 @@ export default class Autocomplete extends Component {
   }
 
   render() {
-    console.log('AUTOCOMPLETE RENDER', this.props)
 
     const handleFocus = () => {
       this.handleEvent({searchText: this.state.value, toggled: true})
