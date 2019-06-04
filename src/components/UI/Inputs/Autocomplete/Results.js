@@ -97,7 +97,7 @@ export default class AutocompleteResults extends React.Component {
 
     return (
       // <div className={ this.props.className } style={ {position: 'fixed', 'zIndex': 100, width: style.width } }>
-      <div className={ this.props.className } style={ {'zIndex': 100} }>
+      <div className={ this.props.className } style={ {position: 'absolute', 'zIndex': 100} }>
         <div className="tt-dataset tt-dataset-states" style={ style }>
           <Results
             onSelect={this.props.onSelect}
