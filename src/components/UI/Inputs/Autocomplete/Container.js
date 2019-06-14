@@ -30,6 +30,52 @@ export default class Autocomplete extends Component {
     this.setState(state)
   }
 
+  componentDidUpdate() {
+    // Checking data change based on another input changing the incoming data on props
+    if (this.state.rawData.length !== this.props.data.length) {
+      this.updateRawData(this.props.data, this.props.searchKey)
+    } else if (this.props.disabled === false) {
+      // When data change takes place but new/old have same lengths
+      // Further comparison needs to take place to detect change
+      let isChanged = false
+
+      for (let i in this.state.rawData) {
+        let value = this.state.rawData[i]
+        let found = false
+  
+        for (let j in this.props.data) {
+          let compare = this.props.data[j]
+          if (this.props.searchKey) {
+            if (value[this.props.searchKey] === compare[this.props.searchKey]) {
+              found = true 
+            }
+          } else {
+            if (value === compare) {
+              found = true
+            }
+          }
+        }
+  
+        if (!found) {
+          isChanged = true
+          break
+        }
+      }
+  
+      if (isChanged) {
+        this.updateRawData(this.props.data, this.props.searchKey)
+      }
+    }
+  }
+
+  updateRawData(newData, searchKey) {
+    let newState = {
+      normalizedData: this.normalize(searchKey, newData),
+      rawData: newData
+    }
+    this.setState(newState)
+  }
+
   getValue(key, data) {
     let keys = key.split('.')
 

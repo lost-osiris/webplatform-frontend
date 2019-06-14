@@ -122,6 +122,7 @@ export default class Autocomplete extends Component {
   }
 
   render() {
+
     const handleFocus = () => {
       this.handleEvent({searchText: this.state.value, toggled: true})
     }
@@ -188,6 +189,7 @@ export default class Autocomplete extends Component {
           placeholder={ this.props.placeholder || 'Enter a value...' }
           style={{marginBottom: 0}}
           error={this.props.error}
+          disabled={this.props.disabled}
         />
         { Container }
       </div>
