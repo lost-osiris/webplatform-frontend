@@ -48,13 +48,21 @@ class AppContainer extends React.Component {
 
   componentDidUpdate() {
     let update = false
-    if ((this.state.loadingComponents ||
-      this.props.location.key !== this.state.location.key) &&
-      this.utils.getUser() !== undefined && this.props.layout.navs !== undefined &&
-      this.state.finishedLayout
-    ){
+
+    let loadingComponents = this.state.loadingComponents
+    let locationUpdated = this.props.location.key !== this.state.location.key
+    let userDefined = this.utils.getUser() !== undefined
+    let navsLoaded = this.props.layout.navs !== undefined
+    
+    if ((loadingComponents || locationUpdated) && userDefined && navsLoaded && this.state.finishedLayout) {
       update = true
+    } else if (!loadingComponents && locationUpdated && userDefined) {
+      this.setState({loadingComponents: true}, () => {
+        this.fetchLayout(this.props)
+      })
     }
+
+    // console.log(update)
 
     if (update) {
       this.setState({finishedLayout: false}, () => {
