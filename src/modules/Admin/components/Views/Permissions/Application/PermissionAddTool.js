@@ -1,29 +1,27 @@
 import React, {Component} from 'react'
-import {Button, Inputs} from '~/components'
+import {Button, Inputs, Card} from '~/components'
 
 class UserAddTool extends Component {
   render() {
     return (
       <div className="row">
         <div className="col-lg-12">
-          <div className="card">
-            <div className="card-header bgm-green">
+          <Card>
+            <Card.Title className="bg-green">
               <div className="row">
                 <div className="col-lg-6">
-                  <h3 className="c-white">Add New Permission</h3>
+                  <h3 className="text-white">Add New Permission</h3>
                 </div>
                 <div className="col-lg-6 text-right">
                   <Button
-                    icon
-                    color="bgm-black"
+                    icon="zmdi zmdi-close"
+                    btnStyle="danger"
                     onClick={() => this.props.changeTool('')}
-                  >
-                    <i className="zmdi zmdi-close c-red" />
-                  </Button>
+                  />
                 </div>
               </div>
-            </div>
-            <div className="card-body card-padding">
+            </Card.Title>
+            <Card.Body>
               <div className="row">
                 <div className="col-lg-6">
                   <label>Permission Name</label>
@@ -48,8 +46,8 @@ class UserAddTool extends Component {
                   </Button>
                 </div>
               </div>
-            </div>
-          </div>
+            </Card.Body>
+          </Card>
         </div>
       </div>
     )

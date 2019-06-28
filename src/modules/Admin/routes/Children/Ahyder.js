@@ -8,19 +8,40 @@ var route = {
     stateTitle: UI.StateTitle.User,
     content: UI.Content.Ahyder,
   },
-  api: (utils) => {
-    let api = {
-      path: 'se.setup',
+  mapStateToProps: (state) => {
+    let stateObj = state.permissions.application
+
+    return {
+      users: stateObj.users
+    }
+  },
+  // api: (utils) => {
+  //   let api = {
+  //     path: 'se.setup',
+  //   }
+  //
+  //   return utils.request(api).then((data) => {
+  //     return utils.dispatch('SETUP', {data: data}, 'se.main')
+  //   })
+  // },
+  // mapStateToProps: (state) => {
+  //   return {
+  //     data: state.se.main.setup
+  //   }
+  // }
+  api: (utils, match) => {
+    const api = {
+      path: 'users.list',
     }
 
-    return utils.request(api).then((data) => {
-      return utils.dispatch('SETUP', {data: data}, 'se.main')
+    return utils.request(api).then(data => {
+      let action = {}
+      action.users = data
+
+      utils.dispatch('INIT', action, 'permissions.application')
+
+      return action
     })
-  },
-  mapStateToProps: (state) => {
-    return {
-      data: state.se.main.setup
-    }
   }
 }
 

@@ -1,42 +1,21 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
 import Utils from '~/utils'
-import { Button, Loading } from '~/components'
-import Main from '../components/Main'
+import { Button } from '~/components'
+import Main from '../../../components/Views/Permissions/Api/Api'
 
-class MainContainer extends Component {
+export default class MainContainer extends Component {
   constructor(props) {
     super(props)
 
     this.utils = new Utils('permissions.api')
+    this.state= {newPermission : ''}
+
+    this.formData = JSON.parse(JSON.stringify(this.props.api))
+    this.permissionsComponent = this.makePermissionsComponent()
+    this.buttonComponent = this.makeButtonComponent()
   }
 
-  componentWillMount() {
-    var api = {
-      path: 'permissions.setup',
-    }
-    this.utils.request(api)
-    this.loading(true)
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.safeName = nextProps.match.params.safeName
-  }
-
-  componentDidMount() {
-    this.utils.getData().then((data) => {
-      var api = data.apis.find((val) => {
-        if (this.safeName == val.safe_name) {
-          return val
-        }
-      })
-      this.utils.dispatch('INIT', {data: data}, 'permissions.main')
-      this.utils.dispatch('INIT', {api: api}, 'permissions.api')
-      this.loading(false)
-    })
-  }
-
-  componentWillUpdate() {
+  shouldComponentUpdate(){
     var stateObj = this.utils.getState()
 
     if (stateObj.api != undefined && this.api != stateObj.api) {
@@ -47,24 +26,29 @@ class MainContainer extends Component {
       this.permissionsComponent = this.makePermissionsComponent()
       this.buttonComponent = this.makeButtonComponent()
     }
+    return true
   }
 
   componentWillUnmount() {
     this.utils.dispatch('INIT', {api: undefined})
   }
 
-  loading(isLoading) {
-    this.setState({loading: isLoading})
-  }
-
   makePermissionsComponent() {
     var body = ''
     if (this.formData.permissions != undefined && this.formData.permissions.length > 0) {
       body = this.formData.permissions.map((permission) => {
+
+        var deletePermProps = {
+          onClick: () => this.removePermission(permission),
+          icon: 'text-white zmdi zmdi-close',
+          btnStyle: 'danger',
+          text: '', //Used to make button square
+
+        }
         return (
           <tr key={ permission }>
             <td>{ permission }</td>
-            <td><label onClick={ () => this.removePermission(permission) } className="label label-danger" style={ { cursor: 'pointer' } }><i className="fa fa-close"></i></label></td>
+            <td><Button {...deletePermProps} /></td>
           </tr>
         )
       })
@@ -94,20 +78,20 @@ class MainContainer extends Component {
   }
 
   changeNewPermission(event) {
-    this.newPermission = event.target.value
+    this.setState({newPermission: event})
     this.forceUpdate()
   }
 
   addNewPermission() {
-    if (this.newPermission != undefined) {
+    if (this.state.newPermission != '') {
       if (this.formData.permissions == undefined) {
         this.formData.permissions = []
       }
 
-      if (this.formData.permissions.indexOf(this.newPermission) == -1) {
-        this.formData.permissions.push(this.newPermission)
+      if (this.formData.permissions.indexOf(this.state.newPermission) == -1) {
+        this.formData.permissions.push(this.state.newPermission)
         this.permissionsComponent = this.makePermissionsComponent()
-        this.newPermission = undefined
+        this.setState({newPermission: ''})
         this.forceUpdate()
       }
     }
@@ -133,12 +117,15 @@ class MainContainer extends Component {
         this.utils.request({path: 'permissions.setup'}).then((data) => {
           this.utils.dispatch('INIT', {api: api})
           this.utils.dispatch('INIT', {data: data}, 'permissions.main')
-          this.loading(false)
         })
       })
-
-      this.loading(true)
     }
+  }
+
+  revertChanges() {
+    this.formData = JSON.parse(JSON.stringify(this.props.api))
+    this.permissionsComponent = this.makePermissionsComponent()
+    this.forceUpdate()
   }
 
   makeButtonComponent() {
@@ -164,25 +151,18 @@ class MainContainer extends Component {
   }
 
   render() {
-    if (this.state.loading) {
-      return (
-        <Loading />
-      )
-    }
-
     return (
       <Main
         formData={ this.formData }
         permissionsComponent={ this.permissionsComponent }
-        newPermission={ this.newPermission }
+        // newPermission={ this.newPermission }
+        newPermission={ this.state.newPermission }
         changeNewPermission={ (event) => this.changeNewPermission(event) }
         addNewPermission={ () => this.addNewPermission() }
         buttonComponent={ this.buttonComponent }
-        api={ this.api } />
+        // api={ this.api }
+        api={ this.props.api }
+      />
     )
   }
 }
-
-export default connect(state => ({
-  api: state.permissions.api,
-}))(MainContainer)

@@ -1,7 +1,5 @@
 import React, {Component} from 'react'
-// import {ToolsWidget} from '~/components'
 import {Tabs} from '~/components'
-import UserAddTool from './UserAddTool'
 
 class Main extends Component {
   constructor(props) {
@@ -21,19 +19,6 @@ class Main extends Component {
           </thead>
         </table>
         {this.props.usersList}
-        {/* <div className="row">
-          <div className="col-lg-12 text-right">
-            <h3>
-              <Button
-                icon
-                color="bgm-blue"
-                onClick={() => this.props.changeTool('add')}
-              >
-                <i className="zmdi zmdi-plus" />
-              </Button>
-            </h3>
-          </div>
-        </div> */}
       </div>
     )
   }
@@ -63,34 +48,16 @@ class Main extends Component {
     )
   }
 
-  renderUserAddTool() {
-    return (
-      <UserAddTool
-        newUsersAutoComp={this.props.newUsersAutoComp}
-        applicationsAutoComp={this.props.applicationsAutoComp}
-        submitUser={this.props.submitUser}
-        changeTool={this.props.changeTool}
-      />
-    )
-  }
-
   renderContent() {
     return (
       <div>
-        {/* <ToolsWidget current={this.props.tool}>
-          <div key="hide" />
-          <div key="add">
-            {this.renderUserAddTool()}
-          </div>
-        </ToolsWidget> */}
         <div className="card">
           <div className="card-body card-padding">
             <Tabs
-              type="tn-justified"
+              fill
               current={this.props.currentTab}
-              onChange={tab => this.props.onTabChange(tab)}
             >
-              <div type="nav">
+              <Tabs.Nav>
                 <a target="users">
                   <span>
                     <i className="fa fa-users" /> Users
@@ -106,12 +73,12 @@ class Main extends Component {
                     <i className="fa fa-th-large" /> Applications
                   </span>
                 </a>
-              </div>
-              <div type="content">
-                {this.renderUserView()}
-                {this.renderModulesView()}
-                {this.renderApplicationsView()}
-              </div>
+              </Tabs.Nav>
+              <Tabs.Content>
+                <div key="users">{this.renderUserView()}</div>
+                <div key="modules">{this.renderModulesView()}</div>
+                <div key="applications">{this.renderApplicationsView()}</div>
+              </Tabs.Content>
             </Tabs>
           </div>
         </div>

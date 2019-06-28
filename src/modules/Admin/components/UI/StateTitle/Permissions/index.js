@@ -1,11 +1,11 @@
-import Main from './Main'
-import User from './User'
-import Api from './Api'
-import Application from './Application'
+const Main = () => import('./Main')
+const User = () => import('./User')
+const Api = () => import('./Api')
+const Application = () => import('./Application')
 
 export default {
   Main: Main,
   User: User,
   Api: Api,
-  Application: Application,
+  Application: Application
 }

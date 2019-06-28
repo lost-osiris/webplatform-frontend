@@ -129,11 +129,11 @@ class Setting extends Component {
               <Inputs.Radio
                 selectedValue={formProps.form[name] || ''}
                 itemRenderer={radio =>
-                  <div className="row">
+                  (<div className="row">
                     <div className="col-lg-5">
                       {radio}
                     </div>
-                  </div>}
+                  </div>)}
               >
                 {values.map(value =>
                   <Inputs.RadioButton key={value} value={value} label={value} id={name} />
@@ -184,9 +184,10 @@ class Setting extends Component {
 
         let input = (
           <Inputs.Autocomplete
-            data-label={name}
+            // data-label={name}
+            // ref={name}
+            minSearch={3}
             data={values}
-            ref={name}
             searchText={this.state[name] || ''}
             onChange={result => this.setState({ [name]: result.searchText })}
             {...this.props.setting.inputProps}
@@ -215,21 +216,21 @@ class Setting extends Component {
       }
       case 'checkBox': {
         const checkComponent = value =>
-          <Inputs.Check
+          (<Inputs.Check
             inline
             style={{ paddingLeft: '5px' }}
             checked={
               (formProps.form[name] !== undefined ? formProps.form[name][value] : false) || false
             }
             onChange={e => this.onCheck(name, value, e.target.checked)}
-          />
+          />)
         return (
           <div>
             {this.renderDescription(description)}
             {values.map(value =>
-              <div key={value}>
+              (<div key={value}>
                 {this.renderCheckboxRow(value, checkComponent(value))}
-              </div>
+              </div>)
             )}
           </div>
         )
@@ -249,7 +250,8 @@ class Setting extends Component {
 
   render() {
     return (
-      <div className="row" style={{ marginTop: '30px' }}>
+      // <div className="row" style={{ marginTop: '30px' }}>
+      <div style={{ marginTop: '30px' }}>
         <h4>
           <b>
             {_.startCase(this.props.setting.title)}

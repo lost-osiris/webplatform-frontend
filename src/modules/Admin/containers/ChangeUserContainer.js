@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Cookies from 'universal-cookie'
 import moment from 'moment'
 
-import { Button, Inputs, Loading } from '~/components'
+import { Button, Inputs } from '~/components'
 import Utils from '~/utils'
 
 export default class ChangeUserContainer extends Component {
@@ -14,20 +14,16 @@ export default class ChangeUserContainer extends Component {
       usersList: [],
       newUser: '',
       isExact: false,
-      loading: true,
     }
-
   }
 
-  UNSAFE_componentWillMount() {
-    this.currentUser = this.utils.getUser()
-
+  componentDidMount() {
     let api = {
       path: 'users.change-user'
     }
 
     this.utils.request(api).then((data) => {
-      this.setState({loading: false, usersList: data})
+      this.setState({usersList: data})
     })
   }
 
@@ -36,7 +32,9 @@ export default class ChangeUserContainer extends Component {
   }
 
   submit() {
+    console.log('submit detected')
     if (this.state.isExact) {
+      console.log('exact')
       let newDate = moment().add(24, 'hours')
       this.cookies.set('login', this.state.newUser, {expires: newDate.toDate(), path: '/'})
       this.utils.go('/admin/change-user')
@@ -44,23 +42,21 @@ export default class ChangeUserContainer extends Component {
   }
 
   render() {
-    if (this.state.loading) {
-      return <Loading />
-    }
+
+    var currentUser = this.utils.getUser()
 
     return (
-      <div className="row animated fadeInRight">
+      <div className="row animated fadeInUp">
         <div className="col-lg-12">
-          <h3>Current User - { this.currentUser.uid }</h3>
+          <h3>Current User - { currentUser.uid }</h3>
         </div>
         <div className="col-lg-12">
           <Inputs.Autocomplete
-            minSearch={2}
-            onChange={result => this.handleChange(result)}
-            data={this.state.usersList}
-            searchKey={'uid'}
+            type="user"
+            placeholder="Enter username..."
+            minSearch={3}
             searchText={this.state.newUser}
-            placeholder="New user to sign in as"
+            onChange={result => this.handleChange(result)}
           />
           <Button
             style={{marginTop: '15px'}}

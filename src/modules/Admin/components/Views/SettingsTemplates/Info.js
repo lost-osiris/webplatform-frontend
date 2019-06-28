@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import _ from 'lodash'
-import { DropDown, ToolsWidget } from '~/components'
-import AddContainer from '../containers/AddContainer'
+import { Card, DropDown, ToolsWidget } from '~/components'
+// import AddContainer from '../containers/AddContainer'
+import AddContainer from '../../../containers/SettingsTemplates/AddContainer'
 import Utils from '~/utils'
 
 class TemplateInfo extends Component {
@@ -62,10 +63,10 @@ class TemplateInfo extends Component {
 
   renderDropDown() {
     return (
-      <DropDown bgm="bgm-green" icon="zmdi zmdi-menu">
-        <li onMouseDown={() => this.changeTool('edit') }>
-          <a>Edit Template</a>
-        </li>
+      <DropDown color="green" icon="zmdi zmdi-menu text-white" direction="left" >
+        <DropDown.Item onMouseDown={() => this.changeTool('edit')} >
+          Edit Template
+        </DropDown.Item>
       </DropDown>
     )
   }
@@ -89,7 +90,7 @@ class TemplateInfo extends Component {
 
   render() {
     return (
-      <div className="animated fadeInUp">
+      <div>
         <ToolsWidget current={this.state.current}>
           <div key="edit">
             <AddContainer
@@ -101,8 +102,8 @@ class TemplateInfo extends Component {
           </div>
           <div key="placeholder" />
         </ToolsWidget>
-        <div className="card">
-          <div className="card-header ch-alt">
+        <Card>
+          <Card.Title>
             <div className="row">
               <div className="col-lg-4">
                 <h3>Details</h3>
@@ -111,11 +112,11 @@ class TemplateInfo extends Component {
                 {this.renderDropDown()}
               </div>
             </div>
-          </div>
-          <div className="card-body card-padding">
+          </Card.Title>
+          <Card.Body>
             {this.renderInfo()}
-          </div>
-        </div>
+          </Card.Body>
+        </Card>
       </div>
     )
   }

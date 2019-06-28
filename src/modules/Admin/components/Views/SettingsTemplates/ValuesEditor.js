@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Button, Inputs} from '~/components'
+import {Card, Button, Inputs} from '~/components'
 
 class ValuesEditor extends Component {
   constructor(props) {
@@ -11,11 +11,12 @@ class ValuesEditor extends Component {
 
   render() {
     return (
-      <div className="card" style={{minHeight: '300px'}}>
-        <div className="card-header bgm-blue c-white">
+      // <div className="card" style={{minHeight: '300px'}}>
+      <Card>
+        <Card.Title>
           <h4 style={{color: 'white'}}>Values</h4>
-        </div>
-        <div className="card-body card-padding">
+        </Card.Title>
+        <Card.Body>
           <table className="table table-hover">
             <thead>
               <tr>
@@ -25,7 +26,7 @@ class ValuesEditor extends Component {
             </thead>
             <tbody>
               {this.props.values.map((value, index) =>
-                <tr key={`${value}-${index}`}>
+                (<tr key={`${value}-${index}`}>
                   <td>
                     {value}
                   </td>
@@ -37,7 +38,7 @@ class ValuesEditor extends Component {
                       Remove
                     </Button>
                   </td>
-                </tr>
+                </tr>)
               )}
             </tbody>
           </table>
@@ -63,8 +64,8 @@ class ValuesEditor extends Component {
               </Button>
             </div>
           </div>
-        </div>
-      </div>
+        </Card.Body>
+      </Card>
     )
   }
 }

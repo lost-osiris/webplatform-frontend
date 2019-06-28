@@ -25,21 +25,20 @@ export default class MowensContainer extends React.Component {
     //     }
     //   }
     // ]
-    console.log(Inputs)
     return (
-      // <Inputs.Autocomplete
-      //   minSearch={1}
-      //   searchKey={'name'}
-      //   data = {data}
-      //   searchText={''}          onChange={() => console.log('CHANGE!')}
-      // />
-      // <Inputs.Autocomplete
-      //   minSearch={1}
-      //   api={'users.search'}
-      //   resultsComponent={Results}
-      //   onChange={() => console.log('CHANGE!')}
-      // />
       <div className="row">
+        {/* <Inputs.Autocomplete
+          minSearch={1}
+          searchKey={'name'}
+          data = {data}
+          searchText={''}          onChange={() => console.log('CHANGE!')}
+        /> */}
+        <Inputs.Autocomplete
+          minSearch={1}
+          api={'users.search'}
+          resultsComponent={Results}
+          onChange={() => console.log('CHANGE!')}
+        />
       </div>
     )
   }

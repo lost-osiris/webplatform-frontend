@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-import { TestApi } from '~/components/Views'
+import TestApi from '~/modules/Admin/components/Views/TestApi/Main'
 
 class TestApiContainer extends Component {
   constructor(props) {
@@ -12,6 +12,7 @@ class TestApiContainer extends Component {
   }
 
   render() {
+    console.log('TestAPI Container Props:', this.props)
     return (
       <TestApi {...this.props} data={this.data} />
     )

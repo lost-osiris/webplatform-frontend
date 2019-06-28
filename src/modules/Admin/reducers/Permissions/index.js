@@ -1,9 +1,13 @@
 import { combineReducers } from 'redux'
-import Api from '../modules/Api/reducers'
-import User from '../modules/User/reducers'
-import Application from '../modules/Application/reducers'
+import Api from './Api'
+import Application from './Application'
+import User from './User'
 
-const PermissionsReducer = function(state = {}, action) {
+let initState = {
+  data: null,
+}
+
+const PermissionsReducer = function(state = initState, action) {
   switch (action.type) {
     case 'PERMISSIONS_MAIN_INIT':
       var newState = {

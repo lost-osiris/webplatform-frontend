@@ -1,10 +1,10 @@
 function Application(state = {}, action) {
   switch (action.type) {
     case 'PERMISSIONS_APPLICATION_INIT':
-      var newState = {}
+      var newState = {...state}
 
-      if (action.data !== undefined) {
-        newState.permissions = action.data
+      if (action.permissions !== undefined) {
+        newState.permissions = action.permissions
       }
 
       if (action.users !== undefined) {

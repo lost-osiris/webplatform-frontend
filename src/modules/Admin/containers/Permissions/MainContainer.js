@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
 import Utils from '~/utils'
-import { Inputs, Loading, Pagination, Link} from '~/components'
-import Main from '../components/Main'
+import { Inputs, Pagination, Link} from '~/components'
+import Main from '../../components/Views/Permissions/Main'
 
 class MainContainer extends Component {
   constructor(props) {
@@ -21,121 +20,26 @@ class MainContainer extends Component {
         users: 1,
         modules: 1,
         applications: 1,
-      }
+      },
+      filteredUsers: props.users,
+      filteredApis: props.apis
     }
-    this.tab = this.utils.getState().tab
     this.itemsPerPage = 20
   }
 
-  UNSAFE_componentWillMount() {
-    var api = {
-      path: 'permissions.setup'
-    }
-
-    var usersApi = {
-      path: 'users.list'
-    }
-
-    var appApi = {
-      path: 'applications.list'
-    }
-
-    this.loading(true)
-
-    var stateObj = this.utils.getState()
-    // only fetch users and applications list if not in state
-    if (
-      stateObj.data === undefined ||
-      (stateObj.data.allUsers === undefined && stateObj.data.applications === undefined)
-    ) {
-      this.utils.request(api).then(data => {
-        this.utils.request(usersApi).then(usersData => {
-          this.utils.request(appApi).then(appData => {
-            this.utils.dispatch('INIT', {
-              data: {
-                ...data,
-                allUsers: usersData,
-                applications: appData,
-              }
-            })
-            this.loading(false)
-          })
-        })
-      })
-    } else {
-      this.utils.request(api).then(data => {
-        this.utils.dispatch('INIT', {
-          data: {
-            ...data,
-            allUsers: stateObj.data.allUsers,
-            applications: stateObj.data.applications,
-          }
-        })
-        this.loading(false)
-      })
-    }
+  setup() {
+    this.applicationsAutoComp = this.makeAppAutoComp()
+    this.usersAutoComp = this.makeUsersAutoComp()
+    this.apisAutoComp = this.makeApisAutoComp()
   }
 
-  UNSAFE_componentWillUpdate() {
-    var stateObj = this.utils.getState()
-    if (stateObj.tab != undefined) {
-      this.tab = stateObj.tab
-    }
-
-    if (stateObj.data != undefined) {
-      if (stateObj.data != this.data) {
-        this.data = stateObj.data
-
-        this.users = JSON.parse(JSON.stringify(this.data.users))
-        this.loading(false)
-      }
-
-      if (this.users == undefined) {
-        this.users = JSON.parse(JSON.stringify(this.data.users))
-      }
-
-      if (this.apis == undefined) {
-        this.apis = JSON.parse(JSON.stringify(this.data.apis))
-      }
-
-      if (this.allUsers == undefined) {
-        this.allUsers = this.data.allUsers
-      }
-
-      if (this.applications == undefined) {
-        this.applications = this.data.applications
-      }
-
-      this.newUsersAutoComp = this.makeNewUsersAutoComp()
-      this.applicationsAutoComp = this.makeAppAutoComp()
-      this.usersAutoComp = this.makeUsersAutoComp()
-      this.apisAutoComp = this.makeApisAutoComp()
-    }
-  }
-
-  makeNewUsersAutoComp() {
-    return (
-      <Inputs.Autocomplete
-        minSearch={2}
-        data={this.data.allUsers}
-        searchKey={'uid'}
-        searchText={this.newUser.uid}
-        onChange={(result) => {
-          this.newUser = ''
-          if (result.result !== undefined) {
-            this.newUser = result.result
-          }
-        }}
-      />
-    )
-  }
-
+  // Construction of application autocomplete
   makeAppAutoComp() {
     return (
       <Inputs.Autocomplete
         placeholder="Enter application"
         minSearch={1}
-        data={this.data.applications}
+        data={this.props.apps}
         searchKey={'name'}
         onChange={(result) => {
           this.application = ''
@@ -148,23 +52,25 @@ class MainContainer extends Component {
     )
   }
 
+  // Construction of user autocomplete
   makeUsersAutoComp() {
     return (
       <Inputs.Autocomplete
+        type="user"
         placeholder="Enter UID"
-        minSearch={1}
-        data={this.data.users}
+        minSearch={2}
         onChange={(results) => this.getUsersResults(results)}
         searchText={this.searchText.users} />
     )
   }
 
+  // Construction of api autocomplete
   makeApisAutoComp() {
     return (
       <Inputs.Autocomplete
         placeholder="Enter module"
         minSearch={1}
-        data={this.data.apis}
+        data={this.props.apis}
         searchKey={'module'}
         onChange={(results) => this.getApisResults(results)}
         searchText={this.searchText.apis} />
@@ -176,37 +82,117 @@ class MainContainer extends Component {
     this.forceUpdate()
   }
 
-  getUsersResults(results) {
-    if (results.searchText == '') {
-      this.users = JSON.parse(JSON.stringify(this.data.users))
-    } else {
-      this.users = results.resultsList
-    }
-
-    this.searchText.users = results.searchText
-
-    this.setState({
+  /**
+   * Retrieves the results from the user autocomplete and appropriatley filters and constructs
+   * the new table to reflect suggestions 
+   * 
+   * @param {*} data - data returned out of autocomplete via it's onChange prop
+   */
+  getUsersResults(data) {
+    let newState = {
       pages: {
         ...this.state.pages,
         'users': 1,
-      }
-    })
-  }
-
-  getApisResults(results) {
-    if (results.searchText == '') {
-      this.apis = JSON.parse(JSON.stringify(this.data.apis))
-    } else {
-      this.apis = results.resultsList
+      },
     }
 
-    this.searchText.apis = results.searchText
+    // If autocomplete results are showing at least 1 item
+    if (data.toggled && data.results.length > 0) {
+      // Set the table to match the list of autocomplete suggestions (results)
+      newState.filteredUsers = this.filterUsers(data.searchText, data.results)
+    }
+    // If there is an exact text match or the user selected a suggestion
+    else if (data.exact || data.selected) {
+      // Set the table to display that exact / selected suggestion
+      newState.filteredUsers = this.filterUsers([data.selectedValue])
+    }
+    // If the autocomplete is blank
+    else if (data.searchText === '') {
+      // Set the table to display the complete list
+      newState.filteredUsers = this.props.users
+    }
+
+    this.searchText.users = data.searchText
+
+    this.setState(newState)
+  }
+
+  /**
+   * Retrieves the results from the api autocomplete and appropriatley filters and constructs
+   * the new table to reflect suggestions 
+   * 
+   * @param {*} data - data returned out of autocomplete via it's onChange prop
+   */
+  getApisResults(data) {
+    let filteredApis = this.props.apis
+
+    // If the autocomplete is displaying results
+    if (data.toggled) {
+      // Filter the list of api calls based off of autocomplete's suggestions
+      filteredApis = this.filterApis(data.results)
+    } 
+    // Otherwise, if the typed in content is an exact match or the user clicked a suggestion
+    else if (data.exact || data.selected) {
+      // Set the table to only display that exact match / clicked value
+      filteredApis = this.filterApis([data.selectedValue])
+    }
+
+    this.searchText.apis = data.searchText
 
     this.setState({
       pages: {
         ...this.state.pages,
         'modules': 1,
+      },
+      filteredApis: filteredApis
+    })
+  }
+
+  /**
+   * Filters the users into a structure that can be passed to the
+   * table, making the table match the suggested users listed in the autocomplete
+   *
+   * @param {*} autocompleteResults - List of autocomplete results to base filter off of
+   */
+  filterUsers(searchText, autocompleteResults) {
+    return this.props.users.filter((result) => {
+      // If the list of results is the entire list of users, or the entered text is not found, display all users
+      if (autocompleteResults.length === this.props.users.length || result.indexOf(searchText) > -1) {
+        return true
       }
+
+      // Loop though and filter all uids that match list
+      for (let i = 0; i < autocompleteResults.length; i++) {
+        if (result === autocompleteResults[i].uid) {
+          return true
+        }
+      }
+
+      return false
+    })
+  }
+
+  /**
+   * Filters the api modules into a structure that can be passed to the
+   * table, making the table match the suggested modules listed in the autocomplete
+   *
+   * @param {*} autocompleteResults - List of autocomplete results to base filter off of
+   */
+  filterApis(autocompleteResults) {
+    return this.props.apis.filter((result) => {
+      // If the list of results is the entire list of apis, display all users
+      if (autocompleteResults.length === this.props.apis.length) {
+        return true
+      }
+
+      // Loop though and filter all aips that match list
+      for (let i = 0; i < autocompleteResults.length; i++) {
+        if (result.module === autocompleteResults[i].rawData) {
+          return true
+        }
+      }
+
+      return false
     })
   }
 
@@ -225,6 +211,8 @@ class MainContainer extends Component {
 
     return (
       <Pagination
+        viewport={5}
+        align="center"
         selected={currentPage}
         count={pageCount}
         onPagePrev={page => this.onPage(tab, page)}
@@ -239,7 +227,9 @@ class MainContainer extends Component {
   }
 
   makeApisList() {
-    var body = this.getItemsOnPage(this.apis, 'modules').map((api) => {
+
+    // var body = this.getItemsOnPage(this.props.apis, 'modules').map((api) => {
+    var body = this.getItemsOnPage(this.state.filteredApis, 'modules').map((api) => {
       return (
         <tr key={api.id}>
           <td>
@@ -263,17 +253,13 @@ class MainContainer extends Component {
             {body}
           </tbody>
         </table>
-        {this.renderPagination('modules', this.apis.length)}
+        {this.renderPagination('modules', this.state.filteredApis.length)}
       </div>
     )
   }
 
   makeApplicationsList() {
-    if (this.applications === undefined) {
-      return <div />
-    }
-
-    var body = this.getItemsOnPage(this.applications, 'applications').map((app) => {
+    var body = this.getItemsOnPage(this.props.apps, 'applications').map((app) => {
       return (
         <tr key={app.name}>
           <td>
@@ -295,13 +281,13 @@ class MainContainer extends Component {
             {body}
           </tbody>
         </table>
-        {this.renderPagination('applications', this.applications.length)}
+        {this.renderPagination('applications', this.props.apps.length)}
       </div>
     )
   }
 
   makeUsersList() {
-    var body = this.getItemsOnPage(this.users, 'users').map((user) => {
+    var body = this.getItemsOnPage(this.state.filteredUsers, 'users').map((user) => {
       return (
         <tr key={user}>
           <td>
@@ -323,15 +309,9 @@ class MainContainer extends Component {
             {body}
           </tbody>
         </table>
-        {this.renderPagination('users', this.users.length)}
+        {this.renderPagination('users', this.state.filteredUsers.length)}
       </div>
     )
-  }
-
-  componentWillUnmount() {}
-
-  loading(isLoading) {
-    this.setState({loading: isLoading})
   }
 
   newUserChange(event, type) {
@@ -339,66 +319,23 @@ class MainContainer extends Component {
     this.forceUpdate()
   }
 
-  submitUser() {
-    if (this.newUser === undefined) {
-      return
-    }
-
-    var index = this.users.indexOf(this.newUser.uid)
-    if (index == -1 && this.newUser.uid != undefined && this.newUser.uid != ''
-      && this.newUser.application != undefined && this.newUser.application != '') {
-      var api = {
-        path: 'permissions.users.add',
-        data: this.newUser
-      }
-
-      this.loading(true)
-      this.utils.request(api)
-      this.utils.getData().then((user) => {
-        var setup = {
-          path: 'permissions.setup'
-        }
-        this.utils.request(setup)
-        this.utils.getData().then((data) => {
-          this.newUser = {}
-          this.utils.dispatch('INIT', {data: data})
-          this.utils.push('/admin/permissions/user/' + user.id)
-        })
-      })
-    }
-  }
-
-  onTabChange(newTab) {
-    this.utils.dispatch('CHANGE_TAB', {tab: newTab})
-  }
-
   render() {
-    if (this.state.loading) {
-      return <Loading />
-    }
+
+    this.setup()
 
     return (
       <Main
-        newUsersAutoComp={this.newUsersAutoComp}
         applicationsAutoComp={this.applicationsAutoComp}
         usersAutoComp={this.usersAutoComp}
         apisList={this.makeApisList()}
         applicationsList={this.makeApplicationsList()}
         apisAutoComp={this.apisAutoComp}
-        newUser={this.newUser}
-        newUserChange={(event, type) => this.newUserChange(event, type)}
         submitUser={() => this.submitUser()}
-        changeTool={(tool) => this.changeTool(tool)}
-        tool={this.tool}
         usersList={this.makeUsersList()}
-        currentTab={this.tab}
-        onTabChange={(tab) => this.onTabChange(tab)}
+        currentTab={'users'}
       />
     )
   }
 }
 
-// export default MainContainer
-export default connect(state => ({
-  main: state.permissions.main,
-}))(MainContainer)
+export default MainContainer

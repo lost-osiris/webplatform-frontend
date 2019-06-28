@@ -1,1 +1,2 @@
-export { default as Main } from './Main'
+const Main = () => import('./Main')
+export { Main }

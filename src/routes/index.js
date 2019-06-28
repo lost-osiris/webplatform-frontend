@@ -1,7 +1,10 @@
 import * as Main from '~/modules/Main/routes'
+import Admin from '~/modules/Admin/routes'
+
 
 let routes = [
-  Main.Home
+  Main.Home,
+  Admin
 ]
 routes.push(() => import(FUCK))
 

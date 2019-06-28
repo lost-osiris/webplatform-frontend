@@ -1,8 +1,3 @@
-import { combineReducers } from 'redux'
-import LogsReducer from '../modules/Logs/reducers'
-
-const Admin = combineReducers({
-  logs: LogsReducer
-})
-
-export default Admin
+// import Permissions from './Permissions'
+// import Logs from './Logs'
+// import Settings from './Settings'

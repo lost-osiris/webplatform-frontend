@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Button, Inputs} from '~/components'
+import {Card, Button, Inputs} from '~/components'
 
 class InputPropsEditor extends Component {
   constructor(props) {
@@ -32,11 +32,11 @@ class InputPropsEditor extends Component {
   render() {
     const {inputProps} = this.props
     return (
-      <div className="card" style={{minHeight: '300px'}}>
-        <div className="card-header bgm-blue c-white">
+      <Card>
+        <Card.Title>
           <h4 style={{color: 'white'}}>Input Props</h4>
-        </div>
-        <div className="card-body card-padding">
+        </Card.Title>
+        <Card.Body>
           <table className="table table-hover">
             <thead>
               <tr>
@@ -47,7 +47,7 @@ class InputPropsEditor extends Component {
             </thead>
             <tbody>
               {Object.keys(inputProps).map(key =>
-                <tr key={key}>
+                (<tr key={key}>
                   <td>
                     {key}
                   </td>
@@ -59,7 +59,7 @@ class InputPropsEditor extends Component {
                       Remove
                     </Button>
                   </td>
-                </tr>
+                </tr>)
               )}
             </tbody>
           </table>
@@ -90,8 +90,8 @@ class InputPropsEditor extends Component {
               </Button>
             </div>
           </div>
-        </div>
-      </div>
+        </Card.Body>
+      </Card>
     )
   }
 }

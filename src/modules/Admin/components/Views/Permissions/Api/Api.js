@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button, Inputs } from '~/components'
+import { Card, Button, Inputs } from '~/components'
 
 class Main extends Component {
   constructor(props) {
@@ -8,18 +8,18 @@ class Main extends Component {
 
   render() {
     return (
-      <div className="animated fadeInRight">
+      <div>
         <div className="alert alert-info">
-          <h2 className="c-white">API Editing Page</h2>
+          <h2 className="text-white">API Editing Page</h2>
           <p>You can view and edit permissions for an API here.</p>
         </div>
         <div className="row">
           <div className="col-lg-12">
-            <div className="card">
-              <div className="card-header bgm-bluegray">
-                <h3 className="c-white">Details</h3>
-              </div>
-              <div className="card-body card-padding">
+            <Card>
+              <Card.Title className="bg-blue-grey">
+                <h3 className="text-white">Details</h3>
+              </Card.Title>
+              <Card.Body className="card-padding">
                 <div className="row">
                   <div className="col-lg-12">
                     <label>Application</label>
@@ -38,11 +38,10 @@ class Main extends Component {
                   </div>
                   <div className="col-lg-1">
                     <Button
-                      icon
-                      color="bgm-green"
+                      icon="zmdi zmdi-plus text-white"
+                      color="green"
                       onClick={() => this.props.addNewPermission()}
                     >
-                      <i className="zmdi zmdi-plus" />
                     </Button>
                   </div>
                 </div>
@@ -55,8 +54,8 @@ class Main extends Component {
                 </div>
                 <br />
                 { this.props.buttonComponent }
-              </div>
-            </div>
+              </Card.Body>
+            </Card>
           </div>
         </div>
       </div>

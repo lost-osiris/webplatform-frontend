@@ -1,17 +1,39 @@
-import TemplateInfo from '~/modules/Admin/modules/SettingsTemplates/containers/InfoContainer'
-import * as StateTitle from '../../StateTitle'
-import * as Nav from '../../Nav'
+import * as Nav from '../../../components/UI/Nav'
+import UI from '../../../components/UI'
+import SettingsReducer from '~/modules/Admin/reducers/Settings'
+
+let infoContainer = () => import('../../../containers/SettingsTemplates/InfoContainer')
 
 const route = {
   route: {
     path: '/settings/templates/name/:name',
-    component: TemplateInfo,
     exact: true,
   },
   ui: {
-    stateTitle: StateTitle.Settings.Main,
+    stateTitle: UI.StateTitle.Settings.Main,
+    content: infoContainer,
     appNav: Nav.Settings.Main,
   },
+  reducer: {
+    name: 'settings',
+    data: SettingsReducer
+  },
+  mapStateToProps: (state) => {
+    return {
+      template: state.settings.template
+    }
+  },
+  api: (utils, match) => {
+    const api = {
+      path: 'settings.templates.get',
+      data: {
+        name: match.params.name,
+      }
+    }
+    return utils.request(api).then(data => {
+      return utils.dispatch('TEMPLATE', {data: data}, 'settings')
+    })
+  }
 }
 
 export default route

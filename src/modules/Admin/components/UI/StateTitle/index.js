@@ -1,8 +1,8 @@
 const ChangeUser = () => import('./ChangeUser')
-const Permissions = () => import('./Permissions')
+import Permissions from './Permissions'
 const TestApi = () => import('./TestApi')
-const Settings = () => import('./Settings')
+import Settings from './Settings'
 const User = () => import('./User')
-const Logs = () => import('./Logs')
+import Logs from './Logs'
 
 export { Logs, ChangeUser, Permissions, TestApi, Settings, User }

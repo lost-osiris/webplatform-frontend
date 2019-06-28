@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import _ from 'lodash'
 import { Scrollbars } from 'react-custom-scrollbars'
-import { Tabs, FormatDate } from '~/components'
+import { Card, Tabs, FormatDate } from '~/components'
 
 export default class Main extends Component {
   constructor(props) {
@@ -24,11 +24,15 @@ export default class Main extends Component {
     } else if (_.isArray(data)) {
       // const testData = ['a', 'b', 'c']
       if (data.length === 0) {
-        component = <div>None</div>
+        component = <p style={{paddingLeft: '15px'}}>None</p>
       } else {
         component = (
-          <ul style={{ listStyleType: 'disc' }}>
-            {data.map(item => <li style={{ paddingLeft: '5px' }} key={item}>{ item }</li>)}
+          <ul style={{paddingLeft: '15px'}}>
+            {
+              data.map((item, index) => {
+                return <li key={`${key}-list-${index}`}>{ item }</li>
+              })
+            }
           </ul>
         )
       }
@@ -36,7 +40,7 @@ export default class Main extends Component {
       let escapedString = data.replace(/\\n/g, '\n')
       component = <pre>{ escapedString }</pre>
     } else if (_.isString(data)) {
-      component = <div>{ data }</div>
+      component = <div style={{paddingLeft: '15px'}}>{ data }</div>
     } else if (_.isObject(data)) {
       component = <pre>{ this.stringify(data) }</pre>
     } else {
@@ -57,24 +61,14 @@ export default class Main extends Component {
       permissions: 'Permissions',
     }
 
-    const body = Object.keys(details).map(key => {
+    return Object.keys(details).map(key => {
       return (
-        <li style={{ paddingLeft: '5px' }} key={ key }>
-          <h3><b>{details[key]}</b></h3>
+        <div key={key} className="pmo-block pmo-contact">
+          <h3><b>{ details[key] }</b></h3>
           { this.renderData(this.props.data[key], key) }
-        </li>
+        </div>
       )
     })
-
-    return (
-      <div className="pm-overview">
-        <div className="pmo-block pmo-contact">
-          <ul>
-            {body}
-          </ul>
-        </div>
-      </div>
-    )
   }
 
   renderResponseDetails() {
@@ -91,10 +85,10 @@ export default class Main extends Component {
     return Object.keys(details).map(key => {
       return (
         <div key={key}>
-          <h3>{details[key]}</h3>
+          <h3>{ details[key] }</h3>
           {!this.props.data.response ?
             <p>None</p>
-          :
+            :
             this.renderData(this.props.data.response[key])
           }
         </div>
@@ -121,8 +115,8 @@ export default class Main extends Component {
     return Object.keys(details).map(key => {
       return (
         <div key={key}>
-          <h3>{details[key]}</h3>
-          {this.renderData(this.props.data.request[key])}
+          <h3>{ details[key] }</h3>
+          { this.renderData(this.props.data.request[key]) }
         </div>
       )
     })
@@ -152,12 +146,12 @@ export default class Main extends Component {
           {failed ? (
             <div>
               Status - <span> </span>
-              <i className="fa fa-close c-red" />
+              <i className="fa fa-close text-danger" />
             </div>)
             : (
               <div>
                 Status - <span> </span>
-                <i className="fa fa-check c-green" />
+                <i className="fa fa-check text-success" />
               </div>
             )}
         </h3>
@@ -169,55 +163,54 @@ export default class Main extends Component {
     if (this.props.data === undefined) {
       return false
     }
+
     return (
-      <div className="card animated fadeIn">
-        <div className="card-header bgm-lgrey">
+      <Card>
+        <Card.Title className="bgm-lgrey">
           <div className="row">
             <div className="col-lg-4">
               {this.renderTitle()}
             </div>
           </div>
-        </div>
-        <div className="card-body">
-          <div id="profile-main">
-            <Scrollbars style={ {left: 0, position: 'absolute', width: '300px', background: '#f8f8f8'} } autoHide>
-              { this.renderPlatformDetails() }
-            </Scrollbars>
-            <div className="pm-body clearfix">
-              <Tabs type="tn-justified" current="request">
-                <div type="nav">
-                  <a target="request">
-                    <span>
-                      <i className="fa fa-info text-info"></i> Request
-                     </span>
-                  </a>
-                  <a target="response">
-                    <span>
-                      <i className="fa fa-close text-info text-info"></i> Response
-                     </span>
-                  </a>
-                  <a target="failure">
-                    <span>
-                      <i className="fa fa-close text-info text-danger"></i> Failure
-                     </span>
-                  </a>
-                </div>
-                <div type="content">
-                  <div id="request">
-                    {this.renderRequestDetails()}
-                  </div>
-                  <div id="failure">
-                    {this.renderFailureDetails()}
-                  </div>
-                  <div id="response">
-                    {this.renderResponseDetails()}
-                  </div>
-                </div>
-              </Tabs>
-            </div>
+        </Card.Title>
+        <Card.SideNav>
+          <div>
+            { this.renderPlatformDetails() }
           </div>
-        </div>
-      </div>
+        </Card.SideNav>
+        <Card.Body>
+          <Tabs current="request">
+            <Tabs.Content className="content">
+              <div key="request">
+                { this.renderRequestDetails() }
+              </div>
+              <div key="response">
+                { this.renderResponseDetails() }
+              </div>
+              <div key="failure">
+                { this.renderFailureDetails() }
+              </div>
+            </Tabs.Content>
+            <Tabs.Nav>
+              <a target="request">
+                <span>
+                  <i className="fa fa-info text-info"></i> Request
+                </span>
+              </a>
+              <a target="response">
+                <span>
+                  <i className="fa fa-close text-info text-info"></i> Response
+                </span>
+              </a>
+              <a target="failure">
+                <span>
+                  <i className="fa fa-close text-info text-danger"></i> Failure
+                </span>
+              </a>
+            </Tabs.Nav>
+          </Tabs>
+        </Card.Body>
+      </Card>
     )
   }
 }

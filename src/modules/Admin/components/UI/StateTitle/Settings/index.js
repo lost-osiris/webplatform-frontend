@@ -1,5 +1,5 @@
-import Main from './Main'
-import Template from './Template'
+const Main = () => import('./Main')
+const Template = () => import('./Template')
 
 export default {
   Main: Main,

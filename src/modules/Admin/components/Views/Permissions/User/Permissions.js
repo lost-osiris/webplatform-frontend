@@ -33,19 +33,22 @@ class Permissions extends Component {
     })
 
     const tabBody = (
-      <div type="content">
-        {userApps.map(app => {
-          return this.createTabContent(app, this.getUserPermissions(app))
-        })}
-      </div>
+      userApps.map(app => {
+        return this.createTabContent(app, this.getUserPermissions(app))
+      })
     )
 
     const tabs = (
-      <Tabs type="tn-justified">
-        <div type="nav">
+      <Tabs
+        current={userApps[0]} //Set the current tab to the first listed
+        fill
+      >
+        <Tabs.Nav>
           {tabHeader}
-        </div>
-        {tabBody}
+        </Tabs.Nav>
+        <Tabs.Content>
+          {tabBody}
+        </Tabs.Content>
       </Tabs>
     )
 
@@ -55,6 +58,7 @@ class Permissions extends Component {
   // returns user's permission data for an app that includes all the
   // application permissions and default permissions initialized
   getUserPermissions(app) {
+    // const userPermissions = this.props.permissions[app]
     const userPermissions = this.props.permissions[app]
     const applicationPermissions = this.props.applicationPermissions[app] || []
     const defaultPermissions = ['admin', 'moderator']
@@ -63,13 +67,13 @@ class Permissions extends Component {
 
     // setting any application/default permissions
     // not already in user's permissions as false
-    applicationPermissions.forEach(perm => {
+    applicationPermissions.map(perm => {
       if (result[perm] === undefined) {
         result[perm] = false
       }
     })
 
-    defaultPermissions.forEach(perm => {
+    defaultPermissions.map(perm => {
       if (result[perm] === undefined) {
         result[perm] = false
       }
@@ -94,7 +98,7 @@ class Permissions extends Component {
           </td>
           <td width="50%" style={{paddingLeft: '0px'}}>
             <Inputs.Switch
-              value={this.getUserPermissions(app)[perm] || false}
+              on={this.getUserPermissions(app)[perm] || false}
               onChange={() => this.props.togglePermission(app, perm)}
             />
           </td>
@@ -119,7 +123,7 @@ class Permissions extends Component {
               </tbody>
             </table>
           </div>
-          <div className="col-lg-4">
+          <div className="col-lg-3">
             {this.renderAddPermissionField(app)}
           </div>
         </div>
@@ -137,7 +141,8 @@ class Permissions extends Component {
     return (
       <div>
         <Inputs.Text
-          value={this.props.inputs[app]}
+          value={this.props.inputs[app] || ''}
+          // value={'attempt'}
           placeholder={'Permission Name'}
           onChange={e => this.props.handleInputChange(e, app)}
         />

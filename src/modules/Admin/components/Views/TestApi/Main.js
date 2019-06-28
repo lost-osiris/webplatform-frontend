@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Utils from '~/utils'
 
-import { Json, Loading, Button, Inputs } from '~/components'
+import { Json, Button, Inputs } from '~/components'
 
 class TestAPI extends Component {
   constructor(props) {
@@ -27,10 +27,16 @@ class TestAPI extends Component {
       }
       this.data = JSON.stringify(this.data, null, '   ')
     }
+
+    //Format api data coming in to be fed into autocomplete
+    var dict = this.props.apis
+    this.apis = Object.keys(dict).map(function(key){
+      return dict[key]
+    })
+
   }
 
-  UNSAFE_componentWillMount() {
-    this.apis = this.utils.getSystemInfo().modules
+  componentDidMount(){
 
     this.user = this.utils.getUser()
     let permissions = this.user.permissions.system
@@ -57,8 +63,8 @@ class TestAPI extends Component {
     this.forceUpdate()
   }
 
-  newData(event) {
-    this.data = event.target.value
+  newData(text) {
+    this.data = text
     this.forceUpdate()
   }
 
@@ -77,10 +83,6 @@ class TestAPI extends Component {
   }
 
   render() {
-    if (this.state.data == null) {
-      return <Loading />
-    }
-
     return (
       <div>
         <div className="row">
@@ -89,17 +91,15 @@ class TestAPI extends Component {
           </div>
           <div className="col-lg-4">
             <Inputs.Autocomplete
+              type="modules"
               placeholder="API module..."
               minSearch={1}
-              data={this.apis}
               onChange={(result) => this.newApi(result)}
               searchText={this.path}
-              isObject={true}
-              data-labe="api"
             />
           </div>
           <div className="col-lg-4">
-            <Button onClick={()=> this.refresh()}>Refresh</Button>
+            <Button btnStyle="primary" onClick={()=> this.refresh()}>Refresh</Button>
           </div>
         </div>
         <div className="row" style={{marginTop: '25px'}}>
@@ -115,8 +115,7 @@ class TestAPI extends Component {
             <h3>Output</h3>
           </div>
           <div className="col-lg-10">
-            {!this.state.error
-              ?
+            {!this.state.error ?
               <Json data={this.state.data} />
               :
               <div className="jumbotron">

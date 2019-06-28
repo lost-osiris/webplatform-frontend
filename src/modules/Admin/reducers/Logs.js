@@ -1,6 +1,12 @@
 export default function AdminLogsReducer(state = {}, action) {
   switch (action.type) {
-    case 'ADMIN_LOGS_SEARCH': {
+    case 'LOGS_INIT': {
+      let { log } = action
+      return Object.assign({}, state, {
+        log: log,
+      })
+    }
+    case 'LOGS_SEARCH': {
       const { start, end, module, uid, failuresOnly, limit } = action.data
       return {
         start,
@@ -11,10 +17,10 @@ export default function AdminLogsReducer(state = {}, action) {
         limit,
       }
     }
-    case 'ADMIN_LOGS_INIT': {
-      const { data } = action
+    case 'LOGS_SEARCH_RESULTS': {
+      let { logs } = action
       return Object.assign({}, state, {
-        results: data,
+        searchResults: logs,
       })
     }
     default:

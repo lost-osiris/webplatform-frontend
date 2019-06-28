@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Tabs } from '~/components'
+import { Card, Tabs } from '~/components'
 import Section from './Section'
 
 export default class Settings extends Component {
@@ -7,56 +7,52 @@ export default class Settings extends Component {
     super(props)
   }
 
-  componentWillMount() {
-    this.user = this.props.user
-  }
-
   renderTabs() {
     return (
       <Tabs current={this.props.tab || 'profile'}>
-        <div type="nav">
+        <Tabs.Nav>
           <a target="profile">Profile</a>
           <a target="general">General</a>
           <a target="notifications">Notifications</a>
           <a target="advanced">Advanced</a>
-        </div>
-        <div type="content">
-          <div id="profile">
+        </Tabs.Nav>
+        <Tabs.Content>
+          <div key="profile">
             {this.renderProfile()}
           </div>
-          <div id="notifications">
+          <div key="notifications">
             <Section
               applicationSettings={this.props.templates.settings['notifications'] || {}}
               applicationTitles={this.props.templates.appTitles}
               settings={this.props.settings}
             />
           </div>
-          <div id="general">
+          <div key="general">
             <Section
               applicationSettings={this.props.templates.settings['general'] || {}}
               applicationTitles={this.props.templates.appTitles}
               settings={this.props.settings}
             />
           </div>
-          <div id="advanced">
+          <div key="advanced">
             <Section
               applicationSettings={this.props.templates.settings['advanced'] || {}}
               applicationTitles={this.props.templates.appTitles}
               settings={this.props.settings}
             />
           </div>
-        </div>
+        </Tabs.Content>
       </Tabs>
     )
   }
 
   renderProfile() {
     return (
-      <div className="card">
-        <div className="card-header ch-alt">
+      <Card>
+        <Card.Title>
           <div className="row">
             <div className="col-lg-12 text-left">
-              <img src={this.user.picture} className="pull-left lgi-img" />
+              <img src={this.props.user.picture} className="pull-left lgi-img" />
               <h3
                 style={{
                   marginTop: '5px',
@@ -66,7 +62,7 @@ export default class Settings extends Component {
                 }}
               >
                 <span style={{ marginLeft: '10px' }}>
-                  {this.user.kerberos.cn}
+                  {this.props.user.kerberos.cn}
                 </span>
               </h3>
               <small style={{ marginLeft: '10px' }} className="text-muted">
@@ -74,13 +70,13 @@ export default class Settings extends Component {
               </small>
             </div>
           </div>
-        </div>
-        <div className="card-body card-padding">
+        </Card.Title>
+        <Card.Body>
           <h1>Profile Picture</h1>
           <br />
           <p style={{ fontSize: '15px' }}>
             We use{' '}
-            <a target="_blank" href="https://gravatar.com/">
+            <a target="_blank" rel="noopener noreferrer" href="https://gravatar.com/">
               gravatar
             </a>{' '}
             for all of our profile pictures. Your current gravatar is displayed beside your name
@@ -88,7 +84,7 @@ export default class Settings extends Component {
             <br />
             <br />
             If you do not have an account with gravatar you will see an{' '}
-            <a href="https://en.wikipedia.org/wiki/Identicon" target="_blank">
+            <a href="https://en.wikipedia.org/wiki/Identicon" target="_blank" rel="noopener noreferrer">
               identicon
             </a>{' '}
             that looks similar to this:
@@ -103,24 +99,24 @@ export default class Settings extends Component {
             email address.
             <br />
             <br />
-            <a target="_blank" href="https://en.gravatar.com/connect/">
+            <a target="_blank" rel="noopener noreferrer" href="https://en.gravatar.com/connect/">
               Click here to create your gravatar account!
             </a>
           </p>
-        </div>
-      </div>
+        </Card.Body>
+      </Card>
     )
   }
 
   render() {
     return (
-      <div className="animated fadeInRight row wrapper wrapper-content">
+      <div className="row wrapper wrapper-content">
         <div className="col-lg-12">
-          <div className="card">
-            <div className="card-body card-padding">
+          <Card>
+            <Card.Body>
               {this.renderTabs()}
-            </div>
-          </div>
+            </Card.Body>
+          </Card>
         </div>
       </div>
     )

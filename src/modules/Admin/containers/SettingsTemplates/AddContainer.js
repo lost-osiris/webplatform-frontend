@@ -1,31 +1,13 @@
 import React, { Component } from 'react'
-import Add from '../components/Add'
+import Add from '../../components/Views/SettingsTemplates/Add'
 import Utils from '~/utils'
-import { Loading } from '~/components'
 
 class AddContainer extends Component {
   constructor(props) {
     super(props)
     this.utils = new Utils()
-    this.state = {
-      loading: false,
-    }
 
     this.type = props.type !== undefined ? props.type : 'add'
-  }
-
-  UNSAFE_componentWillMount() {
-    const api = {
-      path: '/applications/list',
-    }
-
-    this.setState({ loading: true })
-    this.utils.request(api).then(data => {
-      this.setState({
-        applications: data,
-        loading: false,
-      })
-    })
   }
 
   submit(template) {
@@ -42,10 +24,10 @@ class AddContainer extends Component {
   }
 
   render() {
-    return this.state.loading ? <Loading /> : (
+    return (
       <Add
         type={this.type}
-        applications={this.state.applications}
+        applications={this.props.applications}
         submit={(template) => this.submit(template)}
         {...this.props}
       />

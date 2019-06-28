@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import _ from 'lodash'
 import Utils from '~/utils'
-import { Button, Inputs, Form, Collapse } from '~/components'
+import { Card, Button, Inputs, Form, Collapse } from '~/components'
 import ValuesEditor from './ValuesEditor'
 import InputPropsEditor from './InputPropsEditor'
 
@@ -20,6 +20,8 @@ class AddTemplate extends Component {
         isMulti: false,
         application: '',
       }
+
+      this.apis = this.utils.getSystemInfo().modules
     }
 
     this.arrayInputTypes = ['select', 'radio', 'checkBox']
@@ -32,10 +34,6 @@ class AddTemplate extends Component {
       values: (values || []),
       inputProps: (inputProps || {}),
     }
-  }
-
-  componentWillMount() {
-    this.apis = this.utils.getSystemInfo().modules
   }
 
   handleChange(form) {
@@ -214,7 +212,7 @@ class AddTemplate extends Component {
                 searchText={this.formData.api}
                 isObject={true}
                 data-label="api"
-                />
+              />
             </div>
           </div>
         </Collapse>
@@ -310,23 +308,21 @@ class AddTemplate extends Component {
 
   render() {
     return (
-      <div className="animated fadeInRight">
-        <div className="card">
-          <div className="card-header ch-alt">
-            <div className="row">
-              <div className="col-lg-4">
-                <h3>{this.props.type === 'edit' ? 'Edit' : 'Add'} Template</h3>
-              </div>
-              <div className="col-lg-8 text-right">
-                {this.props.type === 'edit' ? this.renderClose() : <div />}
-              </div>
+      <Card>
+        <Card.Title>
+          <div className="row">
+            <div className="col-lg-4">
+              <h3>{this.props.type === 'edit' ? 'Edit' : 'Add'} Template</h3>
+            </div>
+            <div className="col-lg-8 text-right">
+              {this.props.type === 'edit' ? this.renderClose() : <div />}
             </div>
           </div>
-          <div className="card-body card-padding" style={{marginLeft: '15px'}}>
-            {this.renderForm()}
-          </div>
-        </div>
-      </div>
+        </Card.Title>
+        <Card.Body>
+          {this.renderForm()}
+        </Card.Body>
+      </Card>
     )
   }
 }

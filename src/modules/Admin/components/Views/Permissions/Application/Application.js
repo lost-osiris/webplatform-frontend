@@ -1,15 +1,22 @@
 import React, { Component } from 'react'
 import ReactMarkdown from 'react-markdown-it'
-import { Button, Inputs, Pagination, Tabs, ToolsWidget, Link } from '~/components'
+import { Button, Inputs, Pagination, Tabs, ToolsWidget, Link, Card } from '~/components'
 import PermissionAddTool from './PermissionAddTool'
 import Utils from '~/utils'
 
 class Main extends Component {
   constructor(props) {
     super(props)
+
+    var permKeys = Object.keys(props.permissions)
+    var textObj = {}
+    for (var i in permKeys) {
+      textObj[permKeys[i]] = ''
+    }
+
     this.state = {
       users: {},
-      searchText: {},
+      searchText: textObj,
       tool: '',
       newPermission: '',
       newPermissions: [],
@@ -33,50 +40,39 @@ class Main extends Component {
     return descriptions
   }
 
-  componentWillReceiveProps(nextProps) {
-    // maps permissions to a list of users who have that permission
-    const users = {}
-
-    // refreshing stale autocomplete results
-    Object.keys(nextProps.permissions).forEach(perm => {
-      users[perm] = nextProps[perm]
-    })
-
-    if (nextProps.permissions !== this.props.permissions) {
-      this.setState({
-        users,
-        searchText: {},
-      })
-    }
-
-    // update description fields to match the data from api
-    this.setState({
-      newDescriptions: this.getPermissionDescriptions(nextProps.permissions),
-    })
-  }
 
   renderUserAutoComp(permission) {
-    const userSearchText = this.state.searchText[permission]
-    const searchText = userSearchText === undefined ? '' : userSearchText
-
     return (
       <Inputs.Autocomplete
+        type="user"
+        api="users.list"
         placeholder="Enter username"
         minSearch={3}
         data={this.props.users}
-        searchKey="uid"
-        searchText={searchText}
+        searchText={this.state.searchText[permission]}
         onChange={results => this.getUsersResults(permission, results)}
+        onSuggestionSelect={uid => this.onSuggestionSelect(uid, permission)}
       />
     )
   }
 
   getUsersResults(perm, results) {
+    if (results.searchText != this.state.searchText[perm]) {
+      this.setState({
+        searchText: {
+          ...this.state.searchText,
+          [perm]: results.searchText,
+        },
+      })
+    }
+  }
+
+  onSuggestionSelect(uid, perm) {
     this.setState({
-      searchText: {
-        ...this.state.searchText,
-        [perm]: results.searchText,
-      },
+      searchText:{
+        ...this.state.searhText,
+        [perm]: uid
+      }
     })
   }
 
@@ -117,16 +113,6 @@ class Main extends Component {
     })
   }
 
-  renderTabBody(appPermissions) {
-    return (
-      <div type="content">
-        {Object.keys(appPermissions).map(permission => {
-          return this.createTabContent(permission, appPermissions[permission].users || [])
-        })}
-      </div>
-    )
-  }
-
   renderPermissionsTable() {
     if (this.props.permissions === undefined) {
       return <div />
@@ -136,11 +122,15 @@ class Main extends Component {
     const permissions = this.mergePermissions(appPermissions)
 
     const tabs = (
-      <Tabs type="tn-justified">
-        <div type="nav">
+      <Tabs fill current="admin">
+        <Tabs.Nav>
           {this.renderTabHeader(permissions)}
-        </div>
-        {this.renderTabBody(permissions)}
+        </Tabs.Nav>
+        <Tabs.Content>
+          {Object.keys(appPermissions).map(permission => {
+            return <div key={permission}> {this.createTabContent(permission, appPermissions[permission].users || [])} </div>
+          })}
+        </Tabs.Content>
       </Tabs>
     )
 
@@ -166,6 +156,8 @@ class Main extends Component {
 
     return (
       <Pagination
+        align="center"
+        viewport={5}
         selected={currentPage}
         count={pageCount}
         onPagePrev={page => this.onPage(tab, page)}
@@ -208,35 +200,33 @@ class Main extends Component {
 
     return (
       <div id={permission} key={permission}>
-        <div className="row">
-          {this.renderDescription(permission, description)}
-          <div className="row" style={this.rowStyle}>
-            <div className="col-lg-2">
-              {this.renderUserAutoComp(permission)}
-            </div>
-            <div className="col-lg-2">
-              <Button
-                btnStyle="primary"
-                onClick={() => this.props.handleUserAdd(this.state.searchText[permission], permission)}
-                style={{marginTop: '5px'}}
-              >
-                Add User
-              </Button>
-            </div>
+        {this.renderDescription(permission, description)}
+        <div className="row" style={this.rowStyle}>
+          <div className="col-lg-2">
+            {this.renderUserAutoComp(permission)}
           </div>
-          <table className="table table-hover issue-tracker">
-            <thead>
-              <tr>
-                <th>
-                </th>
-              </tr>
-              {header}
-            </thead>
-            <tbody>
-              {usersList}
-            </tbody>
-          </table>
+          <div className="col-lg-2">
+            <Button
+              btnStyle="primary"
+              onClick={() => this.props.handleUserAdd(this.state.searchText[permission], permission)}
+              style={{marginTop: '5px'}}
+            >
+              Add User
+            </Button>
+          </div>
         </div>
+        <table className="table table-hover issue-tracker">
+          <thead>
+            <tr>
+              <th>
+              </th>
+            </tr>
+            {header}
+          </thead>
+          <tbody>
+            {usersList}
+          </tbody>
+        </table>
         {this.renderPagination(permission, filteredUsers.length)}
       </div>
     )
@@ -272,11 +262,10 @@ class Main extends Component {
     } else {
       return (
         <Button
-          icon
-          color="bgm-orange"
+          icon="zmdi zmdi-plus text-white"
+          color="orange"
           onClick={() => this.setState({tool: 'add'})}
         >
-          <i className="zmdi zmdi-plus" style={{color: 'white'}} />
         </Button>
       )
     }
@@ -294,12 +283,12 @@ class Main extends Component {
           <div className="col-lg-6">
             <Inputs.Text
               type="textarea"
-              value={this.state.newDescriptions[permission]}
+              value={this.state.newDescriptions[permission] || ''}
               onChange={event =>
                 this.setState({
                   newDescriptions: {
                     ...this.state.newDescriptions,
-                    [permission]: event.target.value,
+                    [permission]: event,
                   },
                 })}
               className="fg-input form-control"
@@ -363,7 +352,8 @@ class Main extends Component {
               <i className="zmdi zmdi-quote" /> Permission Description{' '}
             </span>
             <Button
-              icon
+              icon="zmdi zmdi-edit"
+              btnStyle="primary"
               onClick={() => {
                 this.setState({
                   editingDescription: {
@@ -372,9 +362,7 @@ class Main extends Component {
                   },
                 })
               }}
-            >
-              <i className="zmdi zmdi-edit" />
-            </Button>
+            />
           </h4>
         </div>
         <div className="row">
@@ -385,6 +373,8 @@ class Main extends Component {
   }
 
   render() {
+    // console.log('app props at render: ', this.props)
+    console.log('app state at render: ', this.state)
     return (
       <div>
         <div>
@@ -394,8 +384,8 @@ class Main extends Component {
               {this.renderPermissionAddTool()}
             </div>
           </ToolsWidget>
-          <div className="card">
-            <div className="card-header bgm-blue">
+          <Card>
+            <Card.Title className="bg-blue">
               <div className="row">
                 <div className="col-lg-6" />
                 <div className="col-lg-6 text-right">
@@ -404,11 +394,11 @@ class Main extends Component {
                   </h3>
                 </div>
               </div>
-            </div>
-            <div className="card-body card-padding">
+            </Card.Title>
+            <Card.Body>
               {this.renderPermissionsTable()}
-            </div>
-          </div>
+            </Card.Body>
+          </Card>
         </div>
       </div>
     )

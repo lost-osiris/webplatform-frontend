@@ -1,5 +1,7 @@
 import ChangeUser from '~/modules/Admin/containers/ChangeUserContainer'
-import * as StateTitle from '../StateTitle'
+import UI from '../../components/UI'
+
+let changeUserContainer = () => import('../../containers/ChangeUserContainer')
 
 var route = {
   route: {
@@ -7,8 +9,9 @@ var route = {
     component: ChangeUser,
   },
   ui: {
-    stateTitle: StateTitle.ChangeUser,
-  }
+    stateTitle: UI.StateTitle.ChangeUser,
+    content: changeUserContainer
+  },
 }
 
 export default route

@@ -1,20 +1,47 @@
-import AdminPermissionsApi from '~/modules/Admin/modules/Permissions/modules/Api/containers/MainContainer'
-import * as StateTitle from '../../StateTitle'
+import UI from '../../../components/UI'
+import PermissionsReducer from '~/modules/Admin/reducers/Permissions'
 
+let apiContainer = () => import('../../../containers/Permissions/Api/MainContainer')
 var route = {
   route: {
     path: '/permissions/api/:safeName',
     exact: true,
-    component: AdminPermissionsApi,
   },
   ui: {
-    stateTitle: StateTitle.Permissions.Api,
+    stateTitle: UI.StateTitle.Permissions.Api,
+    content: apiContainer
   },
-  mapStateToProps: {
-    stateTitle: state => ({
-      api: state.permissions.api,
+  reducer: {
+    name: 'permissions',
+    data: PermissionsReducer 
+  },
+
+  mapStateToProps: (state) => {
+    return (
+      {
+        ...state.permissions.main,
+        ...state.permissions.api
+      }
+    )
+  },
+
+  api: (utils, match) => {
+    const api = {
+      path: 'permissions.setup'
+    }
+
+    return utils.request(api).then((data) => {
+      var api = data.apis.find((val) => {
+        if (match.params.safeName == val.safe_name) {
+          return val
+        }
+      })
+
+      utils.dispatch('INIT', {data: data}, 'permissions.main')
+      utils.dispatch('INIT', {api: api}, 'permissions.api')
     })
-  },
+
+  }
 }
 
 export default route

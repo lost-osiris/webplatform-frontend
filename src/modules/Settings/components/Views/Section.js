@@ -69,14 +69,14 @@ class Section extends Component {
 
   renderAppSettings(settings, formProps) {
     return settings.map(setting =>
-      <Setting
+      (<Setting
         key={setting.name}
         setting={setting}
         formProps={formProps}
         onSelectionAdd={({ name, value }) => this.handleSelectionAdd({ name, value })}
         onSelectionRemove={({ name, value }) => this.handleSelectionRemove({ name, value })}
         selections={this.state.selections}
-      />
+      />)
     )
   }
 
@@ -135,7 +135,7 @@ class Section extends Component {
     return (
       <div>
         {Object.keys(applicationSettings).map(app =>
-          <div key={app} style={{ marginLeft: '10px' }}>
+          (<div key={app} style={{ marginLeft: '10px' }}>
             <div className="row">
               <h3>
                 <a id={app} style={{ textDecoration: 'none', color: 'inherit' }}>
@@ -148,13 +148,13 @@ class Section extends Component {
             <div style={{ marginLeft: '40px' }}>
               {this.renderAppSettings(applicationSettings[app], formProps)}
             </div>
-          </div>
+          </div>)
         )}
         <div className="row" style={{ marginTop: '20px', marginLeft: '30px' }}>
           {Object.keys(applicationSettings).length > 0
             ? <Button btnStyle="primary" onClick={() => this.handleSubmit()}>
-                Save
-              </Button>
+              Save
+            </Button>
             : <div />}
         </div>
       </div>

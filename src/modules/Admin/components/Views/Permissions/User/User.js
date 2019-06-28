@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 // import Utils from '~/utils'
-import {Button, Inputs, ToolsWidget} from '~/components'
+import {Button, Inputs, ToolsWidget, Card} from '~/components'
 
 class Main extends Component {
   constructor(props) {
@@ -14,22 +14,23 @@ class Main extends Component {
       <div className="animated fadeInRight">
         <div className="row">
           <div className="col-lg-12">
-            <div className="card">
-              <div className="card-header bgm-bluegray">
+            <Card>
+              <Card.Title className="bg-blue-grey">
                 <div className="row">
                   <div className="col-lg-6">
-                    <h3 className="c-white">Details</h3>
+                    <h3 className="text-white">Details</h3>
                   </div>
                 </div>
-              </div>
-              <div className="card-body card-padding">
+              </Card.Title>
+              <Card.Body>
                 <div className="row">
                   <div className="col-lg-12 text-center">
                     <h3>Permissions by application</h3>
                   </div>
                 </div>
                 <br />
-                <div className="row">
+                {/* <div className="row"> */}
+                <div>
                   {this.props.permissionsComponent}
                 </div>
                 <br />
@@ -50,8 +51,8 @@ class Main extends Component {
                     </Button>
                   </div>
                 </div>
-              </div>
-            </div>
+              </Card.Body>
+            </Card>
           </div>
         </div>
       </div>
@@ -65,24 +66,22 @@ class Main extends Component {
         <div key="add">
           <div className="row">
             <div className="col-lg-12">
-              <div className="card">
-                <div className="card-header bgm-green">
+              <Card>
+                <Card.Title className="bg-green">
                   <div className="row">
                     <div className="col-lg-6">
                       <h3 className="c-white">Add New Application</h3>
                     </div>
                     <div className="col-lg-6 text-right">
                       <Button
-                        icon
-                        color="bgm-black"
+                        icon="zmdi zmdi-close"
+                        btnStyle="danger"
                         onClick={() => this.props.changeTool('')}
-                      >
-                        <i className="zmdi zmdi-close c-red" />
-                      </Button>
+                      />
                     </div>
                   </div>
-                </div>
-                <div className="card-body card-padding">
+                </Card.Title>
+                <Card.Body>
                   <div className="row">
                     <div className="col-lg-6">
                       <label>Application Name</label>
@@ -97,17 +96,15 @@ class Main extends Component {
                     </div>
                     <div className="col-lg-1">
                       <Button
-                        icon
-                        color="bgm-green"
+                        icon="zmdi zmdi-plus"
+                        btnStyle="success"
                         onClick={() => this.props.addNewApplication()}
-                      >
-                        <i className="zmdi zmdi-plus" />
-                      </Button>
+                      />
                     </div>
                   </div>
                   <br />
-                </div>
-              </div>
+                </Card.Body>
+              </Card>
             </div>
           </div>
         </div>
@@ -116,7 +113,8 @@ class Main extends Component {
   }
 
   renderAddAppButton() {
-    const isAdmin = this.user.permissions.system['is_admin']
+    // const isAdmin = this.user.permissions.system['is_admin']
+    const isAdmin = this.user.permissions_obj.system['is_admin']
     if (!isAdmin) {
       return <div />
     } else {

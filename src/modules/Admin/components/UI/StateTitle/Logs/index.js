@@ -1,5 +1,7 @@
-import Main from './Main'
-import Log from './Log'
+const Main = () => import('./Main')
+// import Main from './Main'
+const Log = () => import('./Log')
+// import Log from './Log'
 
 export default {
   Main: Main,

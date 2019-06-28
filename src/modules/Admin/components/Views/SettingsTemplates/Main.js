@@ -1,27 +1,29 @@
 import React, { Component } from 'react'
-import { DropDown } from '~/components'
+import { Card, DropDown } from '~/components'
 import TemplateTable from './Table'
+import Utils from '~/utils'
 
 class Main extends Component {
   constructor(props) {
     super(props)
+    this.utils = new Utils()
   }
 
   renderDropDown() {
     return (
-      <DropDown bgm="bgm-green" icon="zmdi zmdi-menu">
-        <li onMouseDown={() => this.utils.push('/admin/settings/templates/add')}>
-          <a>Add Template</a>
-        </li>
+      <DropDown color="green" icon="zmdi zmdi-menu text-white" direction="left">
+        <DropDown.Item onMouseDown={() => this.utils.push('/admin/settings/templates/add')}>
+          Add Template
+        </DropDown.Item>
       </DropDown>
     )
   }
 
   render() {
     return (
-      <div className="animated fadeInRight">
-        <div className="card">
-          <div className="card-header ch-alt">
+      <div>
+        <Card>
+          <Card.Title>
             <div className="row">
               <div className="col-lg-4">
                 <h3>Templates</h3>
@@ -30,14 +32,14 @@ class Main extends Component {
                 {this.renderDropDown()}
               </div>
             </div>
-          </div>
-          <div className="card-body card-padding">
+          </Card.Title>
+          <Card.Body>
             <TemplateTable
               templates={this.props.templates}
               removeTemplate={(tId) => this.props.removeTemplate(tId)}
             />
-          </div>
-        </div>
+          </Card.Body>
+        </Card>
       </div>
     )
   }

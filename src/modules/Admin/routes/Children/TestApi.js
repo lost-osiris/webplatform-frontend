@@ -1,5 +1,9 @@
-import TestAPI from '~/modules/Admin/modules/TestApi/containers/MainContainer'
-import * as StateTitle from '../StateTitle'
+import TestAPI from '~/modules/Admin/containers/TestApi/MainContainer'
+import UI from '../../components/UI'
+import Utils from '~/utils'
+
+let testApiContainer = () => import('../../containers/TestApi/MainContainer')
+let utils = new Utils()
 
 var route = {
   route: {
@@ -7,8 +11,20 @@ var route = {
     component: TestAPI,
   },
   ui: {
-    stateTitle: StateTitle.TestApi
-  }
+    stateTitle: UI.StateTitle.TestApi,
+    content: testApiContainer
+  },
+
+  mapStateToProps: (state) => {
+    let stateObj = state.permissions.application
+
+    return {
+      permissions: stateObj.permissions,
+      users: stateObj.users,
+      apis: utils.getSystemInfo().modules
+    }
+  },
+
 }
 
 export default route

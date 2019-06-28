@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-class LogTitle extends Component {
+export default class LogTitle extends Component {
   constructor(props) {
     super(props)
   }
@@ -13,5 +13,3 @@ class LogTitle extends Component {
     )
   }
 }
-
-export default LogTitle
