@@ -11,8 +11,6 @@ import React, { Component } from 'react'
 export default class CollapseHeader extends Component {
   constructor(props) {
     super(props)
-    this.collapsed = props.collapsed
-    this.toggle = props.toggle
   }
 
   render() {
