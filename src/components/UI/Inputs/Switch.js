@@ -52,10 +52,10 @@ export default class Switch extends Component {
       disabled: this.props.disabled,
     }
 
-    inputProps.onChange = (e) => {
+    inputProps.onChange = () => {
       this.handleEvent(!this.state.toggled)
       if (this.onChange != undefined) {
-        this.onChange(e)
+        this.onChange(!this.state.toggled)
       }
 
       this.toggle()
