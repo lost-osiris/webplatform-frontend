@@ -12,7 +12,9 @@ export default class AhyderContainer extends React.Component {
     this.state = {
       userValue: '',
       apiValue: '',
-      checked: false
+      checked: false,
+      switch: true,
+      text: ''
     }
 
     this.searchText = ''
@@ -78,6 +80,26 @@ export default class AhyderContainer extends React.Component {
           text="^GetValue^"
           onClick={() => console.log('check value: ', this.state.checked)}
         />
+        <h4>TEEEXT</h4>
+        <Inputs.Text 
+          value={this.state.text}
+          onChange={(text) => this.setState({text: text})}
+        />
+        <Button
+          text="Add an A"
+          onClick={() => this.setState({text: this.state.text + 'A'})}
+        />
+
+        <h4>SWEEECH</h4>
+        <Inputs.Switch 
+          on={this.state.switch} 
+          onChange={(event) => this.setState({switch: event})}
+        />
+        <Button
+          text="CHANGE SWITCH"
+          onClick={() => this.setState({switch: !this.state.switch})}
+        />
+
 
         <h4>Claps</h4>
         <Collapse>

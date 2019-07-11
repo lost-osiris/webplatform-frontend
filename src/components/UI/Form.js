@@ -1,15 +1,24 @@
+
 import React, { Component } from 'react'
 import { Inputs } from '~/components'
 import moment from 'moment'
-// import _ from 'lodash'
 
-class Form extends Component {
+export default class Form extends Component {
   constructor(props) {
     super(props)
     this.formName = props.name
+
+    let inputComponents = {}
+    Object.keys(props.form).forEach((key) => {
+      inputComponents[key] = null
+    })
+
     this.state = {
       errors: null,
       form: props.form,
+      setup: false,
+      formComponents: {},
+      inputComponents: inputComponents,
     }
 
     this.inputTypes = {
@@ -23,109 +32,149 @@ class Form extends Component {
     }
   }
 
-  onSubmit({props}) {
-    return this.props.onSubmit(...props)
+  componentDidMount() {
+    let inputComponents = {}
+    let formComponents = this.buildTree(this.props.children, inputComponents)
+
+    console.log(formComponents, inputComponents)
+    console.log(this.renderForm(formComponents))
+
+    let newState = {
+      form: this.props.form,
+      formComponents: formComponents,
+      errors: this.props.errors,
+    }
+
+    this.setState(newState)
   }
 
-  handleChange({props}) {
-    return this.props.handleChange(...props)
-  }
+  /**
+   * Recursive function that builds a data structure representing the dom
+   * that can be easily indexed
+   * 
+   * @param {object} dom - dom to recursivley build tree from
+   * 
+   * @returns object/tree representation of the specified component and its sub-components (children)
+   */
+  buildTree(dom, inputComponents) {
+    if (dom && dom.constructor === Object) {
+      let component = dom
+      if (dom.props != undefined && dom.props['label-id'] != undefined) {
+        component = this.setupElement(dom, dom.props['label-id'])
+      }
+      else if (dom.props['input-id'] != undefined) {
+        let name = dom.props['input-id']
+        component = this.setupElement(dom, dom.props['input-id'])
+        inputComponents[name] = component
+        
+        return {component: inputComponents[name], children: null}
+      } 
 
-  // UNSAFE_componentWillUpdate(nextProps, nextState) {
-  //   let stateObj = nextState
-  //
-  //   stateObj = {
-  //     ...nextState,
-  //     errors: nextProps.error,
-  //   }
-  //
-  //   // special handler for nested form components
-  //   // the errors need to triggle down from the parent Form components
-  //   // that means errors aren't coming from state but rather props
-  //   // if (nextState.errors == null && nextProps.error) {
-  //   //   stateObj = {
-  //   //     ...nextState,
-  //   //     errors: nextProps.error
-  //   //   }
-  //   // }
-  //
-  //   this.initElements = this.findElements(nextProps.children, stateObj)
-  // }
-
-  findElements(dom, state) {
-    if (dom.constructor === Object) {
-      /*
-        dom doesn't have any children but still has props.
-        checking if it's a label or some kind of input dom.
-        Either way it still calls setupElement which returns the dom back with
-        an onChange event added if it's an input dom
-      */
-      if (dom.props != undefined && dom.props['data-label'] != undefined) {
-        // when dom is a label element
-        return this.setupElement(dom, dom.props['data-label'], state)
-      } else if (dom.props.id != undefined) {
-        // when dom is an input element
-        return this.setupElement(dom, dom.props.id, state)
-      } else if (dom.props != undefined && dom.props.type == 'submit') {
-        // when dom is the submit handler
-        return this.setupOnSubmit(dom)
+      let children = []
+      if (typeof component.props.children == typeof Array) {
+        children = component.props.children.map((child) => {
+          return this.buildTree(child, inputComponents)
+        })
+      } else if (component.props.children) {
+        children.push(this.buildTree(component.props.children, inputComponents))
       }
 
-      /* most dom's will come in as an object where it can have an arry
-      or an object as children. The child is passed back into this function.
-      If the child is a single come it will come back in as an Object if it
-      has more then one child it will come in as an Array  */
-      if (dom.props != undefined && dom.props.children != undefined) {
-        // Avioding recursive call when the child is a String
-        if (dom.props.children.constructor === String) {
-          return React.cloneElement(dom, dom.props)
-        } else {
-          let newDom = this.findElements(dom.props.children, state)
-          return React.cloneElement(dom, dom.props, newDom)
-        }
-      }
+      return {component: component, children: children}
+      
+      // else if (dom.props != undefined && dom.props.type == 'submit') {
+      //   return this.setupOnSubmit(dom)
+      // }
+    } else if (dom && dom.constructor === Array) {
 
-      // console.log(dom.props.children)
-      // when all other cases are tested just return current dom
-      return dom
-      // return React.cloneElement(dom, dom.props)
-
-    } else if (dom.constructor === Array) {
-
-      // when component has more then one child the whole child array will be passed in
       let elements = []
-
       for (let i in dom) {
-        // when child of a dom is a string don't make recusive call
         if (typeof dom[i] === 'string') {
-          elements.push(dom[i])
+          elements.push({component: dom[i], children: null})
           continue
         }
-
-        let newDom = this.findElements(dom[i], state)
-        let e = React.cloneElement(newDom, {key: i})
-
-        elements.push(e)
+        
+        elements.push(this.buildTree(dom[i], inputComponents))
       }
 
-      return elements
+      return {component: null, children: elements}
+    } else if (dom && typeof dom === 'string') {
+      return dom
     }
   }
 
-  setupElement(dom, name, state) {
-    let props = this.setupElementProps(dom, name, state)
-    return React.cloneElement(dom, props, props.children)
+  renderForm(formComponents) {
+    // If form component to render is an object
+    if (typeof formComponents === typeof Object) { 
+      // First component is of type null, skip it
+      if (formComponents.component === null && formComponents.children) {
+        return this.renderForm(formComponents.children)
+      }
+      else if (formComponents.children === null) {
+        return formComponents.component
+      } 
+      else {
+        return this.renderForm(formComponents.children)
+      }
+    }
+    // If form component is an array with at least one child
+    else if (formComponents.children) {
+      return formComponents.children.map((component) => {
+        return React.createElement(this.renderForm(component))
+      })
+    } else {
+      return formComponents.component
+    }
+  }
+  
+  getTree() {
+    // let components = this.state.formComponents
+
+    // if (this.state.setup) {
+    //   return this.state.formComponents
+    // }
+
+    // return this.buildTree(this.props.children)
   }
 
-  setupElementProps(dom, name, state) {
+  setupElement(dom, name) {
+    let props = this.setupElementProps(dom, name)
+
+    switch (dom.type) {
+      case this.inputTypes.autoComplete:
+        return <Inputs.Autocomplete {...props} />
+
+      case this.inputTypes.text:
+        return <Inputs.Text {...props} />
+
+      case this.inputTypes.switch:
+        return <Inputs.Switch {...props} />
+
+      case this.inputTypes.select:
+        return <Inputs.Select {...props} />
+
+      case this.inputTypes.radioButton:
+        return <Inputs.RadioButton {...props} />
+
+      case this.inputTypes.check:
+        return <Inputs.Check {...props} />
+
+      case this.inputTypes.dateTime:
+        return <Inputs.DateTime {...props} />
+      
+      default: 
+        return dom
+    }
+  }
+
+  setupElementProps(dom, name) {
     let props = {...dom.props}
 
     if (dom.type == 'label') {
-      // console.log(this.formName, name, state.errors)
-      if (state.errors != null && state.errors[name]) {
+      if (this.state.errors != null && this.state.errors[name]) {
         if (props.className == undefined) {
           props.className = 'has-error'
-        } else {
+        }
+        else {
           props.className += ' has-error'
         }
       }
@@ -133,28 +182,41 @@ class Form extends Component {
       // special case for when form contains an Autocomplete component
       if (dom.type == this.inputTypes.autoComplete) {
         props.searchText = this.state.form[name]
-      } else if (dom.type == this.inputTypes.radioButton) {
+      }
+      // special case for when form contains an radio button component
+      else if (dom.type == this.inputTypes.radioButton) {
         props.selectedValue = this.state.form[name]
-      } else {
+      }
+      else if (dom.type == this.inputTypes.switch) {
+        props.on = this.state.form[name]
+      }
+      else {
         props.value = this.state.form[name]
       }
 
       props.onChange = (data) => {
+
+        let form = this.state.form
+
         // special case for when form contains an Autocomplete component
         if (dom.type == this.inputTypes.autoComplete) {
-          this.form[name] = data.searchText
+          form[name] = data.searchText
         // special case for when form contains an Switch or Check component
-        } else if (dom.type == this.inputTypes.switch  || dom.type == this.inputTypes.check) {
-          this.form[name] = data.target.checked
-        } else if (dom.type == this.inputTypes.radioButton) {
+        }
+        else if (dom.type == this.inputTypes.switch  || dom.type == this.inputTypes.check) {
+          // this.form[name] = data.target.checked
+          form[name] = data
+        }
+        else if (dom.type == this.inputTypes.radioButton) {
           // radio input
-          this.form[name] = data
-        } else {
+          form[name] = data
+        }
+        else {
           // datetime input
           if (moment.isMoment(data)) {
-            this.form[name] = data
+            form[name] = data
           } else {
-            this.form[name] = data.target.value
+            form[name] = data 
           }
         }
 
@@ -166,78 +228,26 @@ class Form extends Component {
           dom.props.onChange(data)
         }
 
-        this.forceUpdate()
+        console.log('about to update state with', form)
+        this.setState({form: form})
       }
 
-      if (this.checkInputDom(dom)) {
-        if (state.errors != null && state.errors[name]) {
-          props.error = state.errors[name]
-        } else {
-          props.error = false
-        }
-      }
+      // if (this.checkInputDom(dom)) {
+      //   if (this.state.errors != null && this.state.errors[name]) {
+      //     props.error = this.state.errors[name]
+      //   }
+      //   else {
+      //     props.error = false
+      //   }
+      // }
     }
 
     return props
   }
 
-  setupOnSubmit(dom) {
-    let props = {...dom.props}
-
-    props.onClick = (e) => {
-      if (dom.props != undefined && dom.props.onClick != undefined) {
-        dom.props.onClick(e)
-      }
-
-      const errors = this.checkErrors(this.onSubmit(this.state.form))
-
-      if (errors) {
-        this.setState({errors: errors})
-      } else {
-        this.setState({errors: {}})
-      }
-    }
-
-    return React.cloneElement(dom, props)
-  }
-
-  checkInputDom(dom) {
-    const matches = Object.keys(this.inputTypes)
-      .filter(input => this.inputTypes[input] === dom.type)
-
-    return matches.length > 0
-    // for (let i in this.inputTypes) {
-    //   let type = this.inputTypes[i]
-    //
-    //   if (dom.type === type) {
-    //     return true
-    //   }
-    // }
-    //
-    // return false
-  }
-
-  checkErrors(errors) {
-    let output = {}
-    let found = false
-    for (let i in errors) {
-      if (errors[i]) {
-        output[i] = errors[i]
-        found = true
-      }
-    }
-
-    if (found) {
-      return output
-    }
-
-    return false
-  }
-
   render() {
-    const FormElements = () => this.findElements(this.props.children, this.state)
-    return <FormElements />
+    // return this.getTree()
+    // // this.buildTree(this.props.children)
+    return <h1>TEST</h1>
   }
 }
-
-export default Form

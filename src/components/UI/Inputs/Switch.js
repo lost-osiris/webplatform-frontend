@@ -67,6 +67,8 @@ export default class Switch extends Component {
       label = <label>{this.props.label}</label>
     }
 
+    console.log('rendering switch with props:', this.props)
+
     return (
       <div className="switch-container" style={{display: 'inline-block'}}>
         <div className={this.className}  >

@@ -1,7 +1,7 @@
 import store from './store'
 import Api from './Api'
 import matchPath from './matchPath'
-import { push, go, goBack, goForward } from 'connected-react-router'
+import History from '~/components/Core/History'
 
 Object.defineProperty(String.prototype, 'replaceAll', {
   writeable: false,
@@ -187,19 +187,19 @@ class Utils {
   }
 
   go(...args) {
-    this.store.dispatch(go(...args))
+    History.go(...args)
   }
 
   goBack(...args) {
-    this.store.dispatch(goBack(...args))
+    History.goBack(...args)
   }
 
   goForward(...args) {
-    this.store.dispatch(goForward(...args))
+    History.goForward(...args)
   }
 
   push(...args) {
-    this.store.dispatch(push(...args))
+    History.push(...args)
   }
 
   setReducer(reducer) {
