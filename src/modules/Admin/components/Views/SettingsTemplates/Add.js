@@ -205,6 +205,7 @@ class AddTemplate extends Component {
       onSubmit: () => this.handleSubmit(),
       form: this.state.form,
       error: this.formErrors,
+      name: 'settings-add-template'
     }
 
     const rowStyle = {marginTop: '15px', marginBottom: '15px'}
@@ -226,7 +227,7 @@ class AddTemplate extends Component {
             <div className="row" style={rowStyle}>
               <div className="col-lg-3">
                 <label label-id="title">Title</label>
-                <Inputs.Text input-id="title" />
+                <Inputs.Text form="settings-add-template" id="title" />
               </div>
               <div className="col-lg-2">
                 {/* <label id="isGlobal">Global</label> */}

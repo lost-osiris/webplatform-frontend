@@ -3,6 +3,7 @@ import { combineReducers } from 'redux'
 const initialState = {
   location: null,
   sideNavToggled: false,
+  form: {}
 }
 
 const DashboardReducer = function(state = initialState, action) {
@@ -130,6 +131,25 @@ const DashboardReducer = function(state = initialState, action) {
         settings: action.data,
       }
 
+      return Object.assign({}, state, newState)
+    }
+
+    case 'FORM_INIT': {
+      let newState = {
+        form: {...state.form}
+      }
+      newState.form[action.name] = action.form 
+
+      return Object.assign({}, state, newState)
+    }
+
+    case 'FORM_VALUE_UPDATE': {
+      let newState = {
+        form: {...state.form}
+      }
+
+      newState.form[action.name][action.id] = action.value
+      
       return Object.assign({}, state, newState)
     }
 

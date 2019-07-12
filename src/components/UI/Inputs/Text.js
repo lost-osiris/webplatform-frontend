@@ -1,18 +1,23 @@
 import React, { Component } from 'react'
 import classnames from 'classnames'
+import Utils from '~/utils'
 
 export default class Input extends Component {
   constructor(props) {
     super(props)
+
+    this.utils = new Utils()
+
     let className = classnames({
       'form-group__bar': true,
       'has-error': props.error
     })
 
     this.state = {
-      value: props.value || '',
+      value: undefined,
       className: className,
       error: props.error,
+      form: props.form
     }
   }
 
@@ -22,14 +27,25 @@ export default class Input extends Component {
       'has-error': this.props.error
     })
 
+    let value = this.props.value || ''
+
+    if (this.props.form) {
+      let name = this.props.form
+      let formObject = this.utils.getState().dashboard.form[name]
+
+      value = formObject[this.props.id]
+    }
+
     this.setState({
       className: className,
-      value: this.props.value || '',
+      value: value,
       error: this.props.error,
     })
   }
 
   componentDidUpdate(prevProps) {
+    let stateOjbect = this.utils.getState()
+    // console.log(stateOjbect)
     let hasUpdate = false
     let update = {}
 
@@ -44,10 +60,12 @@ export default class Input extends Component {
       update['className'] = className
       update['error'] = this.props.error
     }
-
-    if (this.props.value === prevProps.value && this.state.value !== prevProps.value) {
-      hasUpdate = true
-      update['value'] = this.props.value
+    
+    if (!this.props.form) {
+      if (this.props.value === prevProps.value && this.state.value !== prevProps.value) {
+        hasUpdate = true
+        update['value'] = this.props.value
+      }
     }
 
     if (hasUpdate) {
@@ -69,7 +87,20 @@ export default class Input extends Component {
       this.props.onChange(e.target.value)
     }
 
-    this.setState({value: e.target.value})
+    if (this.props.form) {
+      let action = {
+        name: this.props.form,
+        id: this.props.id,
+        value: e.target.value
+      }
+
+      this.utils.dispatch('FORM_VALUE_UPDATE', action).then(() => {
+        let stateObject = this.utils.getState()
+        this.setState({value: stateObject.dashboard.form[this.props.form][this.props.id]})
+      })
+    } else {
+      this.setState({value: e.target.value})
+    }
   }
 
   render() {
@@ -90,14 +121,15 @@ export default class Input extends Component {
       this.handleEvent(false)
     }
 
+    let stateObject = this.utils.getState()
     let dom
-
     let valueProp
 
-    if (this.props.value) {
+    if (this.props.form) {
+      valueProp = stateObject.dashboard.form[this.props.form][this.props.id]
+    } else if (this.props.value) {
       valueProp = this.props.value
-    }
-    else {
+    } else {
       valueProp = this.state.value
     }
 
