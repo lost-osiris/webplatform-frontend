@@ -138,6 +138,11 @@ class Utils {
     this.store.injectReducer(newReducer.name, newReducer.data)
   }
 
+  getFormCounter() {
+    let stateObject = this.getState()
+    return stateObject.dashboard.form.counter
+  }
+
   getUser() {
     return this.api.getUser()
   }

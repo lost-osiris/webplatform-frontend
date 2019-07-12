@@ -3,7 +3,9 @@ import { combineReducers } from 'redux'
 const initialState = {
   location: null,
   sideNavToggled: false,
-  form: {}
+  form: {
+    counter: 0,
+  }
 }
 
 const DashboardReducer = function(state = initialState, action) {
@@ -138,7 +140,15 @@ const DashboardReducer = function(state = initialState, action) {
       let newState = {
         form: {...state.form}
       }
-      newState.form[action.name] = action.form 
+
+      if (action.name) {
+        newState.form[action.name] = action.form
+      } else {
+        newState.form[state.form.counter] = null
+        newState.form.counter++ 
+      }
+
+      // console.log(newState)
 
       return Object.assign({}, state, newState)
     }
@@ -148,7 +158,21 @@ const DashboardReducer = function(state = initialState, action) {
         form: {...state.form}
       }
 
-      newState.form[action.name][action.id] = action.value
+      if (action.id) {
+        newState.form[action.name][action.id] = action.value
+      } else {
+        newState.form[action.name] = action.value
+      }
+      
+      return Object.assign({}, state, newState)
+    }
+    
+    case 'FORM_REMOVE': {
+      let newState = {
+        form: {...state.form}
+      }
+
+      delete newState.form[action.name]      
       
       return Object.assign({}, state, newState)
     }

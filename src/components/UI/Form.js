@@ -2,8 +2,9 @@
 import React, { Component } from 'react'
 import { Inputs } from '~/components'
 import Utils from '~/utils'
+import { connect } from 'react-redux'
 
-export default class Form extends Component {
+class Form extends Component {
   constructor(props) {
     super(props)
 
@@ -29,12 +30,21 @@ export default class Form extends Component {
   }
 
   render() {
-    let stateObject = this.utils.getState()
-
     if (this.state.setup) {
       return this.props.children
     } else {
-      return <p />
+      return <span />
     }
   }
 }
+
+const mapStateToProps = (state, ownProps) => {
+  let name = ownProps.name || state.dashboard.form.counter
+  let form = ownProps.form || state.dashboard.form[name]
+
+  return {form: form, name: name}
+}
+
+const FormComponent = connect(mapStateToProps)(Form)
+export default Form
+

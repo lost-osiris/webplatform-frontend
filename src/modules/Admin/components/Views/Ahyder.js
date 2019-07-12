@@ -94,6 +94,7 @@ export default class AhyderContainer extends React.Component {
         <Inputs.Switch 
           on={this.state.switch} 
           onChange={(event) => this.setState({switch: event})}
+          color="danger"
         />
         <Button
           text="CHANGE SWITCH"

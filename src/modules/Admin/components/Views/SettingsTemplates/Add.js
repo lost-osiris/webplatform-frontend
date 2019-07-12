@@ -223,7 +223,7 @@ class AddTemplate extends Component {
           </div>
         </Card.Title>
         <Card.Body>
-          <Form {...form}>
+          <Form {...form} onChange={}>
             <div className="row" style={rowStyle}>
               <div className="col-lg-3">
                 <label label-id="title">Title</label>
@@ -231,7 +231,7 @@ class AddTemplate extends Component {
               </div>
               <div className="col-lg-2">
                 {/* <label id="isGlobal">Global</label> */}
-                {/* <Inputs.Switch id="isGlobal" label="Global" /> */}
+                {/* <Inputs.Switch form="settings-add-template" id="isGlobal" label="Global" /> */}
               </div>
               <div className="col-lg-2">
                 {/* <label id="isDynamic">Dynamic</label> */}

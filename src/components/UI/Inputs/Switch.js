@@ -1,12 +1,30 @@
 import React, { Component } from 'react'
+import Utils from '~/utils'
+import classnames from 'classnames'
 
 export default class Switch extends Component {
   constructor(props) {
     super(props)
-    this.setup(this.props)
     this.state = {
       toggled: props.on === true || props.off === false || false,
+      form: props.form
     }
+
+    this.utils = new Utils()
+
+  }
+
+  componentDidMount() {
+    let value = this.props.on === true || this.props.off === false || false
+
+    if (this.props.form) {
+      let name = this.props.form
+      let formObject = this.utils.getState().dashboard.form[name]
+      value = formObject[this.props.id]
+      // console.log(value)
+    }
+
+    this.setState({toggled: value})
   }
 
   shouldComponentUpdate(nextProps) {
@@ -16,26 +34,6 @@ export default class Switch extends Component {
     return true
   }
   
-  setup(props) {
-    this.className = 'toggle-switch'
-    this.onChange = props.onChange
-    this.error = props.error
-    this.color = undefined
-    this.disabled = ''
-    this.alignment = props.textAlign
-    this.label = props.label
-
-    if (props.color != undefined) {
-      this.className += ' toggle-switch--' + props.color
-    }
-
-    if (props.disabled != undefined &&
-      typeof props.disabled === 'boolean' &&
-      props.disabled) {
-      this.disabled = 'disabled'
-    }
-  }
-
   handleEvent(toggle) {
     this.setState({toggled: toggle})
   }
@@ -45,19 +43,21 @@ export default class Switch extends Component {
   }
 
   render() {
-    this.setup(this.props)
-
+    let classes = {
+      'toggle-switch': true,
+    }
+    classes['toggle-swtich--' + this.props.color] = this.props.color
+    let className = classnames(classes)
+    
     let inputProps = {
-      checked: this.state.toggled,
+      checked: this.props.on === true || this.props.off === false || false,
       disabled: this.props.disabled,
     }
 
     inputProps.onChange = () => {
-      this.handleEvent(!this.state.toggled)
-      if (this.onChange != undefined) {
-        this.onChange(!this.state.toggled)
+      if (this.props.onChange != undefined) {
+        this.props.onChange(!this.state.toggled)
       }
-
       this.toggle()
     }
 
@@ -67,11 +67,9 @@ export default class Switch extends Component {
       label = <label>{this.props.label}</label>
     }
 
-    console.log('rendering switch with props:', this.props)
-
     return (
       <div className="switch-container" style={{display: 'inline-block'}}>
-        <div className={this.className}  >
+        <div className={className}  >
           <input type="checkbox" className="toggle-switch__checkbox" {...inputProps} />
           <i className="toggle-switch__helper" />
         </div>
