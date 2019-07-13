@@ -177,6 +177,8 @@ select.form-control {
   & ~ .form-group__feedback {
     color: $red;
   }
+
+  color: $red;
 }
 
 .valid-tooltip,
