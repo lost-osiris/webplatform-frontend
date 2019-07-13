@@ -14,6 +14,7 @@ export { Card as Card } from './Card'
 export { default as UserAutocomplete } from './UserAutocomplete'
 export { default as WithScroll } from './WithScroll'
 export { default as DataField } from './DataField'
+export { default as Label } from './Label'
 
 import * as Inputs from './Inputs'
 export { Inputs }

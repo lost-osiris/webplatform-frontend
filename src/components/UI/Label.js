@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import classnames from 'classnames'
 
-export default class Form extends Component {
+class Label extends Component {
   constructor(props) {
     super(props)
 
@@ -18,6 +20,25 @@ export default class Form extends Component {
   }
 
   render() {
-    return <label>{ this.props.children }</label>
+    let className = classnames({
+      'is-invalid': this.props.error,
+    })
+
+    return <label className={className}>{ this.props.children }</label>
   }
 }
+
+const mapStateToProps = (state, ownProps) => {
+  let name = ownProps.form
+  let id = ownProps.id
+  let error = false
+
+  if (name && id) {
+    error = state.dashboard.form[name].errors[id]
+  }
+
+  return {error: error}
+}
+
+const LabelComponent = connect(mapStateToProps)(Label)
+export default LabelComponent

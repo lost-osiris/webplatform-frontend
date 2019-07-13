@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import _ from 'lodash'
 import Utils from '~/utils'
-import { Card, Button, Inputs, Form, Collapse } from '~/components'
+import { Card, Button, Inputs, Form, Collapse, Label } from '~/components'
 import ValuesEditor from './ValuesEditor'
 import InputPropsEditor from './InputPropsEditor'
 
@@ -224,7 +224,7 @@ class AddTemplate extends Component {
           <Form {...form}>
             <div className="row" style={rowStyle}>
               <div className="col-lg-3">
-                <label label-id="title">Title</label>
+                <Label form="settings-add-template" id="title">Title</Label>
                 <Inputs.Text form="settings-add-template" id="title" />
               </div>
               <div className="col-lg-2">

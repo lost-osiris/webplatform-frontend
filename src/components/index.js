@@ -29,5 +29,6 @@ export {
   Link as Link,
   Card as Card,
   DataField as DataField,
-  UserAutocomplete as UserAutocomplete
+  UserAutocomplete as UserAutocomplete,
+  Label as Label
 } from './UI'

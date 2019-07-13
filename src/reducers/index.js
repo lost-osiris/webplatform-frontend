@@ -153,8 +153,6 @@ const DashboardReducer = function(state = initialState, action) {
         newState.form.counter++ 
       }
 
-      // console.log(newState)
-
       return Object.assign({}, state, newState)
     }
 
