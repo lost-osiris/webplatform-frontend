@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux'
+import _ from 'lodash'
 
 const initialState = {
   location: null,
@@ -143,8 +144,12 @@ const DashboardReducer = function(state = initialState, action) {
 
       if (action.name) {
         newState.form[action.name] = action.form
+        newState.form[action.name].errors = {} 
       } else {
-        newState.form[state.form.counter] = null
+        newState.form[state.form.counter] = {
+          value: null,
+          errors: {}
+        }
         newState.form.counter++ 
       }
 
@@ -161,8 +166,23 @@ const DashboardReducer = function(state = initialState, action) {
       if (action.id) {
         newState.form[action.name][action.id] = action.value
       } else {
-        newState.form[action.name] = action.value
+        newState.form[action.name].value = action.value
       }
+      
+      return Object.assign({}, state, newState)
+    }
+
+    case 'FORM_ERROR': {
+      let newState = {
+        form: {...state.form}
+      }
+
+      let errors = {}
+      _.forEach(action.errors, (value, key) => {
+        errors[key] = value
+      })
+
+      newState.form[action.name].errors = errors
       
       return Object.assign({}, state, newState)
     }

@@ -8,10 +8,8 @@ class Text extends Component {
     super(props)
 
     this.utils = new Utils()
-
     this.state = {
-      value: props.value,
-      form: props.form,
+      selfManaged: false
     }
   }
 
@@ -71,14 +69,14 @@ class Text extends Component {
   render() {
     let dom
     let value = this.props.value
+    let errorComponent = null
 
     if (this.state.selfManaged && this.props.formData) {
-      value = this.props.formData[this.state.name] || this.props.value
+      value = this.props.formData[this.state.name].value || this.props.value
     }
 
     let className = classnames({
       'form-group': true,
-      'has-error': this.props.error
     })
 
     let props = {
@@ -88,7 +86,8 @@ class Text extends Component {
       onBlur: () => this.handleBlur(),
       className: classnames({
         'form-control': true,
-        'textarea-autosize': this.props.type === 'textarea'
+        'textarea-autosize': this.props.type === 'textarea',
+        'is-invalid': this.props.error,
       }),
       type: 'text',
       placeholder: this.props.placeholder,
@@ -109,9 +108,14 @@ class Text extends Component {
       dom = <input {...props} />
     }
 
+    if (this.props.error) {
+      errorComponent = <i className="form-group__feedback zmdi zmdi-close-circle"></i>
+    }
+
     return (
-      <div className={className} style={this.props.style}>
+      <div className="form-group" style={this.props.style}>
         { dom }
+        { errorComponent }
         <i className="form-group__bar" />
       </div>
     )
@@ -123,10 +127,12 @@ const mapStateToProps = (state, ownProps) => {
   let value = ''
   let form = state.dashboard.form[name]
   let id = ownProps.id
+  let error = false
 
   if (name && id) {
     if (form) {
       value = form[id]
+      error = form.errors[id]
     }
   } else if (!name && id) {
     console.error('You specifed an id prop without specifiying a form prop. Form component requires both.')
@@ -138,7 +144,7 @@ const mapStateToProps = (state, ownProps) => {
     }
   }
 
-  return {value: value, formData: state.dashboard.form}
+  return {value: value, formData: state.dashboard.form, error: error}
 }
 
 export default connect(mapStateToProps)(Text)

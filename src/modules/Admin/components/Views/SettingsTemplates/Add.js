@@ -85,7 +85,7 @@ class AddTemplate extends Component {
     return this.state.form.permissions.split(',').map(perm => perm.trim())
   }
 
-  checkForm() {
+  checkForm(form) {
     const errors = {
       title: false,
       description: false,
@@ -94,35 +94,30 @@ class AddTemplate extends Component {
       section: false,
       isDynamic: false,
     }
-    let errorCount = 0
 
     Object.keys({...errors}).forEach(key => {
-      if (key === 'isDynamic' && this.state.form[key]) {
-        if (this.state.form.api == undefined || this.state.form.api == '') {
+      if (key === 'isDynamic' && form[key]) {
+        if (form.api == undefined || form.api == '') {
           ['db', 'collection', 'key'].forEach(key => {
             // if (!this.formData[key]) {
-            if (!this.state.form[key]) {
+            if (!form[key]) {
               errors[key] = true
-              errorCount += 1
             }
           })
         } else {
-          if (!(this.state.form.api != undefined && this.state.form.api != '')) {
+          if (!(form.api != undefined && form.api != '')) {
             errors[key] = true
-            errorCount += 1
           }
         }
       } else {
-        const value = this.state.formData[key]
+        const value = form[key]
         if (value === undefined || value === '') {
           errors[key] = true
-          errorCount += 1
         }
       }
     })
 
-    this.formErrors = errors
-    return errorCount
+    return errors
   }
 
   renderValues() {
@@ -199,12 +194,15 @@ class AddTemplate extends Component {
   }
 
   render() {
+    const newHandleSubmit = (form) => {
+      return this.checkForm(form)
+    }
+
     const form = {
-      // onChange: form => this.handleChange(form),
+      onChange: form => this.handleChange(form),
       // onChange: form => console.log('WhErEs mY cHaNgE??' + form),
-      onSubmit: () => this.handleSubmit(),
+      onSubmit: (form) => newHandleSubmit(form),
       form: this.state.form,
-      error: this.formErrors,
       name: 'settings-add-template'
     }
 
@@ -223,7 +221,7 @@ class AddTemplate extends Component {
           </div>
         </Card.Title>
         <Card.Body>
-          <Form {...form} onChange={}>
+          <Form {...form}>
             <div className="row" style={rowStyle}>
               <div className="col-lg-3">
                 <label label-id="title">Title</label>
