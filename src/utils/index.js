@@ -148,7 +148,7 @@ class Utils {
     let value = initValue
     let form = state.dashboard.form[name]
     let id = props.id
-    let error = false
+    let error = props.error || false
 
     if (name && id) {
       if (form) {

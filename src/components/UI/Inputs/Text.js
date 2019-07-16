@@ -9,11 +9,14 @@ class Text extends Component {
 
     this.utils = new Utils()
     this.state = {
+      name: undefined,
       selfManaged: false
     }
   }
 
   componentDidMount() {
+    let selfManaged = !this.props.form && !this.props.id
+    
     let action = {
       name: this.props.form,
       id: this.props.id
@@ -21,11 +24,11 @@ class Text extends Component {
     
     let update = {
       error: this.props.error,
-      name: action.name
+      name: action.name,
+      selfManaged: selfManaged
     }
 
-    if (!action.name && !action.id) {
-      update.selfManaged = true
+    if (selfManaged) {
       update.name = this.utils.getFormCounter()
 
       this.utils.dispatch('FORM_INIT', action).then(() => {
@@ -38,18 +41,14 @@ class Text extends Component {
 
   handleChange(e) {
     let action = {
-      name: this.props.form,
+      name: this.state.name,
       id: this.props.id,
       value: e.target.value
     }
 
-    if (this.state.selfManaged) {
-      action.name = this.state.name
-    }
-
     this.utils.dispatch('FORM_VALUE_UPDATE', action).then(() => {
       if (this.props.onChange) {
-        this.props.onChange(e.target.value)
+        this.props.onChange(action.value)
       }
     })
   }
@@ -74,10 +73,6 @@ class Text extends Component {
     if (this.state.selfManaged && this.props.formData) {
       value = this.props.formData[this.state.name].value || this.props.value
     }
-
-    let className = classnames({
-      'form-group': true,
-    })
 
     let props = {
       value: value,
@@ -123,28 +118,7 @@ class Text extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  let name = ownProps.form
-  let value = ''
-  let form = state.dashboard.form[name]
-  let id = ownProps.id
-  let error = false
-
-  if (name && id) {
-    if (form) {
-      value = form[id]
-      error = form.errors[id]
-    }
-  } else if (!name && id) {
-    console.error('You specifed an id prop without specifiying a form prop. Form component requires both.')
-  } else if (name && !id) {
-    console.error('You specifed a form prop without specifiying an id prop. Form component requires both.')
-  } else {
-    if (ownProps.value) {
-      value = ownProps.value
-    }
-  }
-
-  return {value: value, formData: state.dashboard.form, error: error}
+  return Utils.inputMapStateToProps(state, ownProps, '')
 }
 
 export default connect(mapStateToProps)(Text)

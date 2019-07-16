@@ -1,6 +1,7 @@
 import React from 'react'
 
-import { Inputs, Collapse, Button } from '~/components'
+import { Inputs, Form, Button, Label } from '~/components'
+import CheckOld from '~/components/UI/Inputs/CheckOld'
 import Utils from '~/utils'
 
 export default class AhyderContainer extends React.Component {
@@ -12,9 +13,31 @@ export default class AhyderContainer extends React.Component {
     this.state = {
       userValue: '',
       apiValue: '',
-      checked: false,
-      switch: true,
-      text: ''
+      text: '',
+      data: [
+        {'city': 'Abbeville', 'state': 'Louisiana'},
+        {'city': 'Aberdeen', 'state': 'Maryland'},
+        {'city': 'Aberdeen', 'state': 'Mississippi'},
+        {'city': 'Aberdeen', 'state': 'South Dakota'},
+        {'city': 'Aberdeen', 'state': 'Washington'},
+        {'city': 'Abilene', 'state': 'Texas'},
+        {'city': 'Abilene', 'state': 'Kansas'},
+        {'city': 'Abingdon', 'state': 'Virginia'},
+        {'city': 'Abington', 'state': 'Massachusetts'},
+        {'city': 'Absecon', 'state': 'New Jersey'},
+        {'city': 'Accokeek', 'state': 'Maryland'},
+        {'city': 'Acton', 'state': 'Massachusetts'},
+        {'city': 'Acushnet', 'state': 'Massachusetts'},
+        {'city': 'Acworth', 'state': 'Georgia'},
+        {'city': 'Ada', 'state': 'Oklahoma'},
+        {'city': 'Adams', 'state': 'Massachusetts'},
+        {'city': 'Addison', 'state': 'Illinois'},
+        {'city': 'Addison', 'state': 'Texas'},
+        {'city': 'Adelanto', 'state': 'California'},
+        {'city': 'Adelphi', 'state': 'Maryland'},
+        {'city': 'Adrian', 'state': 'Michigan'},
+        {'city': 'Affton', 'state': 'Missouri'}, 
+      ]
     }
 
     this.searchText = ''
@@ -36,91 +59,37 @@ export default class AhyderContainer extends React.Component {
     this.setState({checked: e})
   }
 
+  handleSubmit(form) {
+    console.log(form)
+    return {input: true}
+  }
+
   render() {
+    console.log(this.props)
     return (
       <div>
-        <div>
-          <Inputs.Autocomplete
-            type="user"
-            placeholder="Enter username..."
-            // minSearch={3}
-            // data={this.props.users}
-            // searchKey="uid"
-            searchText={this.state.userValue}
-            onChange={results => this.getUsersResults(results)}
-          />
-          <Button
-            text="^GetValue^"
-            onClick={() => console.log('user value: ', this.state.userValue)}
-          />
-        </div>
-        <br />
-        <div>
-          <Inputs.Autocomplete
-            type="modules"
-            placeholder="API module..."
-            searchText={this.state.apiValue}
+        <h2>Autocomplete</h2>
+        <Form name="testing" form={{input: ''}} onSubmit={(form) => this.handleSubmit(form)}>
+          <Label form="testing" id="input">Enter a User</Label>
+          <Inputs.Autocomplete 
+            placeholder="Enter a user..."
             minSearch={3}
-            onChange={results => this.getApiResults(results)}
+            data={this.state.data}
+            searchKey="city"
+            // onChange={(results) => console.log(results)}
+            form="testing"
+            id="input"
           />
-          <Button
-            text="^GetValue^"
-            onClick={() => console.log('api value: ', this.state.apiValue)}
-          />
-        </div>
-        <br />
+          <Button type="submit">Submit</Button>
+        </Form>
+        <h2>Checkbox</h2>
+        {/* <CheckOld
+          label="Self Managed" 
+          checked={true}
+        />         */}
         <Inputs.Check
-          checked = {this.state.checked}
-          inline
-          onChange={(e) => this.toggleChecked(e)}
-          label="ye"
-        />
-        <br />
-        <Button
-          text="^GetValue^"
-          onClick={() => console.log('check value: ', this.state.checked)}
-        />
-        <h4>TEEEXT</h4>
-        <Inputs.Text 
-          value={this.state.text}
-          onChange={(text) => this.setState({text: text})}
-        />
-        <Button
-          text="Add an A"
-          onClick={() => this.setState({text: this.state.text + 'A'})}
-        />
-
-        <h4>SWEEECH</h4>
-        <Inputs.Switch 
-          on={this.state.switch} 
-          onChange={(event) => this.setState({switch: event})}
-          color="danger"
-        />
-        <Button
-          text="CHANGE SWITCH"
-          onClick={() => this.setState({switch: !this.state.switch})}
-        />
-
-
-        <h4>Claps</h4>
-        <Collapse>
-          <Collapse.Item>
-            <Collapse.Header>
-              A test
-            </Collapse.Header>
-            <Collapse.Body>
-              A bunch of text to be hidden and shown accordingly via the collapse component
-            </Collapse.Body>
-          </Collapse.Item>
-          <Collapse.Item>
-            <Collapse.Header>
-              A second test
-            </Collapse.Header>
-            <Collapse.Body>
-              A bunchlasdjflasjfl aslkafdsjfj laksj of text to be hidden and shown accordingly via the collapse component
-            </Collapse.Body>
-          </Collapse.Item>
-        </Collapse>
+          label="Self Managed" 
+        />        
       </div>
     )
   }

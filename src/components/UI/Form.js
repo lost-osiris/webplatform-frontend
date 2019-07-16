@@ -33,8 +33,10 @@ class Form extends Component {
     e.preventDefault()
 
     if (this.props.onSubmit) {
-      let errors = this.props.onSubmit(this.props.form)
-      console.log(errors)
+      let form = {...this.props.form}
+      delete form.errors
+
+      let errors = this.props.onSubmit(form)
 
       let hasErrors = this.checkErrors(errors)
      
@@ -79,7 +81,6 @@ class Form extends Component {
           { this.props.children }
         </form>
       )
-      return this.props.children
     } else {
       return <span />
     }
@@ -94,6 +95,6 @@ const mapStateToProps = (state, ownProps) => {
   return {form: form, name: name, errors: errors}
 }
 
-const FormComponent = connect(mapStateToProps)(Form)
+// const FormComponent = connect(mapStateToProps)(Form)
 export default Form
 
