@@ -82,16 +82,43 @@ export default class AhyderContainer extends React.Component {
           <Button type="submit">Submit</Button>
         </Form> */}
         <h2>Checkbox</h2>
-        <Form name="checkTest" form={{check: true}}>
+        {/* <Form name="checkTest" form={{check: true}}>
           <Inputs.Check
             label="Form Managed" 
             form="checkTest"
             id="check"
           />
+        </Form> */}
+        <h2>Select</h2>
+        {/* <Inputs.Select 
+          form="select-f"
+          id="select"
+          options={[
+            {value: 'f', label: 'first'},
+            {value: 's', label: 'second'},
+            {value: 't', label: 'third'},
+          ]}
+        /> */}
+        <Form name="select-test" form={{select: 'f'}}>
+          <Inputs.Select 
+            form="select-test" 
+            id="select"
+          >
+            <option value='f'>a</option>
+            <option value='d'>d</option>
+            <option value='c'>c</option>
+          </Inputs.Select>
         </Form>
 
-        {/* <Inputs.Radio label="Self Managed" />        
-        <Form name="testing" form={{input: false}}>
+        <h2>Radio</h2>
+        <Form name="test" form={{input: '1'}}>
+          <Inputs.Radio form="test" id="input">
+            <Inputs.RadioButton label="1" value="1" />        
+            <Inputs.RadioButton label="2" value="2" />        
+            <Inputs.RadioButton label="3" value="3" />
+          </Inputs.Radio>
+        </Form>
+        {/* <Form name="testing" form={{input: false}}>
           <Inputs.Radio label="Self Managed" />        
         </Form> */}
       </div>

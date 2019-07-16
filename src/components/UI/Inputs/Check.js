@@ -49,7 +49,6 @@ class Check extends Component {
    * between the off (false) and on (true) position.
    */
   toggle(e) {
-    console.log('toggling check!', e.target.checked)
     let action = {
       name: this.state.name,
       id: this.props.id,
@@ -104,7 +103,6 @@ class Check extends Component {
       )
     }
 
-    console.log(labelProps)
 
     return (
       <div className={className}>
