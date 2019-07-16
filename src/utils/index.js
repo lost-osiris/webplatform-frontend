@@ -143,6 +143,31 @@ class Utils {
     return stateObject.dashboard.form.counter
   }
 
+  static inputMapStateToProps(state, props, initValue) {
+    let name = props.form
+    let value = initValue
+    let form = state.dashboard.form[name]
+    let id = props.id
+    let error = false
+
+    if (name && id) {
+      if (form) {
+        value = form[id]
+        error = form.errors[id]
+      }
+    } else if (!name && id) {
+      console.error('You specifed an id prop without specifiying a form prop. Form component requires both.')
+    } else if (name && !id) {
+      console.error('You specifed a form prop without specifiying an id prop. Form component requires both.')
+    } else {
+      if (props.value) {
+        value = props.value
+      }
+    }
+
+    return {value: value, formData: state.dashboard.form, error: error}
+  }
+
   getUser() {
     return this.api.getUser()
   }
