@@ -1,7 +1,6 @@
 import React from 'react'
 
 import { Inputs, Form, Button, Label } from '~/components'
-import CheckOld from '~/components/UI/Inputs/CheckOld'
 import Utils from '~/utils'
 
 export default class AhyderContainer extends React.Component {
@@ -69,7 +68,7 @@ export default class AhyderContainer extends React.Component {
     return (
       <div>
         <h2>Autocomplete</h2>
-        <Form name="testing" form={{input: ''}} onSubmit={(form) => this.handleSubmit(form)}>
+        {/* <Form name="testing" form={{input: ''}} onSubmit={(form) => this.handleSubmit(form)}>
           <Label form="testing" id="input">Enter a User</Label>
           <Inputs.Autocomplete 
             placeholder="Enter a user..."
@@ -81,15 +80,20 @@ export default class AhyderContainer extends React.Component {
             id="input"
           />
           <Button type="submit">Submit</Button>
-        </Form>
+        </Form> */}
         <h2>Checkbox</h2>
-        {/* <CheckOld
-          label="Self Managed" 
-          checked={true}
-        />         */}
-        <Inputs.Check
-          label="Self Managed" 
-        />        
+        <Form name="checkTest" form={{check: true}}>
+          <Inputs.Check
+            label="Form Managed" 
+            form="checkTest"
+            id="check"
+          />
+        </Form>
+
+        {/* <Inputs.Radio label="Self Managed" />        
+        <Form name="testing" form={{input: false}}>
+          <Inputs.Radio label="Self Managed" />        
+        </Form> */}
       </div>
     )
   }
