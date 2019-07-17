@@ -25,6 +25,10 @@ Object.defineProperty(String.prototype, 'toTitleCase', {
   }
 })
 
+let formInitError = false
+let formIdError = false
+let formNameError = false 
+
 class Utils {
   constructor(reducer=null) {
     this.store = store
@@ -153,11 +157,19 @@ class Utils {
     if (name && id) {
       if (form) {
         value = form[id]
+
+        if (value === undefined && !formInitError) {
+          formInitError = true
+          console.error(`You didn't specify the id '${id}' when you initalized the Form component. Make sure you proper initalize the form prop with the correct keys.`)
+        }
+
         error = form.errors[id]
       }
-    } else if (!name && id) {
+    } else if (!name && id && !formNameError) {
+      formNameError = true
       console.error('You specifed an id prop without specifiying a form prop. Form component requires both.')
-    } else if (name && !id) {
+    } else if (name && !id && !formIdError) {
+      formIdError = true
       console.error('You specifed a form prop without specifiying an id prop. Form component requires both.')
     } else {
       if (props.value) {
@@ -165,7 +177,7 @@ class Utils {
       }
     }
 
-    return {value: value, formData: state.dashboard.form, error: error}
+    return {value: value, formData: {...state.dashboard.form}, error: error}
   }
 
   getUser() {

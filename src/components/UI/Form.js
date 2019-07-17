@@ -4,7 +4,7 @@ import Utils from '~/utils'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 
-class Form extends Component {
+class FormContainer extends Component {
   constructor(props) {
     super(props)
 
@@ -14,8 +14,17 @@ class Form extends Component {
       errors: props.errors,
       form: props.form,
       name: props.name,
-      setup: false
+      setup: false, 
+      init: true
     }
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (nextState.setup) {
+      return true
+    }
+
+    return false
   }
 
   componentDidMount() {
@@ -27,6 +36,26 @@ class Form extends Component {
     this.utils.dispatch('FORM_INIT', action).then(() => {
       this.setState({setup: true})
     })
+  }
+
+  componentDidUpdate(prevProps) {
+    let compare = this.compareForm(prevProps.form, this.props.form)
+    if (compare && this.props.onChange) {
+      this.props.onChange(this.props.form)
+    }
+  }
+
+  compareForm(prevForm, nextForm) {
+    let found = false
+    let keys = Object.keys(prevForm)
+    
+    keys.forEach((key) => {
+      if (prevForm[key] !== nextForm[key]) {
+        found = true
+      }
+    })
+
+    return found
   }
 
   handleSubmit(e) {
@@ -77,7 +106,7 @@ class Form extends Component {
   render() {
     if (this.state.setup) {
       return (
-        <form onSubmit={(e) => this.handleSubmit(e)}>
+        <form onSubmit={(e) => this.handleSubmit(e)} form={this.props.form}>
           { this.props.children }
         </form>
       )
@@ -87,10 +116,19 @@ class Form extends Component {
   }
 }
 
-Form.propTypes = {
+const mapStateToProps = (state, ownProps) => {
+  let name = ownProps.name || state.dashboard.form.counter
+  let form = state.dashboard.form[name] || ownProps.form
+  
+  return {form: {...form}, name: name}
+}
+
+FormContainer.propTypes = {
   form: PropTypes.object,     // Object containing inital values for Input components
   name: PropTypes.string,     // Name of the form used to set inital state of inputes in Global state
 }
+
+const Form = connect(mapStateToProps)(FormContainer)
 
 export default Form
 

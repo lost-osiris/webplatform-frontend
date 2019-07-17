@@ -4,6 +4,7 @@ import Utils from '~/utils'
 import { Card, Button, Inputs, Form, Collapse, Label } from '~/components'
 import ValuesEditor from './ValuesEditor'
 import InputPropsEditor from './InputPropsEditor'
+import { connect } from 'react-redux'
 
 class AddTemplate extends Component {
   constructor(props) {
@@ -11,17 +12,26 @@ class AddTemplate extends Component {
 
     this.utils = new Utils()
 
-    let formData = {
+    this.initForm = {
       isGlobal: false,
       isDynamic: false,
       isMulti: false,
+      description: '',
       application: '',
-      title: ''
+      title: '',
+      database: '',
+      collection: '',
+      key: '',
+      permissions: '',
+      api: '',
+      inputType: '',
+      section: '',
     }
+
     this.apis = this.utils.getSystemInfo().modules
     
     if (props.template !== undefined) {
-      formData = {...props.template}
+      this.initForm = {...props.template}
     }
 
     this.arrayInputTypes = ['select', 'radio', 'checkBox']
@@ -34,22 +44,24 @@ class AddTemplate extends Component {
     this.state = {
       values: (values || []),
       inputProps: (inputProps || {}),
-      form: formData
+      isDynamic: !false,
     }
   }
 
   handleChange(form) {
-    this.setState({form: form})
+    if (form.isDynamic !== this.state.isDynamic) {
+      this.setState({isDynamic: form.isDynamic})
+    }
   }
 
-  handleSubmit() {
+  handleSubmit(form) {
     const errorCount = this.checkForm()
 
     if (errorCount > 0) {
       this.forceUpdate()
     } else {
       // const template = this.createTemplate(this.formData)
-      const template = this.createTemplate(this.state.form)
+      const template = this.createTemplate(form)
       this.props.submit(template)
     }
   }
@@ -121,7 +133,7 @@ class AddTemplate extends Component {
   }
 
   renderValues() {
-    const {isDynamic, inputType} = this.state.form
+    const {isDynamic, inputType} = this.initForm
 
     if (!isDynamic && (this.arrayInputTypes.includes(inputType))) {
       return (
@@ -167,15 +179,9 @@ class AddTemplate extends Component {
    * Contains basic information like title, description, permissions, etc.
    */
   renderForm() {
-    this.handleAutocomplete = result => {
-      let form = {...this.state.form}
-      form.api = result.searchText
-      
-      this.setState({form: form})
-    }
 
 
-    console.log('rendering form, data is', this.state.form)
+    // console.log('rendering form, data is', this.state.form)
     // return (
     // )
   }
@@ -194,6 +200,14 @@ class AddTemplate extends Component {
   }
 
   render() {
+    // console.log('props', this.props)
+    // this.handleAutocomplete = result => {
+    //   let form = {...this.props.form}
+    //   form.api = result.searchText
+      
+    //   this.setState({form: form})
+    // }
+
     const newHandleSubmit = (form) => {
       return this.checkForm(form)
     }
@@ -202,7 +216,7 @@ class AddTemplate extends Component {
       onChange: form => this.handleChange(form),
       // onChange: form => console.log('WhErEs mY cHaNgE??' + form),
       onSubmit: (form) => newHandleSubmit(form),
-      form: this.state.form,
+      form: this.initForm,
       name: 'settings-add-template'
     }
 
@@ -228,43 +242,38 @@ class AddTemplate extends Component {
                 <Inputs.Text form="settings-add-template" id="title" />
               </div>
               <div className="col-lg-2">
-                {/* <label id="isGlobal">Global</label> */}
-                {/* <Inputs.Switch form="settings-add-template" id="isGlobal" label="Global" /> */}
+                <Inputs.Switch form="settings-add-template" id="isGlobal" label="Global" />
               </div>
               <div className="col-lg-2">
-                {/* <label id="isDynamic">Dynamic</label> */}
-                {/* <Inputs.Switch id="isDynamic" label="Dynamic" /> */}
+                <Inputs.Switch form="settings-add-template"id="isDynamic" label="Dynamic" />
               </div>
               <div className="col-lg-2">
-                {/* <label id="isMulti">Multi</label> */}
-                {/* <Inputs.Switch id="isMulti" label="Multi" /> */}
+                <Inputs.Switch form="settings-add-template" id="isMulti" label="Multi" />
               </div>
             </div>
             <Collapse>
-              <Collapse.Item collapsed={!this.state.form.isDynamic}>
+              <Collapse.Item collapsed={!this.state.isDynamic}>
                 {/* <Collapse.Header>
                 </Collapse.Header> */}
                 <Collapse.Body>
                   <div className="row" style={rowStyle}>
                     <div className="col-lg-3">
-                      {/* <Inputs.Text data-label="db" placeholder="Database..." /> */}
+                      <Inputs.Text form="settings-add-template" id="database" data-label="db" placeholder="Database..." />
                     </div>
                     <div className="col-lg-3">
-                      {/* <Inputs.Text data-label="collection" placeholder="Database Collection..." /> */}
+                      <Inputs.Text form="settings-add-template" id="collection" data-label="collection" placeholder="Database Collection..." />
                     </div>
                     <div className="col-lg-3">
-                      {/* <Inputs.Text data-label="key" placeholder="Document Key..." /> */}
+                      <Inputs.Text form="settings-add-template" id="key" data-label="key" placeholder="Document Key..." />
                     </div>
                     <div className="col-lg-3">
-                      {/* <Inputs.Autocomplete
+                      <Inputs.Autocomplete
+                        type="modules"
                         placeholder="API module..."
                         minSearch={1}
-                        data={this.apis}
-                        onChange={this.handleAutocomplete}
-                        searchText={this.formData.api}
-                        isObject={true}
-                        data-label="api"
-                      /> */}
+                        form="settings-add-template"
+                        id="api"
+                      />
                     </div>
                   </div>
                 </Collapse.Body>
@@ -272,18 +281,20 @@ class AddTemplate extends Component {
             </Collapse>
             <div className="row" style={rowStyle}>
               <div className="col-lg-12">
-                <label id="description">Description</label>
-                {/* <Inputs.Text
+                <Label form="settings-add-template" id="description">Description</Label>
+                <Inputs.Text
                   type="textarea"
                   rows="5"
                   data-label="description"
                   placeholder="Enter description here"
-                /> */}
+                  form="settings-add-template"
+                  id="description"
+                />
               </div>
             </div>
             <div className="row" style={rowStyle}>
               <div className="col-lg-4">
-                {/* <label id="inputType">Type</label>
+                <Label form="settings-add-template" id="inputType">Type</Label>
                 <Inputs.Select
                   options={[
                     {value: '', label: ''},
@@ -294,8 +305,9 @@ class AddTemplate extends Component {
                     {value: 'checkBox', label: 'Checkbox'},
                     {value: 'text', label: 'Text'},
                   ]}
+                  form="settings-add-template"
                   id="inputType"
-                /> */}
+                />
               </div>
               <div className="col-lg-4">
                 {/* <label id="application">Application</label>
@@ -309,7 +321,7 @@ class AddTemplate extends Component {
                 /> */}
               </div>
               <div className="col-lg-4">
-                {/* <label id="section">Section</label>
+                <Label form="settings-add-template" id="section">Section</Label>
                 <Inputs.Select
                   options={[
                     {value: '', label: ''},
@@ -318,25 +330,28 @@ class AddTemplate extends Component {
                     {value: 'advanced', label: 'advanced'},
                   ]}
                   id="section"
-                /> */}
+                  form="settings-add-template"
+                />
               </div>
             </div>
             <div className="row">
               <div className="col-lg-6">
-                {/* <label id="permissions">Permissions</label>
+                <label id="permissions">Permissions</label>
                 <Inputs.Text
                   data-label="permissions"
                   placeholder="Enter permissions"
-                /> */}
+                  form="settings-add-template"
+                  id="permissions"
+                />
               </div>
             </div>
             <div className="row" style={{ marginTop: '25px' }}>
               <div className="row-height">
                 <div className="col-lg-6 col-height">
-                  {/* {this.renderInputPropEditor()} */}
+                  {this.renderInputPropEditor()}
                 </div>
                 <div className="col-lg-6 col-height">
-                  {/* {this.renderValues()} */}
+                  {this.renderValues()}
                 </div>
               </div>
             </div>
@@ -350,4 +365,11 @@ class AddTemplate extends Component {
   }
 }
 
-export default AddTemplate
+const mapStateToProps = (state) => {
+  const { dashboard } = state
+  const form = dashboard.form['settings-add-template']
+  // console.log(form)
+  return {form: form}
+}
+
+export default connect(mapStateToProps)(AddTemplate)

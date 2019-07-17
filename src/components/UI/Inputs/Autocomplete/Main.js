@@ -124,6 +124,23 @@ class Autocomplete extends Component {
       })
     }
 
+    if (this.props.form) {
+      let formValue = this.props.formData[this.props.form]
+
+      if (this.props.id) {
+        formValue = formValue[this.props.id]
+      }
+
+      if (formValue !== update.value) {
+        let action = {
+          name: this.state.name,
+          id: this.props.id,
+          value: update.value
+        }
+        this.utils.dispatch('FORM_VALUE_UPDATE', action)
+      }
+    }
+
     this.setState(update)
   }
 
@@ -182,6 +199,7 @@ class Autocomplete extends Component {
       Container = <Main {...containerProps} onChange={(data) => this.handleEvent(data)} />
     }
 
+    // console.log(this.props.id, this.props.form)
     return (
       <div className="twitter-typeahead fg-toggled">
         <Inputs.Text
@@ -195,6 +213,8 @@ class Autocomplete extends Component {
           style={{marginBottom: 0}}
           disabled={this.props.disabled}
           error={this.props.error}
+          form={this.props.form}
+          id={this.props.id}
         />
         { Container }
       </div>
