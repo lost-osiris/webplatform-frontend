@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import classnames from 'classnames'
 import Utils from '~/utils'
 import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
 
 class Text extends Component {
   constructor(props) {
@@ -115,6 +116,14 @@ class Text extends Component {
       </div>
     )
   }
+}
+
+Text.propTypes = {
+  type: PropTypes.string,         // Type of text component (textarea or text)
+  value: PropTypes.string,        // The value of the text component 
+  onChange: PropTypes.func,       // Function called on text change
+  size: PropTypes.string,         // Size of select component (sm = small, lg = large, undefined = medium)
+  placeholder: PropTypes.string   // Placeholder text to display on the select component
 }
 
 const mapStateToProps = (state, ownProps) => {

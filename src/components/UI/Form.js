@@ -1,8 +1,8 @@
 
 import React, { Component } from 'react'
-import { Inputs } from '~/components'
 import Utils from '~/utils'
 import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
 
 class Form extends Component {
   constructor(props) {
@@ -87,14 +87,10 @@ class Form extends Component {
   }
 }
 
-const mapStateToProps = (state, ownProps) => {
-  let name = ownProps.name || state.dashboard.form.counter
-  let form = ownProps.form || state.dashboard.form[name]
-  let errors = ownProps.errors || form.errors
-
-  return {form: form, name: name, errors: errors}
+Form.propTypes = {
+  form: PropTypes.object,     // Object containing inital values for Input components
+  name: PropTypes.string,     // Name of the form used to set inital state of inputes in Global state
 }
 
-// const FormComponent = connect(mapStateToProps)(Form)
 export default Form
 

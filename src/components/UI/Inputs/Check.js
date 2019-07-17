@@ -106,7 +106,6 @@ class Check extends Component {
 
     return (
       <div className={className}>
-        {/* <input type="checkbox" {...inputProps} /> */}
         <input type="checkbox" {...inputProps} />
         {label}
       </div>

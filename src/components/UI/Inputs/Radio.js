@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Utils from '~/utils'
+import PropTypes from 'prop-types'
 // import classnames from 'classnames'
 
 /**
@@ -85,7 +86,6 @@ class RadioContainer extends Component {
       this.props.children,
       child => {
         const { value, label } = child.props
-        const onChange = this.handleChange
         return renderer(
           <RadioButton
             selectedValue={selectedValue}
@@ -124,15 +124,8 @@ export class RadioButton extends Component {
       value,
       selectedValue,
       inline,
-      // margin,
       id,
     } = this.props
-    // const radioClass = classnames({
-    //   radio: true,
-    //   'radio-inline': inline,
-    //   'm-b-15': !margin,
-    //   [`m-b-${margin}`]: !isNaN(margin),
-    // })
 
     let className = 'radio'
     if (inline) {
@@ -155,6 +148,15 @@ export class RadioButton extends Component {
       </div>
     )
   }
+}
+
+RadioContainer.propTypes = {
+  name: PropTypes.string,           // Name of the radio group
+  selectedValue: PropTypes.string,  // Currently selected radio value
+  inline: PropTypes.bool,           // Setting to true displays radio buttons in a single row
+  itemRenderer: PropTypes.func,     // Function for specifying how an individual radio button should be rendered
+  onChange: PropTypes.func          // Function called when change on radio is made
+
 }
 
 const mapStateToProps = (state, ownProps) => {

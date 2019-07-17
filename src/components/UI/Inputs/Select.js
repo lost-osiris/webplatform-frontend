@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Utils from '~/utils'
-import classnames from 'classnames'
 import PropTypes from 'prop-types'
 
 /**
@@ -61,8 +60,6 @@ class Select extends Component {
         this.props.onChange(e.target.value)
       }
     })
-
-    // this.setState({value: e.target.value})
   }
 
   componentDidMount() {
@@ -121,8 +118,6 @@ class Select extends Component {
         <div className="select">
           <select
             className={className}
-            // value={this.state.value}
-            // value={this.props.value}
             value={value}
             onChange={(e) => this.handleChange(e)}
             id={this.props.id}
@@ -135,8 +130,15 @@ class Select extends Component {
   }
 }
 
+Select.propTypes = {
+  options: PropTypes.array,         // Array of options for teh select component
+  value: PropTypes.string,          // Value to set as currently selected
+  onChange: PropTypes.func,         // Function to be executed when change occurs within select
+  size: PropTypes.string,           // Size of select component (sm = small, lg = large, undefined = medium)
+  placeholder: PropTypes.string     // Placeholder text to display on the select component
+}
+
 const mapStateToProps = (state, ownProps) => {
-  // return Utils.inputMapStateToProps(state, ownProps, '')
   return Utils.inputMapStateToProps(state, ownProps)
 }
 
