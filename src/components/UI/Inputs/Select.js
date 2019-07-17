@@ -71,6 +71,7 @@ class Select extends Component {
     }
 
     let update = {
+      error: this.props.error, 
       name: action.name,
       selfManaged: selfManaged
     }
@@ -102,6 +103,7 @@ class Select extends Component {
 
   render() {
     let value = this.props.value
+    let errorComponent = null
     
     if (this.state.selfManaged && this.props.formData) {
       value = this.props.formData[this.state.name].value || this.props.value
@@ -111,6 +113,14 @@ class Select extends Component {
 
     if (this.props.size && (this.props.size == 'sm' || this.props.size == 'lg')) {
       className += ' form-control-' + this.props.size
+    }
+
+    if (this.props.error) {
+      className += ' is-invalid'
+    }
+
+    if (this.props.error) {
+      errorComponent = <i className="form-group__feedback zmdi zmdi-close-circle"></i>
     }
 
     return (
@@ -124,6 +134,7 @@ class Select extends Component {
           >
             {this.renderOptions()}
           </select>
+          {errorComponent}
         </div>
       </div>
     )

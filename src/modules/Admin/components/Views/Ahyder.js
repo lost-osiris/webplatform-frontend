@@ -90,16 +90,17 @@ export default class AhyderContainer extends React.Component {
           />
         </Form> */}
         <h2>Select</h2>
-        {/* <Inputs.Select 
+        <Inputs.Select 
           form="select-f"
           id="select"
           options={[
+            {value: '', label: ''},
             {value: 'f', label: 'first'},
             {value: 's', label: 'second'},
             {value: 't', label: 'third'},
           ]}
-        /> */}
-        <Form name="select-test" form={{select: 'f'}}>
+        />
+        {/* <Form name="select-test" form={{select: 'f'}}>
           <Inputs.Select 
             form="select-test" 
             id="select"
@@ -108,7 +109,7 @@ export default class AhyderContainer extends React.Component {
             <option value='d'>d</option>
             <option value='c'>c</option>
           </Inputs.Select>
-        </Form>
+        </Form> */}
 
         <h2>Radio</h2>
         <Form name="test" form={{input: '1'}}>
