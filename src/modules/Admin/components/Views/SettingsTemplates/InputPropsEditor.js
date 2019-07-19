@@ -46,7 +46,7 @@ class InputPropsEditor extends Component {
             {this.renderValue(entries[key])}
           </td>
           <td>
-            <Button btnStyle="danger" onClick={() => this.props.handleRemove(key)}>
+            <Button type="button" btnStyle="danger" onClick={() => this.props.handleRemove(key)}>
               Remove
             </Button>
           </td>

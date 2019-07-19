@@ -13,19 +13,20 @@ class AddTemplate extends Component {
     this.utils = new Utils()
 
     this.initForm = {
+      title: '',
       isGlobal: false,
       isDynamic: false,
       isMulti: false,
-      description: '',
-      application: '',
-      title: '',
-      database: '',
+      db: '',
       collection: '',
       key: '',
-      permissions: '',
       api: '',
+      description: '',
       inputType: '',
+      application: '',
       section: '',
+      permissions: '',
+      inputProps: {}
     }
 
     this.apis = this.utils.getSystemInfo().modules
@@ -44,13 +45,16 @@ class AddTemplate extends Component {
     this.state = {
       values: (values || []),
       inputProps: (inputProps || {}),
-      isDynamic: !false,
+      isDynamic: false,
     }
   }
 
   handleChange(form) {
     if (form.isDynamic !== this.state.isDynamic) {
       this.setState({isDynamic: form.isDynamic})
+    }
+    if (form.inputProps !== this.state.inputProps) {
+      this.setState({inputProps: form.inputProps})
     }
   }
 
@@ -72,6 +76,7 @@ class AddTemplate extends Component {
       delete template.db
       delete template.collection
       delete template.key
+      delete template.api
     }
 
     if (this.arrayInputTypes.includes(form.inputType)) {
@@ -83,7 +88,8 @@ class AddTemplate extends Component {
     }
 
     // if (this.formData.permissions !== undefined && this.formData.permissions !== '') {
-    if (this.state.form.permissions !== undefined && this.state.form.permissions !== '') {
+    // if (this.state.form.permissions !== undefined && this.state.form.permissions !== '') {
+    if (this.props.form.permissions !== undefined && this.props.form.permissions !== '') {
       template.permissions = this.createPermissions()
     } else {
       delete template.permissions
@@ -94,7 +100,8 @@ class AddTemplate extends Component {
 
   createPermissions() {
     // return this.formData.permissions.split(',').map(perm => perm.trim())
-    return this.state.form.permissions.split(',').map(perm => perm.trim())
+    // return this.state.form.permissions.split(',').map(perm => perm.trim())
+    return this.props.form.permissions.split(',').map(perm => perm.trim())
   }
 
   checkForm(form) {
@@ -158,32 +165,50 @@ class AddTemplate extends Component {
    * for the desired key.
    */
   renderInputPropEditor() {
+
+    // Set default values in case form is not fully initialized
+    let inputProps = {}
+    const action = {
+      name: 'settings-add-template',
+      id: 'inputProps',
+      value: {} 
+    }
+
+    // If form has been initialized, set appropriate values
+    if (this.props.form) {
+      action.value = {...this.props.form.inputProps}
+      inputProps = this.props.form.inputProps
+    }
+
     return (
       <InputPropsEditor
-        inputProps={this.state.inputProps}
-        handleAdd={(key, val) => this.setState({
-          inputProps: {
-            ...this.state.inputProps,
-            [key]: val,
-          }
-        })}
-        handleRemove={(key) => this.setState({
-          inputProps: _.omit(this.state.inputProps, key)
-        })}
+        inputProps={inputProps}
+        handleAdd = {(key, val) => {
+          action.value[key] = val 
+          this.utils.dispatch('FORM_VALUE_UPDATE', action)
+        }}
+        handleRemove={(key) => {
+          action.value = _.omit(action.value,  key)
+          this.utils.dispatch('FORM_VALUE_UPDATE', action)
+        }}
       />
     )
   }
 
   /**
-   * Render the form componenet of the add template view.
-   * Contains basic information like title, description, permissions, etc.
+   * Returns the magnitude/count of how many errors are present in the supplied
+   * error object
+   * 
+   * @param {Object} errors - Object of errors. Keys represent component, value true if error, false if not
    */
-  renderForm() {
-
-
-    // console.log('rendering form, data is', this.state.form)
-    // return (
-    // )
+  getErrorCount(errors) {
+    let count = 0
+    for (var error of Object.keys(errors)) {
+      // Increment counter if error present
+      errors[error] ? count++ : null 
+    }
+    
+    return count
   }
 
   renderClose() {
@@ -200,21 +225,19 @@ class AddTemplate extends Component {
   }
 
   render() {
-    // console.log('props', this.props)
-    // this.handleAutocomplete = result => {
-    //   let form = {...this.props.form}
-    //   form.api = result.searchText
-      
-    //   this.setState({form: form})
-    // }
-
     const newHandleSubmit = (form) => {
-      return this.checkForm(form)
+      const template = this.createTemplate(form)
+      const  errors = this.checkForm(form)
+
+      // If no errors are present, submit to api
+      if (this.getErrorCount(errors) === 0) {
+        this.props.submit(template)
+      }
+      return errors 
     }
 
     const form = {
       onChange: form => this.handleChange(form),
-      // onChange: form => console.log('WhErEs mY cHaNgE??' + form),
       onSubmit: (form) => newHandleSubmit(form),
       form: this.initForm,
       name: 'settings-add-template'
@@ -258,7 +281,7 @@ class AddTemplate extends Component {
                 <Collapse.Body>
                   <div className="row" style={rowStyle}>
                     <div className="col-lg-3">
-                      <Inputs.Text form="settings-add-template" id="database" data-label="db" placeholder="Database..." />
+                      <Inputs.Text form="settings-add-template" id="db" data-label="db" placeholder="Database..." />
                     </div>
                     <div className="col-lg-3">
                       <Inputs.Text form="settings-add-template" id="collection" data-label="collection" placeholder="Database Collection..." />
@@ -310,15 +333,17 @@ class AddTemplate extends Component {
                 />
               </div>
               <div className="col-lg-4">
-                {/* <label id="application">Application</label>
+                <label form="settings-add-template" id="application">Application</label>
                 <Inputs.Autocomplete
-                  ref="application"
+                  // ref="application"
                   minSearch={1}
                   data={this.props.applications}
-                  data-label="application"
-                  searchText={this.formData.application}
+                  // data-label="application"
+                  // searchText={this.formData.application}
                   searchKey={'name'}
-                /> */}
+                  form="settings-add-template"
+                  id="application"
+                />
               </div>
               <div className="col-lg-4">
                 <Label form="settings-add-template" id="section">Section</Label>
@@ -368,7 +393,6 @@ class AddTemplate extends Component {
 const mapStateToProps = (state) => {
   const { dashboard } = state
   const form = dashboard.form['settings-add-template']
-  // console.log(form)
   return {form: form}
 }
 
