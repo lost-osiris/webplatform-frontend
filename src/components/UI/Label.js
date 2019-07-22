@@ -33,7 +33,7 @@ const mapStateToProps = (state, ownProps) => {
   let id = ownProps.id
   let error = false
 
-  if (name && id) {
+  if (name && id && state.dashboard.form[name]) {
     error = state.dashboard.form[name].errors[id]
   }
 

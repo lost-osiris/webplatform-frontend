@@ -1,4 +1,4 @@
-import swal from 'sweetalert2'
+import Swal from 'sweetalert2'
 
 class SwalHandler {
   constructor(store, options) {
@@ -33,6 +33,7 @@ class SwalHandler {
       if (found) {
         let promise = {
           swal: this.callSwal(action),
+          options: this.setOptions(action),
           route: route,
         }
 
@@ -47,6 +48,7 @@ class SwalHandler {
       if (isSwal) {
         let promise = {
           swal: this.callSwal(action),
+          options: this.setOptions(action),
           route: routes,
         }
 
@@ -84,7 +86,9 @@ class SwalHandler {
 
   callSwal(action) {
     let options = this.setOptions(action)
-    return swal(options.before)
+    // return swal(options.before)
+    // return options
+    return Swal.fire(options.before)
   }
 
   success(action) {
@@ -174,7 +178,7 @@ class SwalHandler {
       before.text = 'Are you sure you want to edit this?'
     }
 
-    return {before: before, success: success, failure: failure}
+    return {before: before, success: success, failure: failure, action: action}
   }
 
 }

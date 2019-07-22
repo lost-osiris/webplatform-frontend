@@ -185,7 +185,7 @@ const DashboardReducer = function(state = initialState, action) {
       return Object.assign({}, state, newState)
     }
     
-    case 'FORM_REMOVE': {
+    case 'FORM_CLEAR': {
       let newState = {
         form: {...state.form}
       }

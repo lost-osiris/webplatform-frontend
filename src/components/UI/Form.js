@@ -15,7 +15,7 @@ class FormContainer extends Component {
       form: props.form,
       name: props.name,
       setup: false, 
-      init: true
+      init: true,
     }
   }
 
@@ -76,6 +76,8 @@ class FormContainer extends Component {
         }
 
         this.utils.dispatch('FORM_ERROR', action)
+      } else {
+        this.utils.dispatch('FORM_CLEAR', {name: this.props.name})
       }
     }
   }
