@@ -165,7 +165,6 @@ class AddTemplate extends Component {
    * for the desired key.
    */
   renderInputPropEditor() {
-
     // Set default values in case form is not fully initialized
     let inputProps = {}
     const action = {
