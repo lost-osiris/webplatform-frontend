@@ -20,18 +20,31 @@ const route = {
   },
   mapStateToProps: (state) => {
     return {
-      template: state.settings.template
+      template: state.settings.template,
+      applications: state.settings.applications
     }
   },
   api: (utils, match) => {
     const api = {
-      path: 'settings.templates.get',
-      data: {
-        name: match.params.name,
+      templates: {
+        path: 'settings.templates.get',
+        data: {
+          name: match.params.name,
+        }
+      },
+      applications: {
+        path: '/applications/list'
       }
     }
-    return utils.request(api).then(data => {
-      return utils.dispatch('TEMPLATE', {data: data}, 'settings')
+    // return utils.request(api).then(data => {
+    //   return utils.dispatch('TEMPLATE', {data: data}, 'settings')
+    // })
+    return utils.request(api).then(async (data) => {
+      let  templates = await data.templates
+      let applications = await data.applications
+
+      utils.dispatch('TEMPLATE', {data: templates}, 'settings')
+      return utils.dispatch('ADD', {data: applications}, 'settings')
     })
   }
 }

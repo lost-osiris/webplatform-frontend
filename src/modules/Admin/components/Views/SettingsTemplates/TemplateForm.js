@@ -10,6 +10,7 @@ class AddTemplate extends Component {
   constructor(props) {
     super(props)
 
+    console.log('EEEEEEEEEEEEEEEE', props)
     this.utils = new Utils()
 
     this.initForm = {
@@ -32,7 +33,7 @@ class AddTemplate extends Component {
     this.apis = this.utils.getSystemInfo().modules
     
     if (props.template !== undefined) {
-      this.initForm = {...props.template}
+      this.initForm = {...this.initForm, ...props.template}
     }
 
     this.arrayInputTypes = ['select', 'radio', 'checkBox']
@@ -41,11 +42,17 @@ class AddTemplate extends Component {
     const values = props.type === 'edit' ? props.template.values : []
     const inputProps = props.type === 'edit' ? props.template.inputProps : {}
 
+    let dynamic = false
+    // Template should be defined if editing
+    if (this.props.template) {
+      // Set the state of the forms "dynamic" property to mimic the provided template on props
+      dynamic = this.props.template.isDynamic
+    }
     
     this.state = {
       values: (values || []),
       inputProps: (inputProps || {}),
-      isDynamic: false,
+      isDynamic: dynamic,
     }
   }
 
@@ -224,12 +231,16 @@ class AddTemplate extends Component {
   }
 
   render() {
+
+    console.log('RENDERING ADD - Props:', this.props)
+
     const newHandleSubmit = (form) => {
       const template = this.createTemplate(form)
       const  errors = this.checkForm(form)
 
       // If no errors are present, submit to api
       if (this.getErrorCount(errors) === 0) {
+        console.log('NO ERRORS, Submitting template - ', template)
         this.props.submit(template)
       }
       return errors 
@@ -239,8 +250,10 @@ class AddTemplate extends Component {
       onChange: form => this.handleChange(form),
       onSubmit: (form) => newHandleSubmit(form),
       form: this.initForm,
-      name: 'settings-add-template'
+      name: this.props.name
     }
+
+    console.log(form)
 
     const rowStyle = {marginTop: '15px', marginBottom: '15px'}
     
@@ -260,17 +273,17 @@ class AddTemplate extends Component {
           <Form {...form}>
             <div className="row" style={rowStyle}>
               <div className="col-lg-3">
-                <Label form="settings-add-template" id="title">Title</Label>
-                <Inputs.Text form="settings-add-template" id="title" />
+                <Label form={this.props.name} id="title">Title</Label>
+                <Inputs.Text form={this.props.name} id="title" />
               </div>
               <div className="col-lg-2">
-                <Inputs.Switch form="settings-add-template" id="isGlobal" label="Global" />
+                <Inputs.Switch form={this.props.name} id="isGlobal" label="Global" />
               </div>
               <div className="col-lg-2">
-                <Inputs.Switch form="settings-add-template"id="isDynamic" label="Dynamic" />
+                <Inputs.Switch form={this.props.name}id="isDynamic" label="Dynamic" />
               </div>
               <div className="col-lg-2">
-                <Inputs.Switch form="settings-add-template" id="isMulti" label="Multi" />
+                <Inputs.Switch form={this.props.name} id="isMulti" label="Multi" />
               </div>
             </div>
             <Collapse>
@@ -280,20 +293,20 @@ class AddTemplate extends Component {
                 <Collapse.Body>
                   <div className="row" style={rowStyle}>
                     <div className="col-lg-3">
-                      <Inputs.Text form="settings-add-template" id="db" data-label="db" placeholder="Database..." />
+                      <Inputs.Text form={this.props.name} id="db" data-label="db" placeholder="Database..." />
                     </div>
                     <div className="col-lg-3">
-                      <Inputs.Text form="settings-add-template" id="collection" data-label="collection" placeholder="Database Collection..." />
+                      <Inputs.Text form={this.props.name} id="collection" data-label="collection" placeholder="Database Collection..." />
                     </div>
                     <div className="col-lg-3">
-                      <Inputs.Text form="settings-add-template" id="key" data-label="key" placeholder="Document Key..." />
+                      <Inputs.Text form={this.props.name} id="key" data-label="key" placeholder="Document Key..." />
                     </div>
                     <div className="col-lg-3">
                       <Inputs.Autocomplete
                         type="modules"
                         placeholder="API module..."
                         minSearch={1}
-                        form="settings-add-template"
+                        form={this.props.name}
                         id="api"
                       />
                     </div>
@@ -303,20 +316,20 @@ class AddTemplate extends Component {
             </Collapse>
             <div className="row" style={rowStyle}>
               <div className="col-lg-12">
-                <Label form="settings-add-template" id="description">Description</Label>
+                <Label form={this.props.name} id="description">Description</Label>
                 <Inputs.Text
                   type="textarea"
                   rows="5"
                   data-label="description"
                   placeholder="Enter description here"
-                  form="settings-add-template"
+                  form={this.props.name}
                   id="description"
                 />
               </div>
             </div>
             <div className="row" style={rowStyle}>
               <div className="col-lg-4">
-                <Label form="settings-add-template" id="inputType">Type</Label>
+                <Label form={this.props.name} id="inputType">Type</Label>
                 <Inputs.Select
                   options={[
                     {value: '', label: ''},
@@ -327,12 +340,12 @@ class AddTemplate extends Component {
                     {value: 'checkBox', label: 'Checkbox'},
                     {value: 'text', label: 'Text'},
                   ]}
-                  form="settings-add-template"
+                  form={this.props.name}
                   id="inputType"
                 />
               </div>
               <div className="col-lg-4">
-                <label form="settings-add-template" id="application">Application</label>
+                <label form={this.props.name} id="application">Application</label>
                 <Inputs.Autocomplete
                   // ref="application"
                   minSearch={1}
@@ -340,12 +353,12 @@ class AddTemplate extends Component {
                   // data-label="application"
                   // searchText={this.formData.application}
                   searchKey={'name'}
-                  form="settings-add-template"
+                  form={this.props.name}
                   id="application"
                 />
               </div>
               <div className="col-lg-4">
-                <Label form="settings-add-template" id="section">Section</Label>
+                <Label form={this.props.name} id="section">Section</Label>
                 <Inputs.Select
                   options={[
                     {value: '', label: ''},
@@ -354,7 +367,7 @@ class AddTemplate extends Component {
                     {value: 'advanced', label: 'advanced'},
                   ]}
                   id="section"
-                  form="settings-add-template"
+                  form={this.props.name}
                 />
               </div>
             </div>
@@ -364,7 +377,7 @@ class AddTemplate extends Component {
                 <Inputs.Text
                   data-label="permissions"
                   placeholder="Enter permissions"
-                  form="settings-add-template"
+                  form={this.props.name}
                   id="permissions"
                 />
               </div>
@@ -389,10 +402,12 @@ class AddTemplate extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, props) => {
+  let name = `settings-${props.type}-template`
+
   const { dashboard } = state
-  const form = dashboard.form['settings-add-template']
-  return {form: form}
+  const form = dashboard.form[name]
+  return {form: form, name:name}
 }
 
 export default connect(mapStateToProps)(AddTemplate)

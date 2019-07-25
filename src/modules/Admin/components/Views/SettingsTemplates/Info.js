@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import _ from 'lodash'
 import { Card, DropDown, ToolsWidget } from '~/components'
 // import AddContainer from '../containers/AddContainer'
-import AddContainer from '../../../containers/SettingsTemplates/AddContainer'
+import TemplateFormContainer from '../../../containers/SettingsTemplates/TemplateFormContainer'
 import Utils from '~/utils'
 
 class TemplateInfo extends Component {
@@ -36,7 +36,7 @@ class TemplateInfo extends Component {
     return (
       <table className="table">
         <tbody>
-          {keys.filter(key => this.props.template[key] !== undefined).map(key => (
+          {keys.filter(key => this.props.template[key] !== undefined && this.props.template[key]  !== '').map(key => (
             <tr key={key}>
               <th width="10%">
                 {_.startCase(key)}
@@ -93,11 +93,12 @@ class TemplateInfo extends Component {
       <div>
         <ToolsWidget current={this.state.current}>
           <div key="edit">
-            <AddContainer
+            <TemplateFormContainer
               type="edit"
               template={this.props.template}
               close={() => this.changeTool('')}
               submit={(template) => this.submit(template)}
+              applications={this.props.applications}
             />
           </div>
           <div key="placeholder" />

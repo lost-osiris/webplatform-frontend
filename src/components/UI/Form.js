@@ -19,6 +19,10 @@ class FormContainer extends Component {
     }
   }
 
+  componentWillUnmount() {
+    this.utils.dispatch('FORM_CLEAR', {name: this.props.name})
+  }
+
   shouldComponentUpdate(nextProps, nextState) {
     if (nextState.setup) {
       return true

@@ -2,7 +2,7 @@ import * as Nav from '../../../components/UI/Nav'
 import UI from '../../../components/UI'
 import SettingsReducer from '~/modules/Admin/reducers/Settings'
 
-let addContainer = () => import('../../../containers/SettingsTemplates/AddContainer')
+let templateFormContainer = () => import('../../../containers/SettingsTemplates/TemplateFormContainer')
 
 const route = {
   route: {
@@ -11,7 +11,7 @@ const route = {
   },
   ui: {
     stateTitle: UI.StateTitle.Settings.Main,
-    content: addContainer,
+    content: templateFormContainer,
     appNav: Nav.Settings.Main,
   },
   reducer: {

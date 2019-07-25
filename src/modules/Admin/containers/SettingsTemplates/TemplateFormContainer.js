@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import Add from '../../components/Views/SettingsTemplates/Add'
+import TemplateForm from '../../components/Views/SettingsTemplates/TemplateForm'
 import Utils from '~/utils'
 
 class AddContainer extends Component {
@@ -25,7 +25,7 @@ class AddContainer extends Component {
 
   render() {
     return (
-      <Add
+      <TemplateForm
         type={this.type}
         applications={this.props.applications}
         submit={(template) => this.submit(template)}
