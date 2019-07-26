@@ -8,6 +8,16 @@ class MainContainer extends Component {
     this.utils = new Utils()
   }
 
+  getTemplates() {
+    let api = {
+      path: 'settings.templates.list',
+    }
+
+    this.utils.request(api).then(data => {
+      this.utils.dispatch('TEMPLATES_INIT', {data: data}, 'settings')
+    })
+  }
+
   removeTemplate(tId) {
     let api = {
       path: 'settings.templates.remove',

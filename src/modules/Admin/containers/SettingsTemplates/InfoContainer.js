@@ -9,9 +9,11 @@ class InfoContainer extends Component {
   }
 
   render() {
+    console.log('INFO CONTAINER', this.props)
     return (
       <TemplateInfo
         template={this.props.template}
+        applications={this.props.applications}
       />
     )
   }

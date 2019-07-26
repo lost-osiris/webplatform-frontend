@@ -1,115 +1,89 @@
 import React, { Component } from 'react'
 import classnames from 'classnames'
+import Utils from '~/utils'
+import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
 
-export default class Input extends Component {
+class Text extends Component {
   constructor(props) {
     super(props)
-    let className = classnames({
-      'form-group__bar': true,
-      'has-error': props.error
-    })
 
+    this.utils = new Utils()
     this.state = {
-      value: props.value || '',
-      className: className,
-      error: props.error,
+      name: undefined,
+      selfManaged: false
     }
   }
 
   componentDidMount() {
-    let className = classnames({
-      'form-group': true,
-      'has-error': this.props.error
-    })
-
-    this.setState({
-      className: className,
-      value: this.props.value || '',
+    let selfManaged = !this.props.form && !this.props.id
+    
+    let action = {
+      name: this.props.form,
+      id: this.props.id
+    }
+    
+    let update = {
       error: this.props.error,
-    })
-  }
+      name: action.name,
+      selfManaged: selfManaged
+    }
 
-  componentDidUpdate(prevProps) {
-    let hasUpdate = false
-    let update = {}
+    if (selfManaged) {
+      update.name = this.utils.getFormCounter()
 
-    if (this.props.error !== this.state.error) {
-      hasUpdate = true
-
-      let className = classnames({
-        'form-group': true,
-        'has-error': this.state.error
+      this.utils.dispatch('FORM_INIT', action).then(() => {
+        this.setState(update)
       })
-
-      update['className'] = className
-      update['error'] = this.props.error
-    }
-
-    if (this.props.value === prevProps.value && this.state.value !== prevProps.value) {
-      hasUpdate = true
-      update['value'] = this.props.value
-    }
-
-    if (hasUpdate) {
+    } else {
       this.setState(update)
     }
   }
 
-  handleEvent() {
-    let className = classnames({
-      'form-group': true,
-      'has-error': this.state.error
-    })
-
-    this.setState({className: className})
-  }
-
   handleChange(e) {
-    if (this.props.onChange) {
-      this.props.onChange(e.target.value)
+    let action = {
+      name: this.state.name,
+      id: this.props.id,
+      value: e.target.value
     }
 
-    this.setState({value: e.target.value})
+    this.utils.dispatch('FORM_VALUE_UPDATE', action).then(() => {
+      if (this.props.onChange) {
+        this.props.onChange(action.value)
+      }
+    })
+  }
+
+  handleFocus() {
+    if (this.props.onFocus) {
+      this.props.onFocus()
+    }
+  }
+
+  handleBlur() {
+    if (this.props.onBlur) {
+      this.props.onBlur()
+    }
   }
 
   render() {
-
-    const handleFocus = () => {
-      if (this.props.onFocus) {
-        this.props.onFocus()
-      }
-
-      this.handleEvent(true)
-    }
-
-    const handleBlur = () => {
-      if (this.props.onBlur) {
-        this.props.onBlur()
-      }
-
-      this.handleEvent(false)
-    }
-
     let dom
+    let value = this.props.value
+    let errorComponent = null
 
-    let valueProp
-
-    if (this.props.value) {
-      valueProp = this.props.value
-    }
-    else {
-      valueProp = this.state.value
+    if (this.state.selfManaged && this.props.formData) {
+      value = this.props.formData[this.state.name].value || this.props.value
     }
 
     let props = {
-      value: valueProp,
+      value: value,
       onChange: (e) => this.handleChange(e),
-      // onChange: (e) => this.props.onChange(e),
-      onFocus: handleFocus,
-      onBlur: handleBlur,
+      onFocus: () => this.handleFocus(),
+      onBlur: () => this.handleBlur(),
       className: classnames({
         'form-control': true,
-        'textarea-autosize': this.props.type === 'textarea'
+        'textarea-autosize': this.props.type === 'textarea',
+        'is-invalid': this.props.error,
       }),
       type: 'text',
       placeholder: this.props.placeholder,
@@ -119,8 +93,6 @@ export default class Input extends Component {
     if ( this.props.size && this.props.size != 'textarea' && (this.props.size == 'sm' || this.props.size == 'lg' ) ) {
       props['className'] += ' form-control-' + this.props.size
     }
-
-    // props = {...props, ...this.props}
 
     if (this.props.type == 'textarea') {
       if (this.props.rows != undefined) {
@@ -132,11 +104,30 @@ export default class Input extends Component {
       dom = <input {...props} />
     }
 
+    if (this.props.error) {
+      errorComponent = <i className="form-group__feedback zmdi zmdi-close-circle"></i>
+    }
+
     return (
-      <div className={this.state.className} style={this.props.style}>
+      <div className="form-group" style={this.props.style}>
         { dom }
+        { errorComponent }
         <i className="form-group__bar" />
       </div>
     )
   }
 }
+
+Text.propTypes = {
+  type: PropTypes.string,         // Type of text component (textarea or text)
+  value: PropTypes.string,        // The value of the text component 
+  onChange: PropTypes.func,       // Function called on text change
+  size: PropTypes.string,         // Size of select component (sm = small, lg = large, undefined = medium)
+  placeholder: PropTypes.string   // Placeholder text to display on the select component
+}
+
+const mapStateToProps = (state, ownProps) => {
+  return Utils.inputMapStateToProps(state, ownProps, '')
+}
+
+export default connect(mapStateToProps)(Text)

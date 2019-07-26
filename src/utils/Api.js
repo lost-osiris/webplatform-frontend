@@ -1,4 +1,5 @@
 import SwalHandler from './SwalHandler'
+import Swal from 'sweetalert2'
 import { apiRequest, apiSuccess, apiFailure } from '~/actions'
 
 export default class Api {
@@ -15,17 +16,26 @@ export default class Api {
     let swal = new SwalHandler(this.store, swalOptions)
     let [isSwal, response] = swal.check(routes)
 
+    console.log(response)
+
     if (isSwal) {
       try {
         return await response.swal.then((check) => {
           if (check.value) {
             return options.pre().then(() => {
-              return this.fetchData(routes, data, options)
+              return this.fetchData(routes, data, options).then((data) => {
+                if (response.options.action === 'remove' || response.options.action === 'edit') {
+                  Swal.fire(response.options.success)
+                }
+
+                return data
+              })
             })
           }
         })
       } catch (err) {
-        console.warn('User canceled the request.')
+        Swal.fire(response.options.failure)
+        // console.warn('User canceled the request.')
       }
 
     } else {

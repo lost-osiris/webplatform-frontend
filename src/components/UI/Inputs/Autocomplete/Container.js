@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import Utils from '~/utils'
 // import { Inputs } from '~/components'
 
 import ResultsContainer from './ResultsContainer'
 
-export default class Autocomplete extends Component {
+class AutocompleteContainer extends Component {
   constructor(props) {
     super(props)
 
@@ -139,3 +141,10 @@ export default class Autocomplete extends Component {
     return <ResultsContainer {...containerProps} />
   }
 }
+
+export default AutocompleteContainer
+// const mapStateToProps = (state, ownProps) => {
+//   return Utils.inputMapStateToProps(state, ownProps, '')
+// }
+
+// export default connect(mapStateToProps)(AutocompleteContainer)

@@ -1,75 +1,104 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import Utils from '~/utils'
+import classnames from 'classnames'
+import PropTypes from 'prop-types'
 
-export default class Switch extends Component {
+class Switch extends Component {
   constructor(props) {
     super(props)
-    this.setup(this.props)
+
+    this.utils = new Utils()
+
     this.state = {
-      toggled: props.on === true || props.off === false || false,
+      name: undefined,
+      selfManaged: false
+    }
+
+  }
+
+  componentDidMount() {
+    let selfManaged = !this.props.form && !this.props.id
+    
+    let action = {
+      name: this.props.form,
+      id: this.props.id
+    }
+
+    let update = {
+      name: action.name,
+      selfManaged: selfManaged
+    }
+
+    // If the component does not specify name and id self managed
+    if (selfManaged) {
+      // And use its form counter as the form name
+      update.name = this.utils.getFormCounter()
+
+      this.utils.dispatch('FORM_INIT', action).then(() => {
+        this.setState(update)
+      })
+    }
+    else {
+      this.setState(update)
     }
   }
 
-  shouldComponentUpdate(nextProps) {
-    if (this.props.on != nextProps.on || this.props.off != nextProps.off) {
-      this.setState({toggled: nextProps.on === true || nextProps.off === false || false})
-    }
-    return true
-  }
-  
-  setup(props) {
-    this.className = 'toggle-switch'
-    this.onChange = props.onChange
-    this.error = props.error
-    this.color = undefined
-    this.disabled = ''
-    this.alignment = props.textAlign
-    this.label = props.label
-
-    if (props.color != undefined) {
-      this.className += ' toggle-switch--' + props.color
+  /**
+   * Toggles the switch. This fuction toggles the switch
+   * between the off (false) and on (true) position.
+   */
+  toggle(e) {
+    let action = {
+      name: this.state.name,
+      id: this.props.id,
+      value: e.target.checked 
     }
 
-    if (props.disabled != undefined &&
-      typeof props.disabled === 'boolean' &&
-      props.disabled) {
-      this.disabled = 'disabled'
-    }
-  }
+    this.utils.dispatch('FORM_VALUE_UPDATE', action).then(() => {
+      if (this.props.onChange) {
+        this.props.onChange(e.target.checked)
+      }
+    })
 
-  handleEvent(toggle) {
-    this.setState({toggled: toggle})
-  }
-
-  toggle() {
-    this.state.toggled ? this.setState({toggled: false}) : this.setState({toggled: true})
   }
 
   render() {
-    this.setup(this.props)
+    let value = this.props.value
 
+    if (this.state.selfManaged && this.props.formData) {
+      value = this.props.formData[this.state.name].value || this.props.value
+    }
+
+    let classes = {
+      'toggle-switch': true,
+      'form-control': true,
+    }
+    classes['toggle-swtich--' + this.props.color] = this.props.color
+    let className = classnames(classes)
+    
     let inputProps = {
-      checked: this.state.toggled,
+      // checked: this.props.on === true || this.props.off === false || false,
+      checked: value,
       disabled: this.props.disabled,
     }
 
     inputProps.onChange = (e) => {
-      this.handleEvent(!this.state.toggled)
-      if (this.onChange != undefined) {
-        this.onChange(e)
+      if (this.props.onChange != undefined) {
+        this.props.onChange(!this.state.toggled)
       }
-
-      this.toggle()
+      this.toggle(e)
     }
 
     //Conditionally create label if one is supplied in props
     let label
     if (this.props.label != undefined) {
-      label = <label>{this.props.label}</label>
+      label = <label>{ this.props.label }</label>
     }
 
     return (
       <div className="switch-container" style={{display: 'inline-block'}}>
-        <div className={this.className}  >
+        <div className={ className }>
           <input type="checkbox" className="toggle-switch__checkbox" {...inputProps} />
           <i className="toggle-switch__helper" />
         </div>
@@ -79,3 +108,15 @@ export default class Switch extends Component {
 
   }
 }
+
+const mapStateToProps = (state, ownProps) => {
+  return Utils.inputMapStateToProps(state, ownProps, false)
+}
+
+Switch.propTypes = {
+  value: PropTypes.bool,      // Value to set the state of the switch. true for on, false for off
+  form: PropTypes.string,     // Name of the form the component belongs to. Checks global state for said form and makes association
+  id: PropTypes.string,       // Identifier for the switch. The name of the switch component in the larger form (example: id=isGlobal)
+}
+
+export default connect(mapStateToProps)(Switch)

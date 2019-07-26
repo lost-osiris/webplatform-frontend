@@ -1,30 +1,41 @@
 
 import React, { Component } from 'react'
-import { Inputs } from '~/components'
+import { connect } from 'react-redux'
+import { Inputs, Form } from '~/components'
 
 import Main from './Container'
 import ApiContainer from './ApiContainer'
 import Utils from '~/utils'
 
-export default class Autocomplete extends Component {
+class Autocomplete extends Component {
   constructor(props) {
     super(props)
 
     this.state = {
-      value: props.searchText|| '',
       results: [],
       exact: false,
       selected: false,
       toggled: false,
-      minSearch: props.minSearch || 3
+      minSearch: props.minSearch || 3,
+      name: undefined,
+      value: ''
     }
 
     this.utils = new Utils()
   }
 
   componentDidMount() {
-    let state = {
-      value: this.props.searchText|| '',
+    let selfManaged = !this.props.form && !this.props.id
+    
+    let action = {
+      name: this.props.form,
+      id: this.props.id
+    }
+    
+    let update = {
+      error: this.props.error,
+      name: action.name,
+      selfManaged: selfManaged,
       results: {},
       exact: false,
       selected: false,
@@ -32,30 +43,33 @@ export default class Autocomplete extends Component {
       minSearch: this.props.minSearch || 3
     }
 
-    this.setState(state)
+    if (selfManaged) {
+      update.name = this.utils.getFormCounter()
+    }
+    
+    this.setState(update)
   }
 
   handleEvent({toggled, searchText, results, exact, selected, selectedValue}) {
-    // console.log('handle event... results', results, 'searchText', searchText)
-
     let update = {}
-
+    
     if (searchText && searchText.length >= this.state.minSearch) {
-      update['value'] = searchText
+      update.value = searchText
 
       if (toggled !== undefined || toggled !== null) {
-        update['toggled'] = toggled
+        update.toggled = toggled
       }
     } else if (searchText && searchText.length < this.state.minSearch) {
-      update['value'] = searchText
-      update['toggled'] = false
+      update.value = searchText
+      update.toggled = false
     } else if (searchText === '') {
-      update['value'] = searchText
-      update['toggled'] = false
+      update.value = searchText
+      update.toggled = false
     }
 
     if (!searchText && toggled === false) {
-      update['toggled'] = toggled
+      update.value = searchText
+      update.toggled = toggled
     }
 
     /*
@@ -80,10 +94,6 @@ export default class Autocomplete extends Component {
       }
 
     } else {
-      // console.log('eeeee', searchText, this.state.value)
-      // console.log(searchText !== '')
-      // console.log(this.state.value !== searchText)
-      // console.log(searchText.length <= this.state.minSearch)
       // Ignore first update (keypress update). Second update will follow from ResultsContainer.js
       if (searchText !== '' && this.state.value !== searchText && searchText.length <= this.state.minSearch) {
         callOnChange = true
@@ -101,24 +111,37 @@ export default class Autocomplete extends Component {
         callOnChange = true
       }
     }
-
-    // console.log('calling', results)
-    if (callOnChange) {
-      // console.log('ch-ch-ch-ch-changing', results)
+    
+    if (callOnChange && this.props.onChange) {
       this.props.onChange({
-        searchText: searchText || '',
         toggled: update['toggled'] || false,
         exact: exact || false,
         selected: selected || false,
         results: results || [],
         minSearch: this.state.minSearch,
         selectedValue: selectedValue,
+        value: searchText
       })
     }
 
-    // console.log('updating state to:', update)
+    if (this.props.form) {
+      let formValue = this.props.formData[this.props.form]
+
+      if (this.props.id) {
+        formValue = formValue[this.props.id]
+      }
+
+      if (formValue !== update.value) {
+        let action = {
+          name: this.state.name,
+          id: this.props.id,
+          value: update.value
+        }
+        this.utils.dispatch('FORM_VALUE_UPDATE', action)
+      }
+    }
+
     this.setState(update)
-    // console.log('boop')
   }
 
   render() {
@@ -138,10 +161,10 @@ export default class Autocomplete extends Component {
     this.input = React.createRef()
 
     let containerProps = {
+      ...this.props,
       toggled: this.state.toggled,
       value: this.state.value,
       minSearch: this.state.minSearch || 3,
-      ...this.props,
     }
 
     let Container
@@ -176,20 +199,22 @@ export default class Autocomplete extends Component {
       Container = <Main {...containerProps} onChange={(data) => this.handleEvent(data)} />
     }
 
+    // console.log(this.props.id, this.props.form)
     return (
       <div className="twitter-typeahead fg-toggled">
         <Inputs.Text
           ref={ this.input }
           type="text"
-          value={ this.state.value }
           onFocus={ handleFocus }
           onChange={ handleChange }
           onBlur={ handleBlur }
           className="form-control typeahead"
           placeholder={ this.props.placeholder || 'Enter a value...' }
           style={{marginBottom: 0}}
-          error={this.props.error}
           disabled={this.props.disabled}
+          error={this.props.error}
+          form={this.props.form}
+          id={this.props.id}
         />
         { Container }
       </div>
@@ -211,3 +236,8 @@ class UserResults extends Component {
     )
   }
 }
+
+const mapStateToProps = (state, ownProps) => {
+  return Utils.inputMapStateToProps(state, ownProps, '')
+}
+export default connect(mapStateToProps)(Autocomplete)

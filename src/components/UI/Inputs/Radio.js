@@ -1,4 +1,7 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import Utils from '~/utils'
+import PropTypes from 'prop-types'
 // import classnames from 'classnames'
 
 /**
@@ -9,15 +12,68 @@ import React, { Component } from 'react'
     - margin: Bottom margin
     - inline: Whether radio buttons should appear on the same line
 */
-export class Radio extends Component {
+class RadioContainer extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      value: this.props.value || '',
+      name: undefined,
+    }
+
+    this.utils = new Utils()
+  }
+  
+  componentDidMount() {
+    let selfManaged = !this.props.form && !this.props.id
+    
+    let action = {
+      name: this.props.form,
+      id: this.props.id
+    }
+
+    let update = {
+      name: action.name,
+      selfManaged: selfManaged
+    }
+
+    // If the component does not specify name and id self managed
+    if (selfManaged) {
+      // And use its form counter as the form name
+      update.name = this.utils.getFormCounter()
+
+      this.utils.dispatch('FORM_INIT', action).then(() => {
+        action.name = update.name
+        action.value = this.props.children[0].props.value
+
+        this.utils.dispatch('FORM_VALUE_UPDATE', action).then(() => {
+          this.setState(update)
+        })
+      })
+    }
+    else {
+      this.setState(update)
     }
   }
 
+  handleChange(value) {
+    let action = {
+      name: this.state.name,
+      id: this.props.id,
+      value: value 
+    }
+
+    this.utils.dispatch('FORM_VALUE_UPDATE', action).then(() => {
+      if (this.props.onChange) {
+        this.props.onChange(value)
+      }
+    })
+  }
+
   renderChildren() {
+    let selectedValue = this.props.value
+    if (this.state.selfManaged && this.props.formData) {
+      selectedValue = this.props.formData[this.state.name].value || this.props.value
+    }
+
     const { itemRenderer } = this.props
     const renderer =
       typeof itemRenderer === 'function'
@@ -30,13 +86,12 @@ export class Radio extends Component {
       this.props.children,
       child => {
         const { value, label } = child.props
-        const onChange = (this.props.onChange !== undefined) ? this.props.onChange : child.props.onChange
         return renderer(
           <RadioButton
-            {...this.props}
+            selectedValue={selectedValue}
             label={label}
             value={value}
-            onChange={() => onChange(value)}
+            onChange={() => this.handleChange(value)}
           />
         )
       },
@@ -69,15 +124,8 @@ export class RadioButton extends Component {
       value,
       selectedValue,
       inline,
-      // margin,
       id,
     } = this.props
-    // const radioClass = classnames({
-    //   radio: true,
-    //   'radio-inline': inline,
-    //   'm-b-15': !margin,
-    //   [`m-b-${margin}`]: !isNaN(margin),
-    // })
 
     let className = 'radio'
     if (inline) {
@@ -94,10 +142,27 @@ export class RadioButton extends Component {
         />
         <label className="radio__label"
           data-checked={value === selectedValue}
-          onClick={() => this.props.onChange()}>
+          onClick={() => this.props.onChange(this.props.value)}>
           {label}
         </label>
       </div>
     )
   }
 }
+
+RadioContainer.propTypes = {
+  name: PropTypes.string,           // Name of the radio group
+  selectedValue: PropTypes.string,  // Currently selected radio value
+  inline: PropTypes.bool,           // Setting to true displays radio buttons in a single row
+  itemRenderer: PropTypes.func,     // Function for specifying how an individual radio button should be rendered
+  onChange: PropTypes.func          // Function called when change on radio is made
+
+}
+
+const mapStateToProps = (state, ownProps) => {
+  return Utils.inputMapStateToProps(state, ownProps, false)
+}
+
+const Radio = connect(mapStateToProps)(RadioContainer)
+
+export { Radio } 

@@ -16,9 +16,9 @@ export default class CollapseItem extends Component {
     this.HEADERTYPE = (<Header />).type
     this.BODYTYPE = (<Body />).type
 
-    if (this.props.collapsed !== undefined) {
+    if (props.collapsed !== undefined) {
       this.state = {
-        collapsed: this.props.collapsed
+        collapsed: props.collapsed
       }
     }
     else {
@@ -28,6 +28,12 @@ export default class CollapseItem extends Component {
       }
     }
 
+  }
+
+  componentDidUpdate() {
+    if (this.props.collapsed !== undefined && this.props.collapsed !== this.state.collapsed) {
+      this.setState({collapsed: this.props.collapsed})
+    }
   }
 
   // Simply invert the current state, effectivley toggling it
@@ -43,6 +49,25 @@ export default class CollapseItem extends Component {
    * @param {*} children children to render
    */
   renderChildren(children) {
+
+    // Check if only one child is present, will be an array if multiple children are present
+    if (!Array.isArray(children)) {
+      let child = children
+
+      if (child.type === this.BODYTYPE) {
+        let newBodyProps = {
+          ...child.props,
+          collapsed: this.state.collapsed
+        }
+        return React.cloneElement(child, newBodyProps, child.props.children) 
+      }
+      else {
+        // One child was specified, but it wasnt a collapse body, this should never be the case
+        return <h3 className="text-danger">MISFORMATTED CHILDREN ON COLLAPSE</h3>
+      }
+    }
+
+    // Otherwise, loop though children and render accordingly
     return children.map((child, index) => {
 
       // New element to be returned based off of child
@@ -57,7 +82,7 @@ export default class CollapseItem extends Component {
           ...header.props, 
           key: index, 
           collapsed: this.state.collapsed,
-          onClick: this.toggle
+          onClick: () => this.toggle()
         }
 
         // Clone the new element and return it to be rendered
@@ -66,7 +91,6 @@ export default class CollapseItem extends Component {
       }
 
       else if (child.type === this.BODYTYPE){
-
         const body = child
 
         // Append a collapsed prop for rendering collapse state as well as a key to existing component props

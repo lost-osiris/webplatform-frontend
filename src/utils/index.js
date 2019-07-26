@@ -1,7 +1,7 @@
 import store from './store'
 import Api from './Api'
 import matchPath from './matchPath'
-import { push, go, goBack, goForward } from 'connected-react-router'
+import History from '~/components/Core/History'
 
 Object.defineProperty(String.prototype, 'replaceAll', {
   writeable: false,
@@ -24,6 +24,10 @@ Object.defineProperty(String.prototype, 'toTitleCase', {
     })
   }
 })
+
+let formInitError = false
+let formIdError = false
+let formNameError = false 
 
 class Utils {
   constructor(reducer=null) {
@@ -138,6 +142,44 @@ class Utils {
     this.store.injectReducer(newReducer.name, newReducer.data)
   }
 
+  getFormCounter() {
+    let stateObject = this.getState()
+    return stateObject.dashboard.form.counter
+  }
+
+  static inputMapStateToProps(state, props, initValue) {
+    let name = props.form
+    let value = initValue
+    let form = state.dashboard.form[name]
+    let id = props.id
+    let error = props.error || false
+
+    if (name && id) {
+      if (form) {
+        value = form[id]
+
+        if (value === undefined && !formInitError) {
+          formInitError = true
+          console.error(`You didn't specify the id '${id}' when you initalized the Form component. Make sure you proper initalize the form prop with the correct keys.`)
+        }
+
+        error = form.errors[id]
+      }
+    } else if (!name && id && !formNameError) {
+      formNameError = true
+      console.error('You specifed an id prop without specifiying a form prop. Form component requires both.')
+    } else if (name && !id && !formIdError) {
+      formIdError = true
+      console.error('You specifed a form prop without specifiying an id prop. Form component requires both.')
+    } else {
+      if (props.value) {
+        value = props.value
+      }
+    }
+
+    return {value: value, formData: {...state.dashboard.form}, error: error}
+  }
+
   getUser() {
     return this.api.getUser()
   }
@@ -187,19 +229,19 @@ class Utils {
   }
 
   go(...args) {
-    this.store.dispatch(go(...args))
+    History.go(...args)
   }
 
   goBack(...args) {
-    this.store.dispatch(goBack(...args))
+    History.goBack(...args)
   }
 
   goForward(...args) {
-    this.store.dispatch(goForward(...args))
+    History.goForward(...args)
   }
 
   push(...args) {
-    this.store.dispatch(push(...args))
+    History.push(...args)
   }
 
   setReducer(reducer) {

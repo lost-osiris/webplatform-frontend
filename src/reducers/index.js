@@ -1,8 +1,12 @@
 import { combineReducers } from 'redux'
+import _ from 'lodash'
 
 const initialState = {
   location: null,
   sideNavToggled: false,
+  form: {
+    counter: 0,
+  }
 }
 
 const DashboardReducer = function(state = initialState, action) {
@@ -130,6 +134,64 @@ const DashboardReducer = function(state = initialState, action) {
         settings: action.data,
       }
 
+      return Object.assign({}, state, newState)
+    }
+
+    case 'FORM_INIT': {
+      let newState = {
+        form: {...state.form}
+      }
+
+      if (action.name) {
+        newState.form[action.name] = action.form
+        newState.form[action.name].errors = {} 
+      } else {
+        newState.form[state.form.counter] = {
+          value: null,
+          errors: {}
+        }
+        newState.form.counter++ 
+      }
+
+      return Object.assign({}, state, newState)
+    }
+
+    case 'FORM_VALUE_UPDATE': {
+      let newState = {
+        form: {...state.form}
+      }
+
+      if (action.id) {
+        newState.form[action.name][action.id] = action.value
+      } else {
+        newState.form[action.name].value = action.value
+      }
+      
+      return Object.assign({}, state, newState)
+    }
+
+    case 'FORM_ERROR': {
+      let newState = {
+        form: {...state.form}
+      }
+
+      let errors = {}
+      _.forEach(action.errors, (value, key) => {
+        errors[key] = value
+      })
+
+      newState.form[action.name].errors = errors
+      
+      return Object.assign({}, state, newState)
+    }
+    
+    case 'FORM_CLEAR': {
+      let newState = {
+        form: {...state.form}
+      }
+
+      delete newState.form[action.name]      
+      
       return Object.assign({}, state, newState)
     }
 

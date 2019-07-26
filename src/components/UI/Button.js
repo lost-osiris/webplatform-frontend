@@ -93,7 +93,7 @@ class Button extends Component {
         disabled={disabled ? 'disabled' : ''}
         onClick={(event) => this.handleClick(event)}
         style={style}
-        type={type}
+        type={type || 'button'}
         ref={ref}
       >
         {(this.props.icon && this.props.icon != true) &&

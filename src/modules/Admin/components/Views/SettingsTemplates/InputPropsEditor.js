@@ -29,14 +29,77 @@ class InputPropsEditor extends Component {
     }
   }
 
+  /**
+   * Renders the table entries for the input props editor based off of the 
+   * 
+   * @param {Object} entries - Object containing key value pairs representing the input props entered into the "input props" editor.
+   */
+  renderTableEntries(entries) {
+    return Object.keys(entries).map(key => {
+      return (
+        <tr key={key}>
+
+          <td>
+            {key}
+          </td>
+          <td>
+            {this.renderValue(entries[key])}
+          </td>
+          <td>
+            <Button type="button" btnStyle="danger" onClick={() => this.props.handleRemove(key)}>
+              Remove
+            </Button>
+          </td>
+
+        </tr>
+      )
+    })
+  }
+
+  /**
+   * Renders the bottom of the "input props" section used for adding
+   * new key value props to the list
+   */
+  renderAddTool() {
+    return (
+      <div className="row" style={{ marginTop: '25px' }}>
+        <div className="col-lg-3" style={{ marginLeft: '25px' }}>
+          <Inputs.Text
+            placeholder="Enter a key"
+            onChange={text => this.setState({ key: text})}
+            value={this.state.key}
+          />
+        </div>
+        <div className="col-lg-3">
+          <Inputs.Text
+            placeholder="Enter a value"
+            onChange={text => this.setState({ value: text})}
+            value={this.state.value}
+          />
+        </div>
+        <div className="col-lg-2" style={{ marginLeft: '25px' }}>
+          <Button
+            btnStyle="primary"
+            onClick={() => {
+              this.props.handleAdd(this.state.key, this.getData(this.state.value))
+              this.setState({ key: '', value: '' })
+            }}
+            text="Add"
+          >
+          </Button>
+        </div>
+      </div>
+    )
+  }
+
   render() {
-    const {inputProps} = this.props
     return (
       <Card>
-        <Card.Title>
+        <Card.Title className="bg-blue">
           <h4 style={{color: 'white'}}>Input Props</h4>
         </Card.Title>
         <Card.Body>
+
           <table className="table table-hover">
             <thead>
               <tr>
@@ -46,50 +109,12 @@ class InputPropsEditor extends Component {
               </tr>
             </thead>
             <tbody>
-              {Object.keys(inputProps).map(key =>
-                (<tr key={key}>
-                  <td>
-                    {key}
-                  </td>
-                  <td>
-                    {this.renderValue(inputProps[key])}
-                  </td>
-                  <td>
-                    <Button btnStyle="danger" onClick={() => this.props.handleRemove(key)}>
-                      Remove
-                    </Button>
-                  </td>
-                </tr>)
-              )}
+              {this.renderTableEntries(this.props.inputProps)}
             </tbody>
           </table>
-          <div className="row" style={{ marginTop: '25px' }}>
-            <div className="col-lg-3" style={{ marginLeft: '25px' }}>
-              <Inputs.Text
-                placeholder="Enter a key"
-                onChange={e => this.setState({ key: e.target.value })}
-                value={this.state.key}
-              />
-            </div>
-            <div className="col-lg-3">
-              <Inputs.Text
-                placeholder="Enter a value"
-                onChange={e => this.setState({ value: e.target.value })}
-                value={this.state.value}
-              />
-            </div>
-            <div className="col-lg-2" style={{ marginLeft: '25px' }}>
-              <Button
-                btnStyle="primary"
-                onClick={() => {
-                  this.props.handleAdd(this.state.key, this.getData(this.state.value))
-                  this.setState({ key: '', value: '' })
-                }}
-              >
-                Add
-              </Button>
-            </div>
-          </div>
+
+          {this.renderAddTool()}
+
         </Card.Body>
       </Card>
     )
