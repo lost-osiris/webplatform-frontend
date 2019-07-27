@@ -21,7 +21,7 @@ module.exports = {
     historyApiFallback: true,
     proxy: {
       '/api': routeOptions,
-      '/callback': routeOptions,
+      '/auth': routeOptions,
       '/upload': routeOptions,
       '/metadata': routeOptions,
       '/download': routeOptions

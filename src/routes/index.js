@@ -6,7 +6,6 @@ let routes = [
   Main.Home,
   Admin
 ]
-routes.push(() => import(FUCK))
 
 // console.log(FUCK)
 // for (let i = 0; i < APPLICATIONS.length; i++) {

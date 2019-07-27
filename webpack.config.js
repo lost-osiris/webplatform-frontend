@@ -28,8 +28,10 @@ const corePackages = [
   "connected-react-router",
 ]
 
+const babelrc = require('./babel.config.js')
+
 module.exports = {
-  context: resolve(__dirname, 'src'),
+  context: resolve(__dirname, './src/'),
   entry: {
     core: corePackages,
     main: ['./Root.js'],
@@ -54,8 +56,8 @@ module.exports = {
   // devtool: 'eval',
   mode: 'development',
   devtool: 'eval-source-map',
-  // devServer: DevServerConf,
   resolve: {
+    modules: [resolve(__dirname, './node_modules/')],
     alias: {
       '~': resolve(__dirname, "./src/"),
       '!': resolve(__dirname, "./assets/"),
@@ -73,13 +75,10 @@ module.exports = {
             loader: 'babel-loader',
             options: {
               presets: [
-                "@babel/preset-react"
+                '@babel/preset-env'
+                // '@babel/preset-react',
               ],
-              plugins: [
-                "@babel/plugin-transform-runtime",
-                "@babel/plugin-syntax-dynamic-import",
-                ["@babel/plugin-proposal-class-properties", {loose: true}]
-              ]
+              cwd: resolve(__dirname),
             }
           },
           // {
