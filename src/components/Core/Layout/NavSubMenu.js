@@ -75,6 +75,7 @@ export default class NavSubMenu extends Component {
 
   componentDidUpdate() {
     this.user = this.props.user
+    console.log(this.user)
   }
 
   render() {
@@ -85,13 +86,13 @@ export default class NavSubMenu extends Component {
       return (
         <div className="user">
           <div className="user__info" onClick={ () => this.onClick() }>
-            <img className="user__img" src={this.user.picture} />
+            {/* <img className="user__img" src={this.user.picture} /> */}
             <div>
               <div className="user__name">
-                {this.user.kerberos.displayName} {this.user.kerberos.sn}
+                {/* {this.user.kerberos.displayName} {this.user.kerberos.sn} */}
               </div>
               <div className="user__email">
-                {this.user.kerberos.mail}
+                {/* {this.user.kerberos.mail} */}
               </div>
             </div>
           </div>

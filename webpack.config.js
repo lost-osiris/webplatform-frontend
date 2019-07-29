@@ -75,8 +75,7 @@ module.exports = {
             loader: 'babel-loader',
             options: {
               presets: [
-                '@babel/preset-env'
-                // '@babel/preset-react',
+                '@babel/preset-env',
               ],
               cwd: resolve(__dirname),
             }

@@ -10,3 +10,4 @@ cdn/
 *.pid
 *.sock
 *.log
+src/routes/index.js

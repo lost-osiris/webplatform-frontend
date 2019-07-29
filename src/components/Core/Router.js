@@ -174,7 +174,15 @@ class Router extends Component {
       if (typeof routes[index] === 'function') {
         let module = await routes[index]()
         routeModule = module.default
+        console.log(routeModule)
       }
+      // if (routes[index instanceof Promise]) {
+      //   let module = await routes[index]
+      //   routeModule = module.default
+      // } else if (typeof routes[index] === 'function') {
+      //   let module = await routes[index]()
+      //   routeModule = module.default
+      // }
 
       let route = routeModule.route
       let ui = routeModule.ui

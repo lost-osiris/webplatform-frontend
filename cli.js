@@ -30,22 +30,32 @@ function getApps(webpackConfig) {
   let apps = []
   let command = shell.exec('webplatform-cli config get cli', {silent: true})
   let config = JSON.parse(command)
+  
+  let routes = ['// FILE IS AUTOMATICALLY GENERATED', '// DO NOT CHANGE\n']
+  let template = fs.readFileSync('./route-template.js', 'utf8').split('\n')
 
-  if (config.applications.length > 0) {
-    for (let i in config.applications) {
-      let appConfig = config.applications[i].frontend
-
-      let app = {
-        name: appConfig.name,
-        path: resolve(appConfig.routes)
+  console.log(template)
+  
+  for (let i in template) {
+    let line = template[i]
+    if (line.indexOf('INSERT HERE') > 0) {
+      if (config.applications.length > 0) {
+        for (let i in config.applications) {
+          let appConfig = config.applications[i].frontend
+        
+          webpackConfig.entry.main[appConfig.name] = resolve(appConfig.routes, 'routes')
+          webpackConfig.resolve.alias[appConfig.name] = resolve(appConfig.routes)
+          
+          routes.push(`  () => import('${appConfig.name}/routes'),`)
+        }
       }
-    
-      webpackConfig.entry.main.push(app.path + '/routes')
-      webpackConfig.resolve.alias[app.name] = app.path
-
-      apps.push(app)
+    } else {
+      routes.push(line)
     }
   }
+
+
+  let stream = fs.writeFileSync('./src/routes/index.js', routes.join('\n'), 'utf8')
 
   return apps
 }
@@ -56,31 +66,20 @@ export function cli(args) {
     let options = parseArgumentsIntoOptions(args)
 
     let apps = []
-    if (options.application){
-      let appPath = resolve(options.application)
-      let app = {
-        name: options.name,
-        path: appPath + '/routes'
-      }
-      
-      webpackConfig.entry.main.push(appPath)
-      webpackConfig.resolve.alias[options.name] = appPath
-
-      apps.push(app)
-    } 
-
-    apps.push(...getApps(webpackConfig))
+    apps.push(getApps(webpackConfig).map((value) => value.name + '/routes'))
 
     let env = {
       'APPLICATIONS': JSON.stringify(apps),
-      'NODE_ENV': 'development'
+      'FUCK': JSON.stringify(apps[0]),
+      // 'FUCK': JSON.stringify(apps[0]),
+      'NODE_ENV': JSON.stringify('development')
     }
     let DefinePlugin = new webpack.DefinePlugin(env)
     webpackConfig.plugins.push(DefinePlugin)
 
-    let compiler = webpack(webpackConfig)
-    let server = new webpackDevServer(compiler, configDevServer)
-    server.listen(options.port, "localhost", function() {})
+    // let compiler = webpack(webpackConfig)
+    // let server = new webpackDevServer(compiler, configDevServer)
+    // server.listen(options.port, "localhost", function() {})
 
     // return {
     //   "name": options.name,
