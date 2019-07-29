@@ -129,7 +129,7 @@ export const apiRequest = (route, data) => {
         let basePath = protocol + '//' + host
 
         let path = basePath + window.location.pathname
-        let newLocation = basePath + '/callback/?q=' + encodeURIComponent(path)
+        let newLocation = basePath + '/auth?q=' + encodeURIComponent(path)
 
         window.location.href = newLocation
       }
@@ -142,7 +142,7 @@ export const apiRequest = (route, data) => {
     dispatch({type: 'API_REQUESTED', route: route})
 
     if (isFile) {
-      route = '/upload'
+      route = '/api/upload'
       let form = new FormData()
 
       for (var i in data['files']) {

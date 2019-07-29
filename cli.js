@@ -31,18 +31,20 @@ function getApps(webpackConfig) {
   let command = shell.exec('webplatform-cli config get cli', {silent: true})
   let config = JSON.parse(command)
 
-  for (let i in config.applications) {
-    let appConfig = config.applications[i].frontend
+  if (config.applications.length > 0) {
+    for (let i in config.applications) {
+      let appConfig = config.applications[i].frontend
 
-    let app = {
-      name: appConfig.name,
-      path: resolve(appConfig.routes)
+      let app = {
+        name: appConfig.name,
+        path: resolve(appConfig.routes)
+      }
+    
+      webpackConfig.entry.main.push(app.path + '/routes')
+      webpackConfig.resolve.alias[app.name] = app.path
+
+      apps.push(app)
     }
-   
-    webpackConfig.entry.main.push(app.path + '/routes')
-    webpackConfig.resolve.alias[app.name] = app.path
-
-    apps.push(app)
   }
 
   return apps
