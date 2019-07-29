@@ -33,8 +33,6 @@ function getApps(webpackConfig) {
   
   let routes = ['// FILE IS AUTOMATICALLY GENERATED', '// DO NOT CHANGE\n']
   let template = fs.readFileSync('./route-template.js', 'utf8').split('\n')
-
-  console.log(template)
   
   for (let i in template) {
     let line = template[i]
@@ -43,7 +41,7 @@ function getApps(webpackConfig) {
         for (let i in config.applications) {
           let appConfig = config.applications[i].frontend
         
-          webpackConfig.entry.main[appConfig.name] = resolve(appConfig.routes, 'routes')
+          webpackConfig.entry.main.push(resolve(appConfig.routes, 'routes'))
           webpackConfig.resolve.alias[appConfig.name] = resolve(appConfig.routes)
           
           routes.push(`  () => import('${appConfig.name}/routes'),`)
@@ -61,25 +59,21 @@ function getApps(webpackConfig) {
 }
 
 export function cli(args) {
-    process.env.NODE_ENV = 'development'
-
     let options = parseArgumentsIntoOptions(args)
 
-    let apps = []
-    apps.push(getApps(webpackConfig).map((value) => value.name + '/routes'))
+    getApps(webpackConfig).map((value) => value.name + '/routes')
 
     let env = {
-      'APPLICATIONS': JSON.stringify(apps),
-      'FUCK': JSON.stringify(apps[0]),
-      // 'FUCK': JSON.stringify(apps[0]),
       'NODE_ENV': JSON.stringify('development')
     }
+
     let DefinePlugin = new webpack.DefinePlugin(env)
     webpackConfig.plugins.push(DefinePlugin)
 
-    // let compiler = webpack(webpackConfig)
-    // let server = new webpackDevServer(compiler, configDevServer)
-    // server.listen(options.port, "localhost", function() {})
+    let compiler = webpack(webpackConfig)
+    let server = new webpackDevServer(compiler, configDevServer)
+
+    server.listen(options.port, "localhost", function() {})
 
     // return {
     //   "name": options.name,

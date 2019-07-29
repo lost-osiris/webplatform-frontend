@@ -16,8 +16,6 @@ export default class Api {
     let swal = new SwalHandler(this.store, swalOptions)
     let [isSwal, response] = swal.check(routes)
 
-    console.log(response)
-
     if (isSwal) {
       try {
         return await response.swal.then((check) => {

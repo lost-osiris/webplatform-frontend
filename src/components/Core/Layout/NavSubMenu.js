@@ -75,7 +75,6 @@ export default class NavSubMenu extends Component {
 
   componentDidUpdate() {
     this.user = this.props.user
-    console.log(this.user)
   }
 
   render() {

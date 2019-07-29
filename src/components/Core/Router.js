@@ -64,9 +64,8 @@ class Router extends Component {
       this.utils.dispatch('DASHBOARD_TOGGLE_SIDENAV_OFF')
     }
 
-    console.log('route updated', location)
     let layout = this.getLayout(location, this.state.routes)
-    console.log(layout, this.state.layout)
+
     this.setState({
       layout: layout,
       location: location,
@@ -174,7 +173,6 @@ class Router extends Component {
       if (typeof routes[index] === 'function') {
         let module = await routes[index]()
         routeModule = module.default
-        console.log(routeModule)
       }
       // if (routes[index instanceof Promise]) {
       //   let module = await routes[index]
@@ -253,7 +251,6 @@ class Router extends Component {
   }
 
   render() {
-    console.log('render', this.state.layout)
     let layout = {
       ...this.state.layout
     }
