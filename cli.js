@@ -13,6 +13,7 @@ function parseArgumentsIntoOptions(rawArgs) {
         {
             '--port': Number,
             '--name': String,
+            '--debug': Boolean,
         },
         {
             argv: rawArgs.slice(2),
@@ -22,6 +23,7 @@ function parseArgumentsIntoOptions(rawArgs) {
     return {
        port: args['--port'] || 3000,
        name: args['--name'],
+       default: args['--debug'],
        application: args._[0] || undefined,
     }
 }
@@ -32,7 +34,7 @@ function getApps(webpackConfig) {
   let config = JSON.parse(command)
   
   let routes = ['// FILE IS AUTOMATICALLY GENERATED', '// DO NOT CHANGE\n']
-  let template = fs.readFileSync('./route-template.js', 'utf8').split('\n')
+  let template = fs.readFileSync(resolve(__dirname, './route-template.js'), 'utf8').split('\n')
   
   for (let i in template) {
     let line = template[i]
@@ -52,8 +54,8 @@ function getApps(webpackConfig) {
     }
   }
 
+  let stream = fs.writeFileSync(resolve(__dirname, './src/routes/index.js'), routes.join('\n'), 'utf8')
 
-  let stream = fs.writeFileSync('./src/routes/index.js', routes.join('\n'), 'utf8')
 
   return apps
 }
@@ -62,13 +64,17 @@ export function cli(args) {
     let options = parseArgumentsIntoOptions(args)
 
     getApps(webpackConfig).map((value) => value.name + '/routes')
-
+    
     let env = {
       'NODE_ENV': JSON.stringify('development')
     }
 
     let DefinePlugin = new webpack.DefinePlugin(env)
     webpackConfig.plugins.push(DefinePlugin)
+
+    if (options.debug) {
+      console.log(webpackConfig)
+    }
 
     let compiler = webpack(webpackConfig)
     let server = new webpackDevServer(compiler, configDevServer)

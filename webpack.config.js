@@ -28,13 +28,13 @@ const corePackages = [
   "connected-react-router",
 ]
 
-const babelrc = require('./babel.config.js')
+const babelrc = require(resolve(__dirname, './babel.config.js'))
 
 module.exports = {
   context: resolve(__dirname, './src/'),
   entry: {
     core: corePackages,
-    main: ['./Root.js'],
+    main: [resolve(__dirname, './src/Root.js')],
       // '../assets/less/app.less',
     // fonts:'../assets/scss/inc/_fonts.scss',
     // style: '../assets/less/app.less',
