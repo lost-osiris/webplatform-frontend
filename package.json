@@ -1,6 +1,6 @@
 {
   "name": "webplatform-frontend",
-  "version": "1.0.0",
+  "version": "1.1.1",
   "description": "A CLI to bootstrap the web platform frontend",
   "main": "src/index.js",
   "bin": {
@@ -38,7 +38,6 @@
     "babel-plugin-dynamic-import-node": "^2.2.0",
     "babel-plugin-minify-mangle-names": "^0.4.3",
     "babel-preset-minify": "^0.4.3",
-    "babili-webpack-plugin": "^0.1.2",
     "bootstrap": "^4.3.1",
     "classnames": "^2.2.6",
     "compression-webpack-plugin": "^1.1.11",

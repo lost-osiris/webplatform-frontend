@@ -1,9 +1,12 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import Utils from '~/utils'
 
 class ConnectedUI extends Component {
   constructor(props) {
     super(props)
+
+    this.utils = new this.utils()
 
     this.state = {
       path: undefined,
@@ -23,6 +26,8 @@ class ConnectedUI extends Component {
 
   setup() {
     let componentProps = {...this.props}
+    componentProps.user = this.utils.getUser()
+    
     delete componentProps.mapStateToProps
     delete componentProps.ui
 
