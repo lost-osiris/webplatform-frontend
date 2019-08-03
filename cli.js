@@ -9,23 +9,23 @@ import webpackConfig from './webpack.config'
 import configDevServer from './webpack.config.devServer'
 
 function parseArgumentsIntoOptions(rawArgs) {
-    const args = arg(
-        {
-            '--port': Number,
-            '--name': String,
-            '--debug': Boolean,
-        },
-        {
-            argv: rawArgs.slice(2),
-        }
-    )
-
-    return {
-       port: args['--port'] || 3000,
-       name: args['--name'],
-       default: args['--debug'],
-       application: args._[0] || undefined,
+  const args = arg(
+    {
+      '--port': Number,
+      '--name': String,
+      '--debug': Boolean,
+    },
+    {
+      argv: rawArgs.slice(2),
     }
+  )
+
+  return {
+    port: args['--port'] || 3000,
+    name: args['--name'],
+    default: args['--debug'],
+    application: args._[0] || undefined,
+  }
 }
 
 function getApps(webpackConfig) {
@@ -61,28 +61,23 @@ function getApps(webpackConfig) {
 }
 
 export function cli(args) {
-    let options = parseArgumentsIntoOptions(args)
+  let options = parseArgumentsIntoOptions(args)
 
-    getApps(webpackConfig).map((value) => value.name + '/routes')
-    
-    let env = {
-      'NODE_ENV': JSON.stringify('development')
-    }
+  getApps(webpackConfig).map((value) => value.name + '/routes')
+  
+  let env = {
+    'NODE_ENV': JSON.stringify('development')
+  }
 
-    let DefinePlugin = new webpack.DefinePlugin(env)
-    webpackConfig.plugins.push(DefinePlugin)
+  let DefinePlugin = new webpack.DefinePlugin(env)
+  webpackConfig.plugins.push(DefinePlugin)
 
-    if (options.debug) {
-      console.log(webpackConfig)
-    }
+  if (options.debug) {
+    console.log(webpackConfig)
+  }
 
-    let compiler = webpack(webpackConfig)
-    let server = new webpackDevServer(compiler, configDevServer)
+  let compiler = webpack(webpackConfig)
+  let server = new webpackDevServer(compiler, configDevServer)
 
-    server.listen(options.port, "localhost", function() {})
-
-    // return {
-    //   "name": options.name,
-    //   "routes": () => import(appPath + "/routes")
-    // }
+  server.listen(options.port, "localhost", function() {})
 }
