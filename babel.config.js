@@ -1,14 +1,21 @@
-export default {
+module.exports = {
   env: {
     development: {
       presets: [
+        [
+          "@babel/preset-env",
+          {
+            "modules": false  
+          }
+        ],
         "@babel/preset-react"
       ],
       plugins: [
         [
           "@babel/plugin-transform-runtime",
           {
-            absoluteRunetime: true,
+            // sourceType: 'unambiguous'
+            // absoluteRunetime: true,
           }
         ],
         [
