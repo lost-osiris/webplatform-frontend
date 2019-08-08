@@ -1,6 +1,6 @@
 import TestAPI from '~/modules/Admin/containers/TestApi/MainContainer'
 import UI from '../../components/UI'
-import Utils from '~/utils'
+import { Utils } from 'webplatform-ui'
 
 let testApiContainer = () => import('../../containers/TestApi/MainContainer')
 let utils = new Utils()

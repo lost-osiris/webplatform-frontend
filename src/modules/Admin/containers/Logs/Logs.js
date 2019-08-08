@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import Utils from '~/utils'
+import { Utils } from 'webplatform-ui'
 // import Main from '../components/Main'
 import Main from '../../components/Views/Logs/Log'
 

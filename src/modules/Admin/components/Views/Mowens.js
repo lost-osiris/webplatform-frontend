@@ -1,7 +1,6 @@
 import React from 'react'
 
-import { Inputs } from '~/components'
-import Utils from '~/utils'
+import { Inputs, Utils } from 'webplatform-ui'
 
 export default class MowensContainer extends React.Component {
   constructor(props) {

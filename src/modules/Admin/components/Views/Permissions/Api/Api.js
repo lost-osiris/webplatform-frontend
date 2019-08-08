@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Card, Button, Inputs } from '~/components'
+import { Card, Button, Inputs } from 'webplatform-ui'
 
 class Main extends Component {
   constructor(props) {

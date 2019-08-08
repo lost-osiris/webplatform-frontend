@@ -1,6 +1,5 @@
-import React, {Component} from 'react'
-import {Button, Inputs, Tabs} from '~/components'
-import Utils from '~/utils'
+import React, { Component } from 'react'
+import { Button, Inputs, Tabs, Utils } from 'webplatform-ui'
 
 class Permissions extends Component {
   constructor(props) {

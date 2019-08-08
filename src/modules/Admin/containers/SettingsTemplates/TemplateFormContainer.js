@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import TemplateForm from '../../components/Views/SettingsTemplates/TemplateForm'
-import Utils from '~/utils'
+import { Utils } from 'webplatform-ui'
 
 class AddContainer extends Component {
   constructor(props) {

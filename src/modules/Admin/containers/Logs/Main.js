@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
 // import { connect } from 'react-redux'
 import moment from 'moment'
-import Utils from '~/utils'
 import Logs from '../../components/Views/Logs/Main'
 import SearchResults from '../../components/Views/Logs/SearchResults'
-import { Pagination } from '~/components'
+import { Pagination, Utils } from 'webplatform-ui'
 
 class LogsContainer extends Component {
   constructor(props) {

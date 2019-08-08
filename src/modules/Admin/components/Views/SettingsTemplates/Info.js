@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
 import _ from 'lodash'
-import { Card, DropDown, ToolsWidget } from '~/components'
+import { Card, DropDown, ToolsWidget, Utils } from 'webplatform-ui'
 // import AddContainer from '../containers/AddContainer'
 import TemplateFormContainer from '../../../containers/SettingsTemplates/TemplateFormContainer'
-import Utils from '~/utils'
 
 class TemplateInfo extends Component {
   constructor(props) {

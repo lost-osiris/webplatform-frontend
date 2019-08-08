@@ -1,5 +1,5 @@
-import React, {Component} from 'react'
-import {Tabs} from '~/components'
+import React, { Component } from 'react'
+import { Tabs } from 'webplatform-ui'
 
 class Main extends Component {
   constructor(props) {

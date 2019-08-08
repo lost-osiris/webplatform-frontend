@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import TemplateInfo from '../../components/Views/SettingsTemplates/Info'
-import Utils from '~/utils'
+import { Utils } from 'webplatform-ui'
 
 class InfoContainer extends Component {
   constructor(props) {

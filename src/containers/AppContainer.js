@@ -1,9 +1,9 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import Cookies from 'universal-cookie'
-import Utils from '~/utils'
-import { Layout } from '~/components/Core/Layout'
-import Loading from '~/components/Core/Loading'
+import { Utils, Layout, Loading } from 'webplatform-ui'
+// import { Layout } from '~/components/Core/Layout'
+// import Loading from '~/components/Core/Loading'
 
 class AppContainer extends React.Component {
   constructor(props) {
@@ -97,6 +97,7 @@ class AppContainer extends React.Component {
       let component = props.layout.ui[k]
 
       if (component) {
+        console.log(component)
         promises.push(component())
         map[count] = k
         count++

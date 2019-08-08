@@ -2,8 +2,7 @@ import React, { Component } from 'react'
 import Cookies from 'universal-cookie'
 import moment from 'moment'
 
-import { Button, Inputs } from '~/components'
-import Utils from '~/utils'
+import { Button, Inputs, Utils } from 'webplatform-ui'
 
 export default class ChangeUserContainer extends Component {
   constructor(props) {

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Link } from '~/components'
+import { Link } from 'webplatform-ui'
 
 class SettingsAppNav extends Component {
   render() {

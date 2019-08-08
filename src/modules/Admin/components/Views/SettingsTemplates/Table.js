@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Link, Button } from '~/components'
+import { Link, Button } from 'webplatform-ui'
 
 class TemplateTable extends Component {
   constructor(props) {

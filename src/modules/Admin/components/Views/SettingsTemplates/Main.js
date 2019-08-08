@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
-import { Card, DropDown } from '~/components'
+import { Card, DropDown, Utils } from 'webplatform-ui'
 import TemplateTable from './Table'
-import Utils from '~/utils'
 
 class Main extends Component {
   constructor(props) {

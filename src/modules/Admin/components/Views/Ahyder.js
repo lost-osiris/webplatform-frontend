@@ -1,7 +1,6 @@
 import React from 'react'
 
-import { Inputs, Form, Button, Label } from '~/components'
-import Utils from '~/utils'
+import { Inputs, Form, Button, Label, Utils } from 'webplatform-ui'
 
 export default class AhyderContainer extends React.Component {
   constructor(props) {

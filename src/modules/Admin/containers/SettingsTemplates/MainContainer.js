@@ -1,6 +1,6 @@
+import React, { Component } from 'react'
 import Main from '../../components/Views/SettingsTemplates/Main'
-import React, {Component} from 'react'
-import Utils from '~/utils'
+import { Utils } from 'webplatform-ui'
 
 class MainContainer extends Component {
   constructor(props) {

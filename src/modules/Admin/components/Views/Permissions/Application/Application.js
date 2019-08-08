@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
-import ReactMarkdown from 'react-markdown-it'
-import { Button, Inputs, Pagination, Tabs, ToolsWidget, Link, Card } from '~/components'
+import ReactMarkdown from 'react-markdown'
+import { Button, Inputs, Pagination, Tabs, ToolsWidget, Link, Card, Utils } from 'webplatform-ui'
 import PermissionAddTool from './PermissionAddTool'
-import Utils from '~/utils'
 
 class Main extends Component {
   constructor(props) {

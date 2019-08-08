@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
-import Utils from '~/utils'
 
-import { Attachment } from '~/components'
+import { Attachment, Utils } from 'webplatform-ui'
 
 export default class Welcome extends Component {
   constructor(props) {
