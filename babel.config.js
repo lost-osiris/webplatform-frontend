@@ -2,34 +2,27 @@ module.exports = {
   env: {
     development: {
       presets: [
-        [
-          "@babel/preset-env",
-          {
-            "modules": false  
-          }
-        ],
         "@babel/preset-react"
       ],
       plugins: [
-        [
-          "@babel/plugin-transform-runtime",
-          {
-            // sourceType: 'unambiguous'
-            // absoluteRunetime: true,
-          }
-        ],
+        "@babel/plugin-transform-runtime",
         [
           "@babel/plugin-proposal-class-properties", 
           {
             loose: true
           }
         ],
-        "@babel/plugin-syntax-dynamic-import"
+        "@babel/plugin-syntax-dynamic-import",
+        "lodash"
       ]
     },
     production: {
+      presets:[
+        "@babel/preset-react"
+      ],
       plugins: [
-        "transform-runtime"
+        "@babel/plugin-transform-runtime",
+        "lodash"
       ]
     }
   }

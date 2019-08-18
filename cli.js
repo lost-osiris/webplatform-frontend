@@ -5,7 +5,7 @@ import fs, { appendFileSync } from 'fs'
 import shell from 'shelljs'
 import { resolve } from 'path'
 
-import webpackDevConfig from './webpack/webpack.dev'
+import webpackDevConfig from './webpack/webpack.prod'
 import configDevServer from './webpack/webpack.server'
 
 function parseArgumentsIntoOptions(rawArgs) {
@@ -44,7 +44,7 @@ function getApps(webpackConfig) {
           let appConfig = config['applications-configs'][i].frontend
         
           if (config['applications-configs'][i].active) {
-            webpackConfig.entry.main.push(resolve(appConfig.path, 'routes'))
+            // webpackConfig.entry[appConfig.name] = resolve(appConfig.path, 'routes')
             webpackConfig.resolve.alias[appConfig.name] = resolve(appConfig.path)
             
             routes.push(`  () => import('${appConfig.name}/routes'),`)
@@ -68,18 +68,29 @@ export function cli(args) {
   getApps(webpackDevConfig).map((value) => value.name + '/routes')
   
   let env = {
-    'NODE_ENV': JSON.stringify('development')
+    'NODE_ENV': JSON.stringify('production')
   }
 
   let DefinePlugin = new webpack.DefinePlugin(env)
   webpackDevConfig.plugins.push(DefinePlugin)
+  
+  let compiler = webpack(webpackDevConfig)
 
   if (options.debug) {
-    console.log(webpackConfig)
+    console.log(webpackDevConfig)
   }
 
-  let compiler = webpack(webpackDevConfig)
-  let server = new webpackDevServer(compiler, configDevServer)
+  compiler.run((err, stats) => {
+    console.log(stats.toString({
+      modules: false,
+      chunks: false,
+      chunckModules: false,
+      timings: true,
+      warnigns: false,
+      colors: true
+    }));
+  })
+  // let server = new webpackDevServer(compiler, configDevServer)
 
-  server.listen(options.port, "localhost", function() {})
+  // server.listen(options.port, "localhost", function() {})
 }
