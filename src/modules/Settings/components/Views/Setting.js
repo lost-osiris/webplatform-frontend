@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import _ from 'lodash'
-import { Button, Inputs, Form } from '~/components'
+import { Button, Inputs, Form } from 'webplatform-ui'
 
 class Setting extends Component {
   constructor(props) {

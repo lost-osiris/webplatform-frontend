@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 // import { connect } from 'react-redux'
 
-import Utils from '~/utils'
+import { Utils } from 'webplatform-ui'
 
 import Settings from '../components/Views/SettingsComponent'
 

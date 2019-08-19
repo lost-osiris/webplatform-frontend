@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Card, Tabs } from '~/components'
+import { Card, Tabs } from 'webplatform-ui'
 import Section from './Section'
 
 export default class Settings extends Component {
@@ -62,7 +62,7 @@ export default class Settings extends Component {
                 }}
               >
                 <span style={{ marginLeft: '10px' }}>
-                  {this.props.user.kerberos.cn}
+                  {/* {this.props.user.kerberos.cn} */}
                 </span>
               </h3>
               <small style={{ marginLeft: '10px' }} className="text-muted">

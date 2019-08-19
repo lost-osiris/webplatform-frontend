@@ -1,4 +1,4 @@
-let settingsContainer = () => import('~/modules/Settings/containers/SettingsContainer')
+let settingsContainer = () => import(/* webpackChunkName: "Settings", webpackPrefetch: true */ '~/modules/Settings/containers/SettingsContainer')
 import * as StateTitle from '../components/UI/StateTitle'
 // import * as Nav from './Nav'
 // import * as Search from './Search'

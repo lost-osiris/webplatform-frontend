@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
-import { Button } from '~/components'
-import Utils from '~/utils'
+import { Button, Utils } from 'webplatform-ui'
 import Setting from './Setting'
 import _ from 'lodash'
 
