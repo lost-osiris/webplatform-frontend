@@ -111,7 +111,14 @@ module.exports = {
       chunks: 'all',
       cacheGroups: {
         vendors: {
-          test: /[\\/]node_modules[\\/]/i,
+          // test: /[\\/]node_modules[\\/]/i,
+          test: (module, chunk) => {
+            if (module.context.indexOf('node_modules') > -1 && module.constructor.name !== 'CssModule') {
+              return true;
+            }
+
+            return false
+          },
           chunks: "all"
         },
         styles: {

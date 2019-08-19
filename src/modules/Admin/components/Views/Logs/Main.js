@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button, Inputs } from 'webplatform-ui'
+import { Button, Inputs, Utils } from 'webplatform-ui'
 // import Datetime from 'react-datetime'
 
 export default class LogsComponent extends Component {
