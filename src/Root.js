@@ -21,8 +21,7 @@ import Routes from '~/routes'
 const App = () => {
   return (
     <Provider store={ store }>
-      <h1>Hello World</h1>
-      {/* <Router history={ history } container={AppContainer} routes={Routes} /> */}
+      <Router history={ history } container={AppContainer} routes={Routes} />
     </Provider>
   )
 }

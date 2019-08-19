@@ -7902,9 +7902,9 @@ webpack@^4.39.2:
     webpack-sources "^1.4.1"
 
 webplatform-ui@^1.4.1:
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/webplatform-ui/-/webplatform-ui-1.4.1.tgz#840c5400c52741019c3f21ec0b3493da73d19bed"
-  integrity sha512-sb94YICz49YMIpcv0k6hbuzxfq+o0cWxso9umuC+keC2ooP09YvFp9YmnTXqnTbglsfH+s8YVIdyjA/fTSYHSg==
+  version "1.4.5"
+  resolved "https://registry.yarnpkg.com/webplatform-ui/-/webplatform-ui-1.4.5.tgz#5708d664a5e63a02781f8aafba28a552c2af548c"
+  integrity sha512-HJaICsvzPaO1AyKXvGTGPsQsAbBi4UHOfh0L0D4y5eKasbswJv1mFG0PSA5EfTQh1geNEkpeoZiQSJi+1TDobA==
   dependencies:
     "@loadable/component" "^5.10.2"
     axios "^0.19.0"
