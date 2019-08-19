@@ -40,7 +40,12 @@ module.exports = {
     chunks: false,
     chunckModules: false,
     timings: true,
+    entrypoints: false,
     warnigns: false,
     colors: true,
+    excludeAssets: [
+      /.+\.(ttf|eot|svg|woff|woff2)/
+    ],
+    logging: 'log'
   },
 }

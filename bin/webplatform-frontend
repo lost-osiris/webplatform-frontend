@@ -1,4 +1,4 @@
-#!/usr/bin/env node
-
-require = require('esm')(module /*, options */);
-require('../cli').cli(process.argv);
+#!/bin/bash
+node ./bin/write-routes $@
+node ./bin/bundle $@
+node ./bin/analyze $@

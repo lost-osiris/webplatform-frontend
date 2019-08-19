@@ -1,0 +1,4 @@
+#!/usr/bin/env node
+
+require = require('esm')(module /*, options */);
+require('../scripts/write-routes').cli(process.argv);
