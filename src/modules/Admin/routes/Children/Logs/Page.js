@@ -2,7 +2,7 @@
 // import * as StateTitle from '../../StateTitle'
 import UI from '../../../components/UI'
 import LogsReducer from '~/modules/Admin/reducers/Logs'
-let logsContainer = () => import('../../../containers/Logs/Main')
+let logsContainer = () => import(/* webpackChunkName: "Admin", webpackPrefetch: true */ '../../../containers/Logs/Main')
 
 var route = {
   route: {

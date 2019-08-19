@@ -2,7 +2,7 @@ import * as Nav from '../../../components/UI/Nav'
 import UI from '../../../components/UI'
 import SettingsReducer from '~/modules/Admin/reducers/Settings'
 
-let infoContainer = () => import('../../../containers/SettingsTemplates/InfoContainer')
+let infoContainer = () => import(/* webpackChunkName: "Admin", webpackPrefetch: true */ '../../../containers/SettingsTemplates/InfoContainer')
 
 const route = {
   route: {

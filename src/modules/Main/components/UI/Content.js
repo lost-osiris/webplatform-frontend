@@ -1,4 +1,4 @@
-const Home = () => import('../Views/Home')
+const Home = () => import(/* webpackChunkName: "Main", webpackPrefetch: true */ '../Views/Home')
 export { Home }
 
 export { default as AccessDenied } from '../Views/AccessDenied'

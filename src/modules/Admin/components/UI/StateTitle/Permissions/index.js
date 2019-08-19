@@ -1,7 +1,7 @@
-const Main = () => import('./Main')
-const User = () => import('./User')
-const Api = () => import('./Api')
-const Application = () => import('./Application')
+const Main = () => import(/* webpackChunkName: "Admin", webpackPrefetch: true */ './Main')
+const User = () => import(/* webpackChunkName: "Admin", webpackPrefetch: true */ './User')
+const Api = () => import(/* webpackChunkName: "Admin", webpackPrefetch: true */ './Api')
+const Application = () => import(/* webpackChunkName: "Admin", webpackPrefetch: true */ './Application')
 
 export default {
   Main: Main,

@@ -1,7 +1,7 @@
 import UI from '../../../components/UI'
 import PermissionsReducer from '~/modules/Admin/reducers/Permissions'
 
-let apiContainer = () => import('../../../containers/Permissions/Api/MainContainer')
+let apiContainer = () => import(/* webpackChunkName: "Admin", webpackPrefetch: true */ '../../../containers/Permissions/Api/MainContainer')
 var route = {
   route: {
     path: '/permissions/api/:safeName',

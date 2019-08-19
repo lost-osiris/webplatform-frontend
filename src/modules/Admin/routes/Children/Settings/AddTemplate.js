@@ -2,7 +2,7 @@ import * as Nav from '../../../components/UI/Nav'
 import UI from '../../../components/UI'
 import SettingsReducer from '~/modules/Admin/reducers/Settings'
 
-let templateFormContainer = () => import('../../../containers/SettingsTemplates/TemplateFormContainer')
+let templateFormContainer = () => import(/* webpackChunkName: "Admin", webpackPrefetch: true */ '../../../containers/SettingsTemplates/TemplateFormContainer')
 
 const route = {
   route: {

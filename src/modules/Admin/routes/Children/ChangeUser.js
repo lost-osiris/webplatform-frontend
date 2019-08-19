@@ -1,7 +1,7 @@
 import ChangeUser from '~/modules/Admin/containers/ChangeUserContainer'
 import UI from '../../components/UI'
 
-let changeUserContainer = () => import('../../containers/ChangeUserContainer')
+let changeUserContainer = () => import(/* webpackChunkName: "Admin", webpackPrefetch: true */ '../../containers/ChangeUserContainer')
 
 var route = {
   route: {

@@ -7,7 +7,7 @@
   },
   "scripts": {
     "start": "./bin/webplatform-frontend",
-    "compile": "./bin/webplatform-frontend --production"
+    "compile:prod": "./bin/webplatform-frontend --build"
   },
   "repository": {
     "type": "git",
@@ -36,6 +36,7 @@
     "babel-plugin-lodash": "^3.3.4",
     "bootstrap": "^4.3.1",
     "classnames": "^2.2.6",
+    "clean-webpack-plugin": "^3.0.0",
     "compression-webpack-plugin": "^3.0.0",
     "connected-react-router": "^6.5.2",
     "css-loader": "^3.2.0",
@@ -55,6 +56,7 @@
     "node-waves": "^0.7.6",
     "optimize-css-assets-webpack-plugin": "^5.0.3",
     "postcss-loader": "^3.0.0",
+    "purgecss-webpack-plugin": "^1.5.0",
     "push.js": "^1.0.12",
     "qs": "^6.7.0",
     "react": "^16.9.0",
@@ -74,14 +76,11 @@
     "universal-cookie": "^4.0.2",
     "url-loader": "^2.1.0",
     "webpack": "^4.39.2",
-    "webpack-async-chunk-names-plugin": "^0.1.1",
     "webpack-bundle-analyzer": "^3.4.1",
     "webpack-dev-server": "^3.8.0",
     "webpack-merge": "^4.2.1",
-    "webplatform-ui": "^1.4.1"
+    "webplatform-ui": "^1.4.1",
+    "workbox-webpack-plugin": "^4.3.1"
   },
-  "devDependencies": {
-    "autoprefixer": "^9.6.1",
-    "purgecss-webpack-plugin": "^1.5.0"
-  }
+  "devDependencies": {}
 }

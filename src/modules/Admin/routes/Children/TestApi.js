@@ -2,7 +2,7 @@ import TestAPI from '~/modules/Admin/containers/TestApi/MainContainer'
 import UI from '../../components/UI'
 import { Utils } from 'webplatform-ui'
 
-let testApiContainer = () => import('../../containers/TestApi/MainContainer')
+let testApiContainer = () => import(/* webpackChunkName: "Admin", webpackPrefetch: true */ '../../containers/TestApi/MainContainer')
 let utils = new Utils()
 
 var route = {

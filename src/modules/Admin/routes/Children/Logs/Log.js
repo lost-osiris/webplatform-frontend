@@ -1,6 +1,6 @@
 import UI from '../../../components/UI'
 import LogsReducer from '~/modules/Admin/reducers/Logs'
-let logContainer = () => import('../../../containers/Logs/Logs')
+let logContainer = () => import(/* webpackChunkName: "Admin", webpackPrefetch: true */ '../../../containers/Logs/Logs')
 
 var route = {
   route: {
