@@ -16,42 +16,13 @@ const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const devMode = process.env.NODE_ENV !== 'production';
 const pkg = require(resolve(__dirname, '../package.json'))
 
-const npmPackages = [
-  "sweetalert2",
-  "classnames",
-  "react-markdown"
-];
-
-const corePackages = [
-  "redux",
-  "redux-thunk",
-  "react-redux",
-  "history",
-  "qs",
-  "axios",
-  "push.js",
-  "lodash",
-  "universal-cookie",
-  "node-waves",
-  "connected-react-router",
-]
-
 const PATHS = {
   src: resolve(__dirname, '../src')
 }
 
 module.exports = merge(common, {
-  // entry: {
-  //   main: resolve(__dirname, '../src/index.js'),
-  // },
-  // output: {
-  //   path: resolve(__dirname, '../build/'),
-  //   filename: 'index.js',
-  //   library: pkg.name,
-  //   libraryTarget: 'commonjs2'
-  // },
   mode: 'production',
-  // devtool: 'source-map',
+  devtool: 'source-map',
   optimization: {
     minimizer: [
       new TerserJSPlugin({
@@ -61,11 +32,11 @@ module.exports = merge(common, {
     ],
   },
   plugins: [
-    // new CleanWebpackPlugin(),
+    new CleanWebpackPlugin(),
     new webpack.NamedModulesPlugin(),
-    // new CompressionPlugin({
-    //   cache: true,
-    // }),
+    new CompressionPlugin({
+      cache: true,
+    }),
     new PurgecssPlugin({
       paths: glob.sync(`${PATHS.src}/**/*`,  { nodir: true }),
     }),

@@ -2,14 +2,12 @@
   "name": "webplatform-frontend",
   "version": "1.1.1",
   "description": "A CLI to bootstrap the web platform frontend",
-  "main": "src/index.js",
   "bin": {
     "webplatform-frontend": "bin/webplatform-frontend"
   },
   "scripts": {
-    "start": "webpack --config webpack.config.js",
-    "build": "webpack --config webpack.config.dev.js",
-    "compile": "NODE_ENV=production ./run.sh"
+    "start": "./bin/webplatform-frontend",
+    "compile": "./bin/webplatform-frontend --production"
   },
   "repository": {
     "type": "git",
@@ -79,7 +77,8 @@
     "webpack-async-chunk-names-plugin": "^0.1.1",
     "webpack-bundle-analyzer": "^3.4.1",
     "webpack-dev-server": "^3.8.0",
-    "webpack-merge": "^4.2.1"
+    "webpack-merge": "^4.2.1",
+    "webplatform-ui": "^1.4.1"
   },
   "devDependencies": {
     "autoprefixer": "^9.6.1",

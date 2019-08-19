@@ -5,7 +5,8 @@ import fs, { appendFileSync } from 'fs'
 import shell from 'shelljs'
 import { resolve } from 'path'
 
-import webpackDevConfig from './webpack/webpack.prod'
+import webpackDevConfig from './webpack/webpack.dev'
+import webpackProdConfig from './webpack/webpack.prod'
 import configDevServer from './webpack/webpack.server'
 
 function parseArgumentsIntoOptions(rawArgs) {
@@ -14,6 +15,7 @@ function parseArgumentsIntoOptions(rawArgs) {
       '--port': Number,
       '--name': String,
       '--debug': Boolean,
+      '--production': Boolean,
     },
     {
       argv: rawArgs.slice(2),
@@ -23,7 +25,8 @@ function parseArgumentsIntoOptions(rawArgs) {
   return {
     port: args['--port'] || 3000,
     name: args['--name'],
-    default: args['--debug'],
+    debug: args['--debug'],
+    production: args['--production'],
     application: args._[0] || undefined,
   }
 }
@@ -44,7 +47,6 @@ function getApps(webpackConfig) {
           let appConfig = config['applications-configs'][i].frontend
         
           if (config['applications-configs'][i].active) {
-            // webpackConfig.entry[appConfig.name] = resolve(appConfig.path, 'routes')
             webpackConfig.resolve.alias[appConfig.name] = resolve(appConfig.path)
             
             routes.push(`  () => import('${appConfig.name}/routes'),`)
@@ -64,33 +66,36 @@ function getApps(webpackConfig) {
 
 export function cli(args) {
   let options = parseArgumentsIntoOptions(args)
-
-  getApps(webpackDevConfig).map((value) => value.name + '/routes')
+  let webpackConfig = options.production ? webpackProdConfig : webpackDevConfig
+  
+  getApps(webpackConfig).map((value) => value.name + '/routes')
   
   let env = {
-    'NODE_ENV': JSON.stringify('production')
+    'NODE_ENV': options.production ? JSON.stringify('production') : JSON.stringify('development')
   }
 
   let DefinePlugin = new webpack.DefinePlugin(env)
-  webpackDevConfig.plugins.push(DefinePlugin)
+  webpackConfig.plugins.push(DefinePlugin)
   
-  let compiler = webpack(webpackDevConfig)
+  let compiler = webpack(webpackConfig)
 
   if (options.debug) {
-    console.log(webpackDevConfig)
+    console.log(webpackConfig)
   }
 
-  compiler.run((err, stats) => {
-    console.log(stats.toString({
-      modules: false,
-      chunks: false,
-      chunckModules: false,
-      timings: true,
-      warnigns: false,
-      colors: true
-    }));
-  })
-  // let server = new webpackDevServer(compiler, configDevServer)
-
-  // server.listen(options.port, "localhost", function() {})
+  if (options.production) {
+    compiler.run((err, stats) => {
+      console.log(stats.toString({
+        modules: false,
+        chunks: false,
+        chunckModules: false,
+        timings: true,
+        warnigns: false,
+        colors: true
+      }));
+    })
+  } else {
+    let server = new webpackDevServer(compiler, configDevServer)
+    server.listen(options.port, "localhost", function() {})
+  }
 }
