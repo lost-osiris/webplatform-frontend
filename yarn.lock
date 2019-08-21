@@ -2,6 +2,38 @@
 # yarn lockfile v1
 
 
+"@app-init/ui@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@app-init/ui/-/ui-1.0.0.tgz#b83ce177333835fc239f62629520f3e101fc0aa0"
+  integrity sha512-+P/MkCYzYoKrJl0aliFRLyBFuc0YPbhQxXpg/dspifosm1zqgvfYeecysGm1libLRijRll1gk707qSLsuSKAqw==
+  dependencies:
+    "@loadable/component" "^5.10.2"
+    axios "^0.19.0"
+    bootstrap "^4.3.1"
+    classnames "^2.2.6"
+    flatpickr "^4.6.2"
+    font-awesome "^4.7.0"
+    history "^4.9.0"
+    jquery "^3.4.1"
+    lodash "^4.17.15"
+    markdown-it "^9.1.0"
+    moment "^2.24.0"
+    moment-timezone "^0.5.26"
+    node-waves "^0.7.6"
+    path-to-regexp "^3.0.0"
+    popper.js "^1.15.0"
+    prop-types "^15.7.2"
+    qs "^6.8.0"
+    react "^16.9.0"
+    react-custom-scrollbars "^4.2.1"
+    react-dom "^16.9.0"
+    react-markdown "^4.1.0"
+    react-redux "^7.1.0"
+    redux "^4.0.4"
+    redux-thunk "^2.3.0"
+    sweetalert2 "^8.16.1"
+    universal-cookie "^4.0.2"
+
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.5.5":
   version "7.5.5"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.5.5.tgz#bc0782f6d69f7b7d49531219699b988f669a8f9d"
@@ -7900,38 +7932,6 @@ webpack@^4.39.2:
     terser-webpack-plugin "^1.4.1"
     watchpack "^1.6.0"
     webpack-sources "^1.4.1"
-
-webplatform-ui@^1.4.1:
-  version "1.4.5"
-  resolved "https://registry.yarnpkg.com/webplatform-ui/-/webplatform-ui-1.4.5.tgz#5708d664a5e63a02781f8aafba28a552c2af548c"
-  integrity sha512-HJaICsvzPaO1AyKXvGTGPsQsAbBi4UHOfh0L0D4y5eKasbswJv1mFG0PSA5EfTQh1geNEkpeoZiQSJi+1TDobA==
-  dependencies:
-    "@loadable/component" "^5.10.2"
-    axios "^0.19.0"
-    bootstrap "^4.3.1"
-    classnames "^2.2.6"
-    flatpickr "^4.6.2"
-    font-awesome "^4.7.0"
-    history "^4.9.0"
-    jquery "^3.4.1"
-    lodash "^4.17.15"
-    markdown-it "^9.1.0"
-    moment "^2.24.0"
-    moment-timezone "^0.5.26"
-    node-waves "^0.7.6"
-    path-to-regexp "^3.0.0"
-    popper.js "^1.15.0"
-    prop-types "^15.7.2"
-    qs "^6.8.0"
-    react "^16.9.0"
-    react-custom-scrollbars "^4.2.1"
-    react-dom "^16.9.0"
-    react-markdown "^4.1.0"
-    react-redux "^7.1.0"
-    redux "^4.0.4"
-    redux-thunk "^2.3.0"
-    sweetalert2 "^8.16.1"
-    universal-cookie "^4.0.2"
 
 websocket-driver@>=0.5.1:
   version "0.7.3"

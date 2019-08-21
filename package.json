@@ -1,17 +1,17 @@
 {
-  "name": "webplatform-frontend",
-  "version": "1.2.0",
+  "name": "@app-init/frontend",
+  "version": "1.0.0",
   "description": "A CLI to bootstrap the web platform frontend",
   "bin": {
-    "webplatform-frontend": "bin/webplatform-frontend"
+    "app-init-frontend": "bin/app-init-frontend"
   },
   "scripts": {
-    "start": "./bin/webplatform-frontend",
-    "compile:prod": "./bin/webplatform-frontend --build"
+    "start": "./bin/app-init-frontend",
+    "compile:prod": "./bin/app-init-frontend --build"
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:lost-osiris/webplatform-frontend.git"
+    "url": "git@github.com:app-init/frontend.git"
   },
   "publishConfig": {
     "access": "public"
@@ -23,6 +23,7 @@
   "author": "Matthew Owens",
   "license": "MIT",
   "dependencies": {
+    "@app-init/ui": "^1.0.0",
     "@babel/core": "^7.5.5",
     "@babel/plugin-proposal-class-properties": "^7.5.5",
     "@babel/plugin-transform-runtime": "^7.5.5",
@@ -79,7 +80,6 @@
     "webpack-bundle-analyzer": "^3.4.1",
     "webpack-dev-server": "^3.8.0",
     "webpack-merge": "^4.2.1",
-    "webplatform-ui": "^1.4.1",
     "workbox-webpack-plugin": "^4.3.1"
   },
   "devDependencies": {}

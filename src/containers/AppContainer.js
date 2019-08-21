@@ -61,9 +61,7 @@ class AppContainer extends React.Component {
         this.fetchLayout(this.props)
       })
     }
-
-    // console.log(update)
-
+    
     if (update) {
       this.setState({finishedLayout: false}, () => {
         this.fetchLayout(this.props)
@@ -97,7 +95,6 @@ class AppContainer extends React.Component {
       let component = props.layout.ui[k]
 
       if (component) {
-        console.log(component)
         promises.push(component())
         map[count] = k
         count++
